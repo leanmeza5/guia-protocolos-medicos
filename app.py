@@ -6,11 +6,14 @@ Sirve una API JSON y la interfaz web de la carpeta static/.
 
 Uso:
     python app.py            # abre en http://localhost:8501
+
+En un servidor (Render, etc.) se configuran HOST=0.0.0.0 y PORT por variables de entorno.
 """
 
 from __future__ import annotations
 
 import json
+import os
 import re
 import sqlite3
 import threading
@@ -25,7 +28,8 @@ from fastapi.staticfiles import StaticFiles
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "protocolos.db"
 STATIC_DIR = BASE_DIR / "static"
-PUERTO = 8501
+HOST = os.environ.get("HOST", "127.0.0.1")
+PUERTO = int(os.environ.get("PORT", "8501"))
 MAX_RESULTADOS = 40
 
 app = FastAPI(title="Guía Universal de Protocolos Médicos", docs_url=None, redoc_url=None)
@@ -173,4 +177,4 @@ def index():
 
 if __name__ == "__main__":
     print(f"Guía de Protocolos → http://localhost:{PUERTO}")
-    uvicorn.run(app, host="127.0.0.1", port=PUERTO, log_level="warning")
+    uvicorn.run(app, host=HOST, port=PUERTO, log_level="warning")

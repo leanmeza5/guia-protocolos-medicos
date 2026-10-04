@@ -38,6 +38,12 @@ Opciones del recolector:
 | `--reset` | borra la base y la reconstruye |
 | `--solo-fichas` | recarga solo `protocolos/*.json` (después de editar una ficha) |
 
+## Publicar en internet (Render)
+
+El repositorio incluye `render.yaml`. En [Render](https://render.com): **New → Blueprint**, elegí este repositorio y confirmá. Al construir, Render ejecuta `recolector.py` (descarga las guías y arma la base) y después levanta `app.py`.
+
+En el plan gratuito el servicio se suspende tras 15 minutos sin visitas; la primera carga posterior tarda alrededor de un minuto.
+
 ## Fichas de protocolo
 
 Cada archivo de `protocolos/` describe una guía (se vincula por el nombre del PDF en `archivo`) con:

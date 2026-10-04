@@ -1,0 +1,16 @@
+# Despliegue en Render (https://render.com) — plan gratuito.
+# Al construir, recolector.py descarga las guías y arma protocolos.db;
+# después app.py sirve la web leyendo solo de esa base.
+services:
+  - type: web
+    name: guia-protocolos-medicos
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python recolector.py
+    startCommand: python app.py
+    healthCheckPath: /api/inicio
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: HOST
+        value: 0.0.0.0

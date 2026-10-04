@@ -1,0 +1,102 @@
+{
+  "archivo": "boceto_guia_de_bolsillo_chagas-91225.pdf",
+  "titulo_corto": "Chagas",
+  "subtitulo": "Guía breve para equipos de salud",
+  "especialidad": "Infectología · Atención primaria",
+  "poblacion": "Todas las edades; personas embarazadas, recién nacidos y personas expuestas",
+  "resumen": "Infección por Trypanosoma cruzi. Guía de bolsillo con a quién estudiar, cómo diagnosticar, a quién tratar y los esquemas con benznidazol y nifurtimox (60 días). Todos los casos se notifican al SNVS 2.0.",
+  "claves": [
+    {"texto": "Estudiar a toda persona embarazada (junto con VIH, sífilis y hepatitis B: ETMI-Plus) y a los recién nacidos de madres con Chagas.", "pagina": 2},
+    {"texto": "Recién nacidos o sospecha de cuadro agudo: métodos parasitológicos directos. Mayores de 10 meses: dos pruebas serológicas distintas.", "pagina": 3},
+    {"texto": "Tratar siempre a niños y adolescentes < 19 años y a mujeres con capacidad de gestar no embarazadas. No tratar durante el embarazo.", "pagina": 4},
+    {"texto": "Tratamiento de 60 días. Benznidazol 5–10 mg/kg/día (máx. 300 mg/día) o nifurtimox según peso (máx. 720 mg/día).", "pagina": 5},
+    {"texto": "Hemograma, urea/creatinina y hepatograma antes de iniciar y entre los días 15 y 20.", "pagina": 6}
+  ],
+  "algoritmos": [
+    {
+      "id": "diagnostico",
+      "titulo": "¿A quién estudiar y cómo diagnosticar?",
+      "descripcion": "El diagnóstico depende de la edad y de la fase de la infección.",
+      "pagina": 3,
+      "inicio": "q0",
+      "nodos": [
+        {"id": "q0", "tipo": "inicio", "texto": "Persona con indicación de estudio", "detalle": ["Embarazadas; recién nacidos de madres con Chagas y otros hijos no testeados.", "Madre biológica o abuela materna de zona con vinchucas o con Chagas.", "Haber vivido o viajado a zona con vinchucas.", "Donantes o receptores de órganos/células; usuarios de drogas inyectables.", "Síntomas compatibles; VIH u otra inmunodeficiencia."], "pagina": 2, "siguiente": "q1"},
+        {"id": "q1", "tipo": "decision", "texto": "¿Qué situación clínica?", "pagina": 3, "opciones": [{"etiqueta": "Recién nacido o sospecha de cuadro agudo", "ir": "directo"}, {"etiqueta": "Mayor de 10 meses", "ir": "sero"}]},
+        {"id": "directo", "tipo": "accion", "texto": "Observación directa del parásito", "detalle": ["Microscopía, microhematocrito o PCR."], "pagina": 3, "siguiente": "notif"},
+        {"id": "sero", "tipo": "accion", "texto": "Dos pruebas serológicas distintas", "detalle": ["ELISA, IFI y/o HAI."], "pagina": 3, "siguiente": "notif"},
+        {"id": "notif", "tipo": "alerta", "texto": "Si es positivo: notificar al SNVS 2.0 y evaluar tratamiento", "detalle": ["Notificación obligatoria (Ley 15.465).", "El resultado es confidencial y no debe ser motivo de exclusión ni discriminación."], "pagina": 3}
+      ]
+    }
+  ],
+  "tablas": [
+    {
+      "id": "tratamiento",
+      "titulo": "Esquema de tratamiento (60 días)",
+      "pagina": 5,
+      "columnas": ["Fármaco", "Presentación", "Dosis", "Tomas", "Máximo"],
+      "filas": [
+        ["Benznidazol", "Comprimidos birranurados de 12,5, 50 y 100 mg", "5–10 mg/kg/día (todas las edades)", "2 tomas (c/12 h) luego de las comidas", "300 mg/día"],
+        ["Nifurtimox · < 40 kg", "Comprimidos de 30 y 120 mg", "10–20 mg/kg/día", "3 tomas (c/8 h)", "720 mg/día"],
+        ["Nifurtimox · 40–60 kg (adolescentes)", "Comprimidos de 30 y 120 mg", "12,5–15 mg/kg/día", "3 tomas (c/8 h)", "720 mg/día"],
+        ["Nifurtimox · > 60 kg", "Comprimidos de 30 y 120 mg", "8–10 mg/kg/día", "3 tomas (c/8 h)", "720 mg/día"]
+      ],
+      "notas": ["Sin comprimidos de 30 mg y pacientes pediátricos que no deglutan los de 120 mg: nifurtimox pulverizado con una pequeña porción de alimento.", "Ajustar la dosis con precisión según el peso. Uso supervisado por personal médico."]
+    }
+  ],
+  "listas": [
+    {"id": "tratar", "titulo": "Tratar", "estilo": "exito", "pagina": 4, "items": [
+      "Infección de transmisión vertical.",
+      "Infección aguda vectorial.",
+      "Niños y adolescentes menores de 19 años.",
+      "Mujeres con capacidad de gestar no embarazadas.",
+      "Reactivación en inmunocomprometidos.",
+      "Donante vivo seropositivo en trasplante de órganos.",
+      "Accidente de laboratorio o quirúrgico de alto riesgo con material contaminado."
+    ]},
+    {"id": "prob-tratar", "titulo": "Probablemente tratar", "estilo": "info", "pagina": 4, "items": [
+      "Profilaxis secundaria luego de una reactivación en paciente inmunocomprometido.",
+      "Personas de 19 a 55 años sin cardiopatía avanzada que opten por ser tratadas."
+    ]},
+    {"id": "prob-no", "titulo": "Probablemente no tratar", "estilo": "precaucion", "pagina": 4, "items": [
+      "Fase crónica con cardiopatía avanzada."
+    ]},
+    {"id": "no-tratar", "titulo": "No tratar", "estilo": "alerta", "pagina": 4, "items": [
+      "Personas embarazadas.",
+      "Insuficiencia renal o hepática grave.",
+      "Trastornos neurológicos graves preexistentes."
+    ]},
+    {"id": "antes", "titulo": "Antes y durante el tratamiento", "estilo": "neutro", "pagina": 6, "items": [
+      "Mujeres con capacidad de gestar: confirmar ausencia de embarazo e indicar anticoncepción eficaz (pág. 4).",
+      "Laboratorio: hemograma, urea o creatinina y hepatograma basal y entre los días 15 y 20.",
+      "Dieta baja en grasas e hipoalergénica; abstinencia absoluta de alcohol; evitar exposición solar.",
+      "Nifurtimox: no conducir ni operar maquinaria (mareos, somnolencia, alteración de la coordinación).",
+      "Zonas con vinchucas: el Programa Provincial debe asegurar vivienda y peridomicilio libres de vinchucas (pág. 4).",
+      "La medicación se solicita al Programa Provincial de Chagas o áreas de zoonosis / salud materno infantil.",
+      "Notificar eventos adversos a ANMAT: snfvg@anmat.gov.ar (pág. 5)."
+    ]},
+    {"id": "contactos", "titulo": "Contactos de referencia", "estilo": "info", "pagina": 8, "items": [
+      "Instituto Nacional de Parasitología “Dr. Mario Fatala Chaben”: fatala@anlis.gob.ar",
+      "Área diagnóstico 011-7092-4081 · Área clínica 011-7092-4083 · Área social 011-7092-4072",
+      "Línea 0800-222-1002, opción 8",
+      "Área vectores: vectores@msal.gov.ar"
+    ]}
+  ],
+  "calculadoras": [
+    {
+      "id": "dosis-chagas",
+      "titulo": "Dosis de benznidazol y nifurtimox por peso",
+      "pagina": 5,
+      "descripcion": "Duración recomendada: 60 días.",
+      "farmacos": [
+        {"nombre": "Benznidazol", "grupos": [
+          {"etiqueta": "Todas las edades", "fases": [{"etiqueta": "60 días", "mgkg": [5, 10], "max": 300, "tomas": 2}], "nota": "Cada 12 h, luego de las comidas. Comprimidos de 12,5, 50 y 100 mg."}
+        ]},
+        {"nombre": "Nifurtimox", "por_peso": true, "grupos": [
+          {"etiqueta": "Peso < 40 kg", "peso": [0, 39.99], "fases": [{"etiqueta": "60 días", "mgkg": [10, 20], "max": 720, "tomas": 3}], "nota": "Cada 8 h. Comprimidos de 30 y 120 mg."},
+          {"etiqueta": "Peso 40–60 kg", "peso": [40, 60], "fases": [{"etiqueta": "60 días", "mgkg": [12.5, 15], "max": 720, "tomas": 3}], "nota": "Cada 8 h. Comprimidos de 30 y 120 mg."},
+          {"etiqueta": "Peso > 60 kg", "peso": [60.01, 400], "fases": [{"etiqueta": "60 días", "mgkg": [8, 10], "max": 720, "tomas": 3}], "nota": "Cada 8 h. Comprimidos de 30 y 120 mg."}
+        ]}
+      ]
+    }
+  ]
+}

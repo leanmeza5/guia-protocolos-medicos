@@ -1,0 +1,13 @@
+# Entorno virtual
+.venv/
+__pycache__/
+*.pyc
+
+# Datos generados por recolector.py (se reconstruyen ejecutándolo)
+pdfs/
+*.part
+protocolos.db
+protocolos.db-*
+
+# Sistema
+.DS_Store

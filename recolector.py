@@ -14,9 +14,9 @@ Sheets; el script lee la página con BeautifulSoup, detecta el id de esa planill
 descarga el catálogo en CSV. Si eso falla, cae a buscar enlaces .pdf en el HTML.
 
 Uso:
-    python recolector.py                     # 3 guías para equipos de salud
-    python recolector.py --max 10            # más guías
-    python recolector.py --buscar diabetes   # filtra por palabra en el título
+    python recolector.py                     # las guías listadas en guias.json
+    python recolector.py --max 5             # + 5 guías elegidas del catálogo
+    python recolector.py --buscar diabetes   # + guías con esa palabra en el título
     python recolector.py --reset             # borra la base y la reconstruye
     python recolector.py --solo-fichas       # recarga solo protocolos/*.json
 """
@@ -43,6 +43,7 @@ BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "protocolos.db"
 PDF_DIR = BASE_DIR / "pdfs"
 FICHAS_DIR = BASE_DIR / "protocolos"
+SEMILLAS = BASE_DIR / "guias.json"
 
 MSAL_RECURSOS_URL = "https://www.argentina.gob.ar/salud/recursos"
 HEADERS = {"User-Agent": "Mozilla/5.0 (GuiaProtocolos/1.0; uso academico)"}
@@ -103,6 +104,11 @@ CREATE TABLE IF NOT EXISTS esquemas (
 CREATE TABLE IF NOT EXISTS fichas (
     guia_id  INTEGER PRIMARY KEY REFERENCES guias(id) ON DELETE CASCADE,
     datos    TEXT NOT NULL
+);
+-- Configuración (región, sinónimos de búsqueda) leída de protocolos/_*.json.
+CREATE TABLE IF NOT EXISTS config (
+    clave  TEXT PRIMARY KEY,
+    datos  TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS ficha_items (
     id       INTEGER PRIMARY KEY,
@@ -417,7 +423,7 @@ def extraer(pdf_path: Path) -> dict:
                 parrafos.append((num, orden, seccion_actual, texto))
 
             # Detección de páginas con algoritmos, tablas o figuras.
-            if 1 < num < n and not es_indice:
+            if (n <= 2 or 1 < num < n) and not es_indice:
                 capturas = list(RE_CAPTION.finditer(texto_pag))
                 # Preferir "Figura/Tabla/Cuadro/Algoritmo" antes que "Anexo N."
                 capturas.sort(key=lambda m: m.group(1).lower().startswith("anexo"))
@@ -445,8 +451,17 @@ def extraer(pdf_path: Path) -> dict:
 def indexar(conn: sqlite3.Connection, recurso: dict, pdf_path: Path) -> int:
     datos = extraer(pdf_path)
     if not datos["parrafos"]:
-        print("  Sin texto extraíble (¿PDF escaneado?). Omitido.")
-        return 0
+        if datos["paginas"] > 4:
+            print("  Sin texto extraíble (¿PDF escaneado?). Omitido.")
+            return 0
+        # Afiches y flujogramas en imagen: se guardan las páginas como esquemas.
+        print("  PDF sin texto (afiche o flujograma): se guardan sus páginas como imagen.")
+        tipo = "algoritmo" if re.search(r"(?i)flujograma|algoritmo|manejo", recurso["titulo"]) else "figura"
+        datos["esquemas"] = [(n, tipo, recurso["titulo"][:120]) for n in range(1, datos["paginas"] + 1)]
+    elif datos["paginas"] <= 2:
+        # Afiches de una o dos páginas (vías clínicas, algoritmos): el título del catálogo describe mejor.
+        tipo = "algoritmo" if re.search(r"(?i)flujograma|algoritmo|v[ií]a cl[ií]nica|manejo", recurso["titulo"]) else "figura"
+        datos["esquemas"] = [(n, tipo, recurso["titulo"][:120]) for n in range(1, datos["paginas"] + 1)]
     with conn:
         conn.execute("DELETE FROM guias WHERE url = ?", (recurso["url"],))
         cur = conn.execute(
@@ -491,6 +506,9 @@ def _items_de_ficha(f: dict) -> list[tuple[str, str, str, int | None, str]]:
         nombres = " · ".join(fx["nombre"] for fx in c["farmacos"])
         items.append(("calculadora", f"calc-{c['id']}", c["titulo"], c.get("pagina"),
                       f"Calculadora de dosis por peso: {nombres}. {c.get('descripcion', '')}"))
+    for e in f.get("escalas", []):
+        partes = [it["texto"] for it in e["items"]] + [i["texto"] for i in e.get("interpretacion", [])]
+        items.append(("escala", f"esc-{e['id']}", e["titulo"], e.get("pagina"), " · ".join(partes)))
     for k in f.get("claves", []):
         items.append(("clave", "resumen", "Puntos clave", k.get("pagina"), k["texto"]))
     return items
@@ -504,7 +522,13 @@ def cargar_fichas(conn: sqlite3.Connection) -> int:
     with conn:
         conn.execute("DELETE FROM ficha_items")
         conn.execute("DELETE FROM fichas")
+        conn.execute("DELETE FROM config")
+        for path in sorted(FICHAS_DIR.glob("_*.json")):
+            conn.execute("INSERT INTO config (clave, datos) VALUES (?, ?)",
+                         (path.stem.lstrip("_"), json.dumps(json.loads(path.read_text(encoding="utf-8")), ensure_ascii=False)))
         for path in sorted(FICHAS_DIR.glob("*.json")):
+            if path.name.startswith("_"):
+                continue
             try:
                 ficha = json.loads(path.read_text(encoding="utf-8"))
             except json.JSONDecodeError as e:
@@ -530,7 +554,7 @@ def cargar_fichas(conn: sqlite3.Connection) -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Recolector de guías clínicas del MSAL")
-    ap.add_argument("--max", type=int, default=3, help="cantidad de guías a descargar (default 3)")
+    ap.add_argument("--max", type=int, default=0, help="guías extra a elegir del catálogo (default 0)")
     ap.add_argument("--buscar", help="palabra que debe aparecer en el título (ej. 'diabetes')")
     ap.add_argument("--reset", action="store_true", help="borra la base de datos antes de empezar")
     ap.add_argument("--solo-fichas", action="store_true", help="solo recarga las fichas de protocolos/*.json")
@@ -554,7 +578,18 @@ def main() -> int:
         recursos = descubrir_desde_html(session)
     print(f"  {len(recursos)} PDFs encontrados en el sitio.")
 
-    guias = seleccionar_guias(recursos, args.buscar, args.max)
+    # Guías fijas de guias.json, con los datos del catálogo cuando están disponibles.
+    por_url = {r["url"]: r for r in recursos}
+    guias = []
+    if SEMILLAS.exists():
+        for s in json.loads(SEMILLAS.read_text(encoding="utf-8")).get("guias", []):
+            base = {"titulo": s.get("titulo") or Path(s["url"]).stem, "url": s["url"],
+                    "tema": "", "tipo": "", "destinatario": "", "fecha": ""}
+            guias.append({**base, **por_url.get(s["url"], {})})
+    if args.max or args.buscar:
+        urls = {g["url"] for g in guias}
+        extra = [g for g in seleccionar_guias(recursos, args.buscar, args.max or 5) if g["url"] not in urls]
+        guias += extra
     if not guias:
         print("No se encontraron guías que coincidan.")
         return 1

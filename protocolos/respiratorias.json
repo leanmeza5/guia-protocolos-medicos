@@ -1,0 +1,136 @@
+{
+  "archivo": "algoritmo-neumonia-adquirida-comunidad-reagudizacion-de-epoc-bronquitis.pdf",
+  "titulo_corto": "Infecciones respiratorias bajas",
+  "subtitulo": "Neumonía de la comunidad, EPOC reagudizada y bronquitis aguda · manejo ambulatorio",
+  "especialidad": "Clínica médica · Uso apropiado de antibióticos",
+  "categorias": ["guardia", "infecciones", "invierno"],
+  "anio": 2023,
+  "poblacion": "Adultos en el primer nivel de atención",
+  "resumen": "Algoritmo nacional (CoNaCRA / SADI) para elegir cuándo y con qué antibiótico tratar las tres infecciones respiratorias más consultadas. Tratamientos de 5 días en NAC y EPOC reagudizada; la bronquitis aguda es viral en más del 90% y no lleva antibióticos.",
+  "claves": [
+    {"texto": "Bronquitis aguda: > 90% viral. No pedir Rx ni esputo en personas sanas y no indicar antibióticos salvo infección bacteriana o síntomas de más de 3 semanas.", "pagina": 6},
+    {"texto": "NAC ambulatoria (CURB-65 0–1): amoxicilina 875–1000 mg c/8 h × 5 días en < 65 años sin comorbilidades.", "pagina": 13},
+    {"texto": "NAC en > 65 años o con comorbilidades: amoxicilina-clavulánico ± macrólido, 5 días.", "pagina": 13},
+    {"texto": "EPOC reagudizada: primero reforzar broncodilatadores. Antibiótico si exacerbación grave o esputo purulento; reevaluar a las 72 h.", "pagina": 9},
+    {"texto": "Influenza confirmada en > 65 años o con comorbilidades, embarazo o puerperio: oseltamivir 75 mg c/12 h × 5 días.", "pagina": 12}
+  ],
+  "algoritmos": [
+    {
+      "id": "antibiotico",
+      "titulo": "¿Qué antibiótico? Infección respiratoria baja ambulatoria",
+      "descripcion": "Algoritmo de manejo y tratamiento de la guía. Duración de tratamiento: 5 días en NAC y EPOC reagudizada.",
+      "pagina": 4,
+      "inicio": "r0",
+      "nodos": [
+        {"id": "r0", "tipo": "decision", "texto": "Infección respiratoria de manejo ambulatorio: ¿qué cuadro es?", "detalle": ["Examen físico: tos aguda (< 3 semanas), saturación, fiebre, auscultación."], "pagina": 4, "opciones": [{"etiqueta": "Bronquitis aguda", "ir": "b1"}, {"etiqueta": "EPOC reagudizada", "ir": "e1"}, {"etiqueta": "Neumonía (NAC)", "ir": "n1"}]},
+
+        {"id": "b1", "tipo": "decision", "texto": "¿Hay sospecha de infección bacteriana?", "detalle": ["Más del 90% de los cuadros son virales.", "No pedir esputo ni Rx en personas sanas; Rx solo si sospecha de neumonía, > 60 años o inmunosupresión.", "Sospechar Bordetella ante tos prolongada, contacto con caso confirmado o época de brote."], "pagina": 6, "opciones": [{"etiqueta": "No (lo habitual)", "ir": "b_sint"}, {"etiqueta": "Bordetella pertussis", "ir": "b_bp"}, {"etiqueta": "Mycoplasma / Chlamydophila", "ir": "b_my"}]},
+        {"id": "b_sint", "tipo": "resultado", "texto": "Tratamiento sintomático, sin antibióticos", "detalle": ["Considerar antibióticos solo si los síntomas persisten más de 3 semanas."], "pagina": 6},
+        {"id": "b_bp", "tipo": "resultado", "texto": "Claritromicina 500 mg c/12 h × 7 días, o azitromicina 500 mg el día 1 y 250 mg/día los días 2 a 5", "detalle": ["2.ª línea: TMP-SMZ 800/160 mg c/12 h × 14 días (pág. 7).", "Notificar y manejar contactos según la guía de coqueluche."], "pagina": 6},
+        {"id": "b_my", "tipo": "resultado", "texto": "Azitromicina 500 mg el día 1 y 250 mg/día los días 2 a 5", "detalle": ["2.ª línea: doxiciclina 100 mg c/12 h × 5 días."], "pagina": 7},
+
+        {"id": "e1", "tipo": "accion", "texto": "Reforzar el tratamiento broncodilatador", "detalle": ["El antibiótico beneficia en exacerbaciones graves o con esputo francamente purulento.", "En casos leves puede optarse por tratamiento sintomático y reevaluar."], "pagina": 9, "siguiente": "e_int"},
+        {"id": "e_int", "tipo": "decision", "texto": "¿Tiene criterios de hospitalización?", "detalle": ["Exacerbación grave o insuficiencia respiratoria.", "Imposibilidad de seguimiento en domicilio.", "Comorbilidad grave (IC, neumotórax, TEP) o trastornos de conciencia.", "Fallo del tratamiento ambulatorio."], "pagina": 10, "opciones": [{"etiqueta": "Sí", "ir": "e_hosp"}, {"etiqueta": "No", "ir": "e_tipo"}]},
+        {"id": "e_hosp", "tipo": "alerta", "texto": "Derivar para internación", "pagina": 10},
+        {"id": "e_tipo", "tipo": "decision", "texto": "¿Cómo es la EPOC de base?", "detalle": ["Complicada: > 65 años, VEF1 ≤ 50%*, 3 o más exacerbaciones al año o comorbilidad cardíaca.", "Riesgo de P. aeruginosa: VEF1 ≤ 35%*, internación reciente en UTI, antibióticos reiterados o cultivo previo positivo.", "* En el PDF original no se ve el signo junto al VEF1; verificá en la página 9."], "pagina": 9, "opciones": [{"etiqueta": "Leve o moderada no complicada", "ir": "e_nc"}, {"etiqueta": "Moderada complicada", "ir": "e_c"}, {"etiqueta": "Complicada con riesgo de Pseudomonas", "ir": "e_pa"}]},
+        {"id": "e_nc", "tipo": "accion", "texto": "Amoxicilina-clavulánico 875/125 mg c/12 h × 5 días", "detalle": ["Alérgicos: azitromicina 500 mg/día × 3 días."], "pagina": 10, "siguiente": "e_reev"},
+        {"id": "e_c", "tipo": "accion", "texto": "Amoxicilina-clavulánico 875/125 mg c/12 h × 5 días", "detalle": ["Alérgicos: levofloxacina 750 mg/día."], "pagina": 10, "siguiente": "e_reev"},
+        {"id": "e_pa", "tipo": "accion", "texto": "Ciprofloxacina 750 mg c/12 h o levofloxacina 750 mg/día × 5 días", "pagina": 10, "siguiente": "e_reev"},
+        {"id": "e_reev", "tipo": "resultado", "texto": "Reevaluar a las 72 horas", "detalle": ["Sin mejoría: pedir cultivo de esputo y reevaluar tratamiento o necesidad de internación.", "Buena evolución: completar tratamiento corto de 5 días."], "pagina": 10},
+
+        {"id": "n1", "tipo": "accion", "texto": "Confirmar: tos + expectoración + fiebre + infiltrado nuevo en Rx de tórax", "detalle": ["Rx de tórax en todas las personas para confirmar el diagnóstico.", "No se recomiendan hemocultivos ni cultivo de esputo en casos ambulatorios leves."], "pagina": 11, "siguiente": "n2"},
+        {"id": "n2", "tipo": "decision", "texto": "Puntaje CURB-65", "detalle": ["1 punto por cada uno: Confusión · Urea > 7 mmol/L · FR ≥ 30 · PAS ≤ 90 o PAD ≤ 60 mmHg · Edad > 65.", "Usá la escala CURB-65 de esta ficha para calcularlo."], "pagina": 12, "opciones": [{"etiqueta": "0–1 punto", "ir": "n3"}, {"etiqueta": "2 puntos", "ir": "n_sala"}, {"etiqueta": "3–5 puntos", "ir": "n_uc"}]},
+        {"id": "n_sala", "tipo": "alerta", "texto": "Internación en sala general", "pagina": 12},
+        {"id": "n_uc", "tipo": "alerta", "texto": "Internación en unidad cerrada", "pagina": 12},
+        {"id": "n3", "tipo": "decision", "texto": "Manejo ambulatorio: ¿qué paciente es?", "pagina": 12, "opciones": [{"etiqueta": "< 65 años sin comorbilidades", "ir": "n_a"}, {"etiqueta": "> 65 años o con comorbilidades", "ir": "n_b"}, {"etiqueta": "Alergia a betalactámicos", "ir": "n_c"}]},
+        {"id": "n_a", "tipo": "accion", "texto": "Amoxicilina 875–1000 mg c/8 h × 5 días", "pagina": 13, "siguiente": "n_fin"},
+        {"id": "n_b", "tipo": "accion", "texto": "Amoxicilina-clavulánico 875–1000 mg c/12 h ± azitromicina o claritromicina, × 5 días", "detalle": ["Azitromicina 500 mg el día 1 y luego 250 mg/día, o claritromicina 500 mg c/12 h."], "pagina": 13, "siguiente": "n_fin"},
+        {"id": "n_c", "tipo": "accion", "texto": "Levofloxacina 750 mg/día, o claritromicina 500 mg c/12 h, o azitromicina, × 5 días", "detalle": ["Azitromicina: 500 mg el día 1 y luego 250 mg/día."], "pagina": 13, "siguiente": "n_fin"},
+        {"id": "n_fin", "tipo": "resultado", "texto": "Completar 5 días y evaluar antiviral si hay influenza", "detalle": ["Oseltamivir 75 mg c/12 h × 5 días si hay influenza confirmada y > 65 años o comorbilidades (inmunosupresión, ERC, cardiovascular o respiratoria, diabetes, obesidad, embarazo o puerperio hasta 2 semanas).", "No usar corticoides en la NAC de manejo ambulatorio."], "pagina": 12}
+      ]
+    }
+  ],
+  "escalas": [
+    {
+      "id": "curb65",
+      "titulo": "CURB-65 · gravedad de la neumonía",
+      "pagina": 12,
+      "items": [
+        {"texto": "Confusión", "opciones": [{"texto": "No", "puntos": 0}, {"texto": "Sí", "puntos": 1}]},
+        {"texto": "Urea > 7 mmol/L (≈ 42 mg/dl)*", "opciones": [{"texto": "No", "puntos": 0}, {"texto": "Sí", "puntos": 1}]},
+        {"texto": "Frecuencia respiratoria ≥ 30/min", "opciones": [{"texto": "No", "puntos": 0}, {"texto": "Sí", "puntos": 1}]},
+        {"texto": "PAS ≤ 90 o PAD ≤ 60 mmHg", "opciones": [{"texto": "No", "puntos": 0}, {"texto": "Sí", "puntos": 1}]},
+        {"texto": "Edad > 65 años", "opciones": [{"texto": "No", "puntos": 0}, {"texto": "Sí", "puntos": 1}]}
+      ],
+      "interpretacion": [
+        {"min": 0, "max": 1, "texto": "Manejo ambulatorio (mortalidad a 30 días ≈ 1,5%)", "estilo": "ok"},
+        {"min": 2, "max": 2, "texto": "Internación en sala general (≈ 9,2%)", "estilo": "warn"},
+        {"min": 3, "max": 5, "texto": "Internación en unidad cerrada (≈ 22%)", "estilo": "danger"}
+      ],
+      "nota": "* La guía expresa la urea en mmol/L; 7 mmol/L equivalen a unos 42 mg/dl (conversión agregada, no figura en la guía)."
+    }
+  ],
+  "tablas": [
+    {
+      "id": "atb",
+      "titulo": "Antibióticos ambulatorios por cuadro",
+      "pagina": 13,
+      "columnas": ["Cuadro", "1.ª línea", "Alternativa / alérgicos"],
+      "filas": [
+        ["NAC < 65 años sin comorbilidades", "Amoxicilina 875–1000 mg c/8 h × 5 días", "Levofloxacina 750 mg/día; claritromicina 500 mg c/12 h; azitromicina"],
+        ["NAC > 65 años o con comorbilidades", "Amoxicilina-clavulánico 875–1000 mg c/12 h ± azitromicina o claritromicina × 5 días", "Levofloxacina 750 mg/día"],
+        ["EPOC leve o moderada no complicada", "Amoxicilina-clavulánico 875/125 mg c/12 h × 5 días", "Azitromicina 500 mg/día × 3 días"],
+        ["EPOC moderada complicada", "Amoxicilina-clavulánico 875/125 mg c/12 h × 5 días", "Levofloxacina 750 mg/día"],
+        ["EPOC con riesgo de P. aeruginosa", "Ciprofloxacina 750 mg c/12 h o levofloxacina 750 mg/día", "—"],
+        ["Bronquitis por B. pertussis", "Claritromicina 500 mg c/12 h × 7 días o azitromicina 5 días", "TMP-SMZ 800/160 mg c/12 h × 14 días"],
+        ["Bronquitis por Mycoplasma / Chlamydophila", "Azitromicina 500 mg día 1, luego 250 mg/día los días 2 a 5", "Doxiciclina 100 mg c/12 h × 5 días"],
+        ["Influenza (con indicación)", "Oseltamivir 75 mg c/12 h × 5 días", "—"]
+      ],
+      "notas": ["Fuente: páginas 6, 7, 10, 12 y 13 de la guía."]
+    },
+    {
+      "id": "exacerbacion",
+      "titulo": "Gravedad de la exacerbación de EPOC",
+      "pagina": 8,
+      "columnas": ["Gravedad", "Tipo", "Características"],
+      "filas": [
+        ["Grave", "Tipo I", "Aumento de la disnea + aumento del volumen de expectoración + esputo purulento"],
+        ["Moderada", "Tipo II", "2 de los 3 síntomas del tipo I"],
+        ["Leve", "Tipo III", "1 de los 3 síntomas del tipo I"]
+      ]
+    },
+    {
+      "id": "vef1",
+      "titulo": "Gravedad de la EPOC según VEF1 post-broncodilatador",
+      "pagina": 8,
+      "columnas": ["Gravedad", "VEF1 post-BD"],
+      "filas": [
+        ["Leve", "≥ 80%"],
+        ["Moderada", "≥ 50% y ≤ 80%"],
+        ["Grave", "≥ 30% y ≤ 50%"],
+        ["Muy grave", "≤ 30%, o ≤ 50% con insuficiencia respiratoria"]
+      ]
+    }
+  ],
+  "listas": [
+    {"id": "internacion-epoc", "titulo": "EPOC reagudizada: criterios de hospitalización", "estilo": "alerta", "pagina": 10, "items": [
+      "Exacerbación de EPOC grave.",
+      "Insuficiencia respiratoria.",
+      "Imposibilidad de seguimiento del episodio en domicilio.",
+      "Comorbilidad grave: insuficiencia cardíaca, neumotórax, tromboembolismo pulmonar.",
+      "Trastornos de conciencia.",
+      "Fallo del tratamiento ambulatorio."
+    ]},
+    {"id": "no-hacer", "titulo": "Evitar", "estilo": "precaucion", "pagina": 6, "items": [
+      "Antibióticos en la bronquitis aguda viral de personas sanas.",
+      "Rx de tórax y esputo en la bronquitis aguda de personas sanas.",
+      "Hemocultivos y cultivo de esputo en la NAC ambulatoria leve (pág. 11).",
+      "Corticoides en la NAC de manejo ambulatorio (pág. 13)."
+    ]},
+    {"id": "prevencion", "titulo": "Prevención", "estilo": "info", "pagina": 13, "items": [
+      "Vacuna antineumocócica (PPSV23 y conjugada 13 valente) según Calendario Nacional.",
+      "Vacuna antigripal anual: previene complicaciones de la neumonía por influenza."
+    ]}
+  ],
+  "calculadoras": []
+}

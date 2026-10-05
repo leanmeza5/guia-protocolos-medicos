@@ -1,0 +1,13 @@
+{
+  "name": "Protocolos Clínicos · Tierra del Fuego",
+  "short_name": "Protocolos",
+  "description": "Algoritmos, dosis y protocolos de las guías clínicas nacionales para equipos de salud de Tierra del Fuego.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#0b5c7a",
+  "lang": "es-AR",
+  "icons": [
+    {"src": "/static/icono.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}

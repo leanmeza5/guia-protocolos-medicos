@@ -17,6 +17,8 @@ import os
 import re
 import sqlite3
 import threading
+import unicodedata
+from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
@@ -52,19 +54,67 @@ def filas(sql: str, params: tuple | list = ()) -> list[dict]:
     return [dict(r) for r in db().execute(sql, params).fetchall()]
 
 
+def _norm(s: str) -> str:
+    s = unicodedata.normalize("NFKD", s.lower())
+    return " ".join(re.findall(r"\w+", "".join(c for c in s if not unicodedata.combining(c))))
+
+
+@lru_cache(maxsize=1)
+def sinonimos() -> dict[str, list[str]]:
+    """Mapa término normalizado -> grupo de equivalentes (protocolos/_sinonimos.json)."""
+    try:
+        r = db().execute("SELECT datos FROM config WHERE clave = 'sinonimos'").fetchone()
+    except sqlite3.OperationalError:
+        return {}
+    mapa: dict[str, list[str]] = {}
+    for grupo in (json.loads(r["datos"]).get("grupos", []) if r else []):
+        terminos = [_norm(t) for t in grupo if _norm(t)]
+        for t in terminos:
+            mapa[t] = terminos
+    return mapa
+
+
+def _expr(termino: str, prefijo: bool = True) -> str:
+    # Frases y siglas cortas se buscan exactas; palabras largas, como prefijo.
+    if " " in termino or len(termino) <= 3 or not prefijo:
+        return f'"{termino}"'
+    return f'"{termino}"*'
+
+
 def a_consulta_fts(texto: str) -> str | None:
     """Convierte lo que escribe el usuario en una consulta FTS5 segura.
     Cada palabra se busca como prefijo ("hipert" encuentra "hipertensión") y todas
-    deben aparecer (AND). Frases entre comillas se buscan exactas."""
+    deben aparecer (AND). Frases entre comillas se buscan exactas. Siglas y palabras
+    cotidianas se amplían con sus sinónimos ("HTA" también busca "hipertensión")."""
+    mapa = sinonimos()
     partes = []
     for frase, palabra in re.findall(r'"([^"]+)"|(\S+)', texto):
         if frase:
             limpia = " ".join(re.findall(r"\w+", frase))
             if limpia:
                 partes.append(f'"{limpia}"')
-        else:
-            partes += [f'"{w}"*' for w in re.findall(r"\w+", palabra)]
-    return " AND ".join(partes) or None
+            continue
+        palabras = re.findall(r"\w+", palabra)
+        partes += [("w", w) for w in palabras]
+    # Agrupa palabras sueltas consecutivas para reconocer sinónimos de varias palabras.
+    salida, i = [], 0
+    while i < len(partes):
+        if isinstance(partes[i], str):
+            salida.append(partes[i]); i += 1; continue
+        hecho = False
+        for n in (3, 2, 1):
+            bloque = partes[i:i + n]
+            if len(bloque) < n or any(isinstance(b, str) for b in bloque):
+                continue
+            clave = _norm(" ".join(b[1] for b in bloque))
+            if clave in mapa:
+                grupo = mapa[clave]
+                salida.append("(" + " OR ".join(_expr(t) for t in grupo) + ")")
+                i += n; hecho = True
+                break
+        if not hecho:
+            salida.append(f'"{partes[i][1]}"*'); i += 1
+    return " AND ".join(salida) or None
 
 
 # --------------------------------------------------------------------------- #
@@ -74,7 +124,7 @@ def a_consulta_fts(texto: str) -> str | None:
 @app.get("/api/inicio")
 def inicio():
     guias = filas(
-        "SELECT g.id, g.titulo, g.tema, g.fecha, g.paginas, g.url, "
+        "SELECT g.id, g.titulo, g.tema, g.fecha, g.paginas, g.url, g.archivo, "
         "  (SELECT COUNT(*) FROM parrafos p WHERE p.guia_id = g.id) AS parrafos, "
         "  (SELECT COUNT(*) FROM esquemas e WHERE e.guia_id = g.id) AS esquemas "
         "FROM guias g ORDER BY g.titulo"
@@ -83,9 +133,11 @@ def inicio():
     for g in guias:
         f = fichas.get(g["id"])
         g["ficha"] = None if f is None else {
-            k: f.get(k) for k in ("titulo_corto", "subtitulo", "especialidad", "resumen")
+            k: f.get(k) for k in ("titulo_corto", "subtitulo", "especialidad", "resumen", "anio")
         } | {
+            "categorias": f.get("categorias", []),
             "algoritmos": [{"id": a["id"], "titulo": a["titulo"]} for a in f.get("algoritmos", [])],
+            "escalas": [{"id": e["id"], "titulo": e["titulo"]} for e in f.get("escalas", [])],
             "n_tablas": len(f.get("tablas", [])),
             "n_calculadoras": len(f.get("calculadoras", [])),
             "farmacos": [fx["nombre"].split(" (")[0] for c in f.get("calculadoras", []) for fx in c["farmacos"]],
@@ -94,7 +146,29 @@ def inicio():
         "SELECT e.guia_id, e.pagina, e.tipo, e.titulo FROM esquemas e "
         "ORDER BY CASE e.tipo WHEN 'algoritmo' THEN 0 WHEN 'tabla' THEN 1 ELSE 2 END, e.guia_id, e.pagina"
     )
-    return {"guias": guias, "esquemas": esquemas}
+    return {"guias": guias, "esquemas": esquemas, "region": region(guias)}
+
+
+def region(guias: list[dict]) -> dict | None:
+    """Configuración regional, con cada 'archivo' traducido al id de su guía."""
+    try:
+        r = db().execute("SELECT datos FROM config WHERE clave = 'region'").fetchone()
+    except sqlite3.OperationalError:
+        return None
+    if not r:
+        return None
+    ids = {g["archivo"]: g["id"] for g in guias}
+
+    def resolver(x):
+        if isinstance(x, dict):
+            x = {k: resolver(v) for k, v in x.items()}
+            if "archivo" in x:
+                x["guia_id"] = ids.get(x.pop("archivo"))
+            return x
+        if isinstance(x, list):
+            return [resolver(v) for v in x]
+        return x
+    return resolver(json.loads(r["datos"]))
 
 
 @app.get("/api/guia/{guia_id}")
@@ -173,6 +247,17 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 @app.get("/")
 def index():
     return FileResponse(STATIC_DIR / "index.html", headers={"Cache-Control": "no-cache"})
+
+
+@app.get("/sw.js")
+def service_worker():
+    # Servido desde la raíz para que pueda guardar toda la app para uso sin conexión.
+    return FileResponse(STATIC_DIR / "sw.js", media_type="text/javascript", headers={"Cache-Control": "no-cache"})
+
+
+@app.get("/manifest.webmanifest")
+def manifest():
+    return FileResponse(STATIC_DIR / "manifest.webmanifest", media_type="application/manifest+json")
 
 
 if __name__ == "__main__":

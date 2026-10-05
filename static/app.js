@@ -12,7 +12,17 @@ const estado = {
   inicio: null,          // /api/inicio
   guias: new Map(),      // id -> /api/guia/{id}
   algo: null,            // estado del algoritmo abierto
+  peso: "",              // peso del paciente, compartido por las calculadoras (solo en memoria)
+  escalas: new Map(),    // id de escala -> respuestas elegidas
+  categoria: null,       // filtro de categoría en el inicio
 };
+
+const CATEGORIAS = [
+  { id: "guardia", titulo: "Guardia y urgencias", desc: "Algoritmos para decidir rápido", icono: "siren" },
+  { id: "cronicos", titulo: "Consultorio: enfermedades crónicas", desc: "Diagnóstico, metas y tratamiento escalonado", icono: "heart" },
+  { id: "infecciones", titulo: "Infecciones", desc: "Antibióticos, notificación y contactos", icono: "bug" },
+  { id: "embarazo", titulo: "Embarazo y recién nacido", desc: "Control prenatal y emergencia obstétrica", icono: "baby" },
+];
 
 // --- Utilidades --------------------------------------------------------------
 
@@ -20,10 +30,12 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const resaltar = (s) => esc(s).replace(/\x02/g, "<mark>").replace(/\x03/g, "</mark>");
 const ico = (id, cls = "") => `<svg class="ico ${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 const fmt = (n) => n.toLocaleString("es-AR", { maximumFractionDigits: 1 });
-const pag = (guiaId, n, txt) => (n ? `<button class="pag" type="button" data-guia="${guiaId}" data-pag="${n}" title="Ver página ${n} de la guía original">${txt || "pág. " + n}</button>` : "");
-const ICONO_TIPO = { algoritmo: "flow", tabla: "table", figura: "image", calculadora: "calc", lista: "list", clave: "list" };
-const NOMBRE_TIPO = { algoritmo: "Algoritmo", tabla: "Tabla", figura: "Figura", calculadora: "Calculadora", lista: "Recomendaciones", clave: "Punto clave" };
+const fmtKg = (n) => n.toLocaleString("es-AR", { maximumFractionDigits: 3 }); // dosis por kilo: no redondear
+const pag = (guiaId, n, txt) => (n && guiaId ? `<button class="pag" type="button" data-guia="${guiaId}" data-pag="${n}" title="Ver página ${n} de la guía original">${txt || "pág. " + n}</button>` : "");
+const ICONO_TIPO = { algoritmo: "flow", tabla: "table", figura: "image", calculadora: "calc", lista: "list", clave: "list", escala: "gauge" };
+const NOMBRE_TIPO = { algoritmo: "Algoritmo", tabla: "Tabla", figura: "Figura", calculadora: "Calculadora", lista: "Recomendaciones", clave: "Punto clave", escala: "Escala" };
 const badge = (tipo) => `<span class="badge badge-${tipo}">${ico(ICONO_TIPO[tipo] || "file")}${NOMBRE_TIPO[tipo] || tipo}</span>`;
+const ANIO_VIGENCIA = 2018; // ediciones anteriores se marcan para verificar actualización
 
 async function api(url) {
   const r = await fetch(url);
@@ -41,6 +53,13 @@ async function cargarGuia(id) {
 const metaGuia = (id) => estado.inicio?.guias.find((g) => g.id === id);
 const nombreGuia = (g) => g.ficha?.titulo_corto || g.titulo;
 
+function leerRecientes() {
+  try { return JSON.parse(localStorage.getItem("recientes") || "[]"); } catch (e) { return []; }
+}
+function guardarReciente(id) {
+  try { localStorage.setItem("recientes", JSON.stringify([id, ...leerRecientes().filter((x) => x !== id)].slice(0, 6))); } catch (e) {}
+}
+
 function navegar(hash, reemplazar = false) {
   if (location.hash === hash) return;
   if (reemplazar) { history.replaceState(null, "", hash); router(); }
@@ -48,7 +67,14 @@ function navegar(hash, reemplazar = false) {
 }
 
 function error(e) {
-  vista.innerHTML = `<div class="vacio"><h3>No se pudo cargar</h3><p>${esc(e.message)}</p></div>`;
+  vista.innerHTML = `<div class="vacio"><h3>No se pudo cargar</h3><p>${esc(e.message)}</p>
+    ${navigator.onLine ? "" : "<p>Estás sin conexión: solo se muestran las páginas que ya se abrieron antes.</p>"}</div>`;
+}
+
+function edicion(anio) {
+  if (!anio) return "";
+  const vieja = anio < ANIO_VIGENCIA;
+  return `<span class="badge ${vieja ? "badge-vieja" : "badge-edicion"}" title="${vieja ? "Edición antigua: verificá si hay una versión más nueva" : "Año de edición"}">${ico(vieja ? "alert" : "clock")}Edición ${anio}</span>`;
 }
 
 // --- Router ------------------------------------------------------------------
@@ -65,6 +91,8 @@ async function router() {
       await vistaBusqueda(partes[1], partes[2] ? +partes[2] : null);
     } else if (partes[0] === "guia" && partes[1]) {
       await vistaGuia(+partes[1], partes[2], partes[3]);
+    } else if (partes[0] === "esquemas") {
+      vistaEsquemas();
     } else {
       if (document.activeElement !== inputQ) inputQ.value = "";
       vistaInicio();
@@ -75,71 +103,144 @@ async function router() {
 // --- Inicio ------------------------------------------------------------------
 
 function vistaInicio() {
-  const { guias, esquemas } = estado.inicio;
-  document.title = "Protocolos Clínicos";
+  const { guias, esquemas, region } = estado.inicio;
+  document.title = region ? `Protocolos Clínicos · ${region.nombre}` : "Protocolos Clínicos";
   const conFicha = guias.filter((g) => g.ficha);
-  const nAlg = conFicha.reduce((s, g) => s + g.ficha.algoritmos.length, 0);
-  const nTab = conFicha.reduce((s, g) => s + g.ficha.n_tablas, 0);
-  const nPar = guias.reduce((s, g) => s + g.parrafos, 0);
-  const sugerencias = ["embarazo", "dosis máxima", "derivar", ...new Set(conFicha.flatMap((g) => g.ficha.farmacos))].slice(0, 8);
+  const mes = new Date().getMonth() + 1;
+  const temporada = region?.temporadas?.find((t) => t.meses.includes(mes));
+  const recientes = leerRecientes().map(metaGuia).filter(Boolean);
+  const sugerencias = ["embarazo", "dosis", "derivar", "HTA", "tos convulsa", "CO"];
+
+  const urgentes = conFicha.filter((g) => g.ficha.categorias.includes("guardia"))
+    .flatMap((g) => g.ficha.algoritmos.map((a) => ({ g, a })));
+  const herramientas = conFicha.flatMap((g) => [
+    ...g.ficha.escalas.map((e) => ({ g, tipo: "escala", titulo: e.titulo, href: `#/guia/${g.id}/calcular/esc-${e.id}` })),
+    ...(g.ficha.n_calculadoras ? [{ g, tipo: "calculadora", titulo: `Dosis por peso · ${g.ficha.titulo_corto}`, href: `#/guia/${g.id}/calcular` }] : []),
+  ]);
+  const algoritmosOriginales = esquemas.filter((e) => e.tipo === "algoritmo");
 
   vista.innerHTML = `
     <section class="hero">
-      <div>
-        <span class="eyebrow">Guías de práctica clínica · Argentina</span>
-        <h1>Protocolos clínicos, al instante.</h1>
-        <p class="lead">Algoritmos interactivos, tablas de dosis y calculadoras construidos a partir de las guías oficiales del Ministerio de Salud. Cada dato enlaza a su página de origen.</p>
-        <div class="hero-sugerencias"><span>Probá:</span>
+      <svg class="hero-montes" viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 160 L0 110 L120 70 L190 98 L300 30 L380 84 L470 52 L560 96 L640 60 L720 92 L820 24 L900 78 L990 50 L1080 88 L1200 58 L1200 160 Z"/>
+      </svg>
+      <div class="hero-txt">
+        <span class="eyebrow">${ico("pin")}${esc(region?.region_etiqueta || "Argentina")} · Guías del Ministerio de Salud</span>
+        <h1>¿Qué estás atendiendo?</h1>
+        <p class="lead">${esc(region?.bajada || "Algoritmos, dosis y protocolos de las guías clínicas oficiales.")} Cada dato enlaza a su página en el documento original.</p>
+        <form class="search search-hero" id="form-hero" role="search" autocomplete="off">
+          ${ico("search")}
+          <input id="q-hero" type="search" placeholder="Diagnóstico, fármaco, sigla o síntoma…" aria-label="Buscar en las guías" spellcheck="false">
+          <button class="btn btn-primary" type="submit">Buscar</button>
+        </form>
+        <div class="hero-sugerencias"><span>Por ejemplo:</span>
           ${sugerencias.map((s) => `<a class="chip" href="#/buscar/${encodeURIComponent(s)}">${esc(s)}</a>`).join("")}
         </div>
       </div>
-      <div class="stats">
-        <div class="card stat"><strong>${nAlg}</strong><span>Algoritmos interactivos</span></div>
-        <div class="card stat"><strong>${nTab}</strong><span>Tablas de dosis y criterios</span></div>
-        <div class="card stat"><strong>${esquemas.length}</strong><span>Esquemas originales</span></div>
-        <div class="card stat"><strong>${nPar.toLocaleString("es-AR")}</strong><span>Párrafos indexados</span></div>
-      </div>
     </section>
 
-    ${conFicha.length ? `
-    <section class="seccion">
-      <div class="seccion-cab"><div><h2>Protocolos rápidos</h2><p>Fichas de consulta con algoritmos, dosis y puntos clave.</p></div></div>
-      <div class="grid-fichas">
-        ${conFicha.map((g) => `
-          <div class="card ficha-card">
-            <a href="#/guia/${g.id}" style="color:inherit;text-decoration:none;display:flex;flex-direction:column;gap:10px">
-              <span class="eyebrow">${esc(g.ficha.especialidad || g.tema || "")}</span>
-              <div><h3>${esc(g.ficha.titulo_corto)}</h3><div class="sub">${esc(g.ficha.subtitulo || "")}</div></div>
-              <p class="resumen">${esc(g.ficha.resumen || "")}</p>
-              <div class="meta">
-                ${g.ficha.algoritmos.length ? `<span class="badge badge-algoritmo">${ico("flow")}${g.ficha.algoritmos.length} algoritmo${g.ficha.algoritmos.length > 1 ? "s" : ""}</span>` : ""}
-                ${g.ficha.n_tablas ? `<span class="badge badge-tabla">${ico("table")}${g.ficha.n_tablas} tabla${g.ficha.n_tablas > 1 ? "s" : ""}</span>` : ""}
-                ${g.ficha.n_calculadoras ? `<span class="badge badge-calculadora">${ico("calc")}Calculadora de dosis</span>` : ""}
-              </div>
-            </a>
-            <div class="ficha-algos">
-              ${g.ficha.algoritmos.map((a) => `<a href="#/guia/${g.id}/algoritmos/alg-${a.id}">${ico("flow")}${esc(a.titulo)}${ico("right")}</a>`).join("")}
-              ${g.ficha.n_calculadoras ? `<a href="#/guia/${g.id}/calculadora">${ico("calc")}Calcular dosis por peso${ico("right")}</a>` : ""}
-            </div>
-          </div>`).join("")}
+    ${temporada ? `
+    <section class="temporada card" aria-label="Alerta de temporada">
+      <div class="temporada-ico">${ico(mes >= 5 && mes <= 9 ? "snow" : "sun")}</div>
+      <div class="temporada-txt">
+        <strong>${esc(temporada.titulo)}</strong>
+        <p>${esc(temporada.texto)}</p>
+      </div>
+      <div class="temporada-links">
+        ${temporada.enlaces.filter((l) => l.guia_id).map((l) => `<a class="btn btn-sm" href="#/guia/${l.guia_id}/algoritmos/${esc(l.ancla)}">${ico("flow")}${esc(l.texto)}</a>`).join("")}
       </div>
     </section>` : ""}
 
-    ${esquemas.length ? `
+    ${urgentes.length ? `
     <section class="seccion">
-      <div class="seccion-cab"><div><h2>Algoritmos y esquemas originales</h2><p>Páginas de las guías con flujogramas, tablas y figuras, detectadas automáticamente.</p></div></div>
-      <div class="galeria">${esquemas.map(miniatura).join("")}</div>
+      <div class="seccion-cab"><div><h2>${ico("siren")}Guardia: algoritmos de un toque</h2><p>Recorré la decisión paso a paso, con la página de origen en cada punto.</p></div></div>
+      <div class="grid-urgencias">
+        ${urgentes.map(({ g, a }) => `
+          <a class="card urgencia" href="#/guia/${g.id}/algoritmos/alg-${a.id}">
+            <span class="urgencia-ico">${ico("flow")}</span>
+            <span><strong>${esc(a.titulo)}</strong><small>${esc(g.ficha.titulo_corto)}</small></span>
+            ${ico("right", "flecha")}
+          </a>`).join("")}
+      </div>
+    </section>` : ""}
+
+    ${recientes.length ? `
+    <section class="seccion seccion-chica">
+      <div class="seccion-cab"><div><h2>${ico("clock")}Consultados recientemente</h2></div></div>
+      <div class="chips-fila">${recientes.map((g) => `<a class="chip chip-grande" href="#/guia/${g.id}">${esc(nombreGuia(g))}</a>`).join("")}</div>
+    </section>` : ""}
+
+    ${herramientas.length ? `
+    <section class="seccion">
+      <div class="seccion-cab"><div><h2>${ico("calc")}Calculadoras y escalas</h2><p>Dosis por peso, puntajes de gravedad y de riesgo.</p></div></div>
+      <div class="grid-herramientas">
+        ${herramientas.map((h) => `
+          <a class="card herramienta" href="${h.href}">
+            ${badge(h.tipo)}
+            <strong>${esc(h.titulo)}</strong>
+            <small>${esc(h.g.ficha.titulo_corto)}</small>
+          </a>`).join("")}
+      </div>
+    </section>` : ""}
+
+    <section class="seccion" id="protocolos">
+      <div class="seccion-cab"><div><h2>${ico("list")}Protocolos rápidos</h2><p>${conFicha.length} fichas con algoritmos, dosis y puntos clave.</p></div></div>
+      <div class="chips-fila filtro-cat" role="tablist">
+        <button class="chip ${!estado.categoria ? "activo" : ""}" type="button" data-cat="">Todos <span class="n">${conFicha.length}</span></button>
+        ${CATEGORIAS.map((c) => {
+          const n = conFicha.filter((g) => g.ficha.categorias.includes(c.id)).length;
+          return n ? `<button class="chip ${estado.categoria === c.id ? "activo" : ""}" type="button" data-cat="${c.id}">${ico(c.icono)}${esc(c.titulo.split(":")[0])} <span class="n">${n}</span></button>` : "";
+        }).join("")}
+      </div>
+      <div class="grid-fichas" id="grid-fichas"></div>
+    </section>
+
+    ${region ? `
+    <section class="seccion">
+      <div class="seccion-cab"><div><h2>${ico("pin")}Para tener en cuenta en ${esc(region.nombre)}</h2><p>Datos de las guías nacionales sobre la provincia.</p></div></div>
+      <div class="region-grid">
+        <div class="contexto">
+          ${region.contexto.map((x) => `
+            <div class="card contexto-item">
+              <strong>${esc(x.titulo)}</strong>
+              <p>${esc(x.texto)} ${pag(x.guia_id, x.pagina)}</p>
+            </div>`).join("")}
+        </div>
+        <div class="card contactos">
+          <h3>${ico("phone")}Teléfonos y referencias</h3>
+          <ul>
+            ${region.contactos.map((x) => `
+              <li>
+                <div><strong>${esc(x.nombre)}</strong>${x.detalle ? `<small>${esc(x.detalle)}</small>` : ""}${x.nota ? `<small class="nota">${ico("alert")}${esc(x.nota)}</small>` : ""}</div>
+                <div class="contacto-acc">
+                  ${x.telefono ? `<a class="btn btn-sm" href="tel:${esc(x.telefono.replace(/[^\d+]/g, ""))}">${ico("phone")}${esc(x.telefono)}</a>` : ""}
+                  ${pag(x.guia_id, x.pagina, "fuente")}
+                </div>
+              </li>`).join("")}
+          </ul>
+        </div>
+      </div>
+    </section>` : ""}
+
+    ${algoritmosOriginales.length ? `
+    <section class="seccion">
+      <div class="seccion-cab">
+        <div><h2>${ico("image")}Algoritmos originales de las guías</h2><p>Las páginas tal como las publicó el Ministerio.</p></div>
+        <a class="btn btn-sm" href="#/esquemas">Ver todos los esquemas (${esquemas.length})</a>
+      </div>
+      <div class="galeria">${algoritmosOriginales.slice(0, 10).map(miniatura).join("")}</div>
     </section>` : ""}
 
     <section class="seccion">
-      <div class="seccion-cab"><div><h2>Biblioteca de guías</h2><p>${guias.length} documentos oficiales indexados.</p></div></div>
+      <div class="seccion-cab"><div><h2>${ico("book")}Biblioteca</h2><p>${guias.length} documentos oficiales indexados para la búsqueda.</p></div></div>
       <div class="card biblioteca">
         ${guias.map((g) => `
           <div class="fila-guia">
             <div class="ico-doc">${ico("book")}</div>
             <div>
               <h4><a href="#/guia/${g.id}">${esc(g.titulo)}</a></h4>
-              <small>${[g.tema, g.fecha && "Publicada " + g.fecha, g.paginas + " páginas"].filter(Boolean).map(esc).join(" · ")}</small>
+              <small>${[g.tema, g.paginas + (g.paginas === 1 ? " página" : " páginas")].filter(Boolean).map(esc).join(" · ")}</small>
+              <div class="fila-badges">${g.ficha ? `<span class="badge badge-algoritmo">${ico("flow")}Ficha rápida</span>${edicion(g.ficha.anio)}` : `<span class="badge">${ico("text")}Solo texto y páginas</span>`}</div>
             </div>
             <div class="acciones">
               <a class="btn btn-sm" href="#/guia/${g.id}">Abrir</a>
@@ -148,6 +249,38 @@ function vistaInicio() {
           </div>`).join("")}
       </div>
     </section>`;
+
+  const pintarFichas = () => {
+    const lista = conFicha.filter((g) => !estado.categoria || g.ficha.categorias.includes(estado.categoria));
+    $("#grid-fichas").innerHTML = lista.map(tarjetaFicha).join("");
+    $$(".filtro-cat .chip").forEach((b) => b.classList.toggle("activo", (b.dataset.cat || "") === (estado.categoria || "")));
+  };
+  $$(".filtro-cat .chip").forEach((b) => b.addEventListener("click", () => { estado.categoria = b.dataset.cat || null; pintarFichas(); }));
+  pintarFichas();
+
+  $("#form-hero").addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const q = $("#q-hero").value.trim();
+    if (q) navegar(`#/buscar/${encodeURIComponent(q)}`);
+  });
+}
+
+function tarjetaFicha(g) {
+  const f = g.ficha;
+  return `
+    <div class="card ficha-card">
+      <a class="ficha-link" href="#/guia/${g.id}">
+        <div class="ficha-top"><span class="eyebrow">${esc(f.especialidad || g.tema || "")}</span>${edicion(f.anio)}</div>
+        <div><h3>${esc(f.titulo_corto)}</h3><div class="sub">${esc(f.subtitulo || "")}</div></div>
+        <p class="resumen">${esc(f.resumen || "")}</p>
+      </a>
+      <div class="ficha-algos">
+        ${f.algoritmos.map((a) => `<a href="#/guia/${g.id}/algoritmos/alg-${a.id}">${ico("flow")}${esc(a.titulo)}${ico("right")}</a>`).join("")}
+        ${f.escalas.map((e) => `<a href="#/guia/${g.id}/calcular/esc-${e.id}">${ico("gauge")}${esc(e.titulo)}${ico("right")}</a>`).join("")}
+        ${f.n_calculadoras ? `<a href="#/guia/${g.id}/calcular">${ico("calc")}Calcular dosis por peso${ico("right")}</a>` : ""}
+        ${f.n_tablas ? `<a href="#/guia/${g.id}/tablas">${ico("table")}Dosis y tablas (${f.n_tablas})${ico("right")}</a>` : ""}
+      </div>
+    </div>`;
 }
 
 function miniatura(e) {
@@ -161,6 +294,19 @@ function miniatura(e) {
         <small>${esc(g ? nombreGuia(g) : "")} · pág. ${e.pagina}</small>
       </div>
     </button>`;
+}
+
+function vistaEsquemas() {
+  const { esquemas } = estado.inicio;
+  document.title = "Esquemas · Protocolos Clínicos";
+  const tipos = ["algoritmo", "tabla", "figura"];
+  vista.innerHTML = `
+    <nav class="migas" aria-label="Ruta"><a href="#/">Inicio</a>${ico("right")}<span>Esquemas</span></nav>
+    <header class="guia-cab"><div><h1>Esquemas de las guías</h1><p class="sub">Algoritmos, tablas y figuras detectados en las páginas originales.</p></div></header>
+    ${tipos.map((t) => {
+      const lista = esquemas.filter((e) => e.tipo === t);
+      return lista.length ? `<section class="seccion"><div class="seccion-cab"><h2>${badge(t)} ${lista.length}</h2></div><div class="galeria">${lista.map(miniatura).join("")}</div></section>` : "";
+    }).join("")}`;
 }
 
 // --- Búsqueda ----------------------------------------------------------------
@@ -180,7 +326,7 @@ async function vistaBusqueda(q, guiaId) {
     vista.innerHTML = `
       <div class="vacio">
         <h3>Sin resultados para «${esc(q)}»</h3>
-        <p>Probá con menos palabras, un sinónimo o el nombre genérico del fármaco.</p>
+        <p>Probá con menos palabras, una sigla (HTA, NAC, ACV) o el nombre genérico del fármaco.</p>
         <p style="margin-top:16px"><a class="btn" href="#/">Volver al inicio</a></p>
       </div>`;
     return;
@@ -200,7 +346,7 @@ async function vistaBusqueda(q, guiaId) {
     </div>
 
     ${r.protocolos.length ? `
-      <h2 class="res-titulo">${ico("flow")}En los protocolos rápidos</h2>
+      <h2 class="res-titulo">${ico("flow")}En las fichas rápidas</h2>
       <div class="grid-protocolos">
         ${r.protocolos.map((p) => {
           const g = metaGuia(p.guia_id);
@@ -238,7 +384,10 @@ async function vistaBusqueda(q, guiaId) {
 }
 
 function enlaceAncla(guiaId, ancla) {
-  const tab = ancla.startsWith("alg-") ? "algoritmos" : ancla.startsWith("tab-") ? "tablas" : ancla.startsWith("calc-") ? "calculadora" : "resumen";
+  const tab = ancla.startsWith("alg-") ? "algoritmos"
+    : ancla.startsWith("tab-") ? "tablas"
+    : ancla.startsWith("calc-") || ancla.startsWith("esc-") ? "calcular"
+    : "esencial";
   return `#/guia/${guiaId}/${tab}/${ancla}`;
 }
 
@@ -247,42 +396,52 @@ function enlaceAncla(guiaId, ancla) {
 async function vistaGuia(id, tab, ancla) {
   const g = await cargarGuia(id);
   const f = g.ficha;
+  guardarReciente(id);
+  const nCalc = (f?.calculadoras?.length || 0) + (f?.escalas?.length || 0);
   const tabs = [
-    f && ["resumen", "Resumen", "list"],
+    f && ["esencial", "Lo esencial", "list"],
     f?.algoritmos?.length && ["algoritmos", "Algoritmos", "flow", f.algoritmos.length],
     f?.tablas?.length && ["tablas", "Dosis y tablas", "table", f.tablas.length],
-    f?.calculadoras?.length && ["calculadora", "Calculadora", "calc"],
-    g.esquemas.length && ["esquemas", "Esquemas originales", "image", g.esquemas.length],
-    ["texto", "Texto completo", "text"],
+    nCalc && ["calcular", "Calcular", "calc", nCalc],
+    g.esquemas.length && ["paginas", "Páginas de la guía", "image", g.esquemas.length],
+    ["texto", "Leer la guía", "text"],
   ].filter(Boolean);
+  if (tab === "resumen") tab = "esencial";
+  if (tab === "calculadora") tab = "calcular";
+  if (tab === "esquemas") tab = "paginas";
   if (!tabs.some((t) => t[0] === tab)) tab = tabs[0][0];
   document.title = `${nombreGuia(g)} · Protocolos Clínicos`;
+  const vieja = f?.anio && f.anio < ANIO_VIGENCIA;
 
   vista.innerHTML = `
     <nav class="migas" aria-label="Ruta"><a href="#/">Inicio</a>${ico("right")}<span>${esc(f?.titulo_corto || "Guía")}</span></nav>
     <header class="guia-cab">
       <div>
-        <span class="eyebrow">${esc(f?.especialidad || g.tema || "Guía clínica")}</span>
+        <div class="ficha-top"><span class="eyebrow">${esc(f?.especialidad || g.tema || "Guía clínica")}</span>${edicion(f?.anio)}</div>
         <h1>${esc(f?.titulo_corto || g.titulo)}</h1>
         ${f?.subtitulo ? `<div class="sub">${esc(f.subtitulo)}</div>` : ""}
-        <p class="fuente">Fuente: ${esc(g.titulo)}${g.fecha ? " · Publicada " + esc(g.fecha) : ""} · ${g.paginas} páginas</p>
+        <p class="fuente">Fuente: ${esc(g.titulo)} · ${g.paginas} ${g.paginas === 1 ? "página" : "páginas"}</p>
       </div>
       <div class="acciones">
         <button class="btn" type="button" data-guia="${g.id}" data-pag="1">${ico("file")}Ver guía completa</button>
+        <button class="btn" type="button" id="btn-imprimir">${ico("print")}Imprimir</button>
         <a class="btn btn-primary" href="${esc(g.url)}" target="_blank" rel="noopener">${ico("external")}PDF oficial</a>
       </div>
     </header>
+    ${vieja ? `<div class="aviso aviso-warn aviso-edicion">${ico("alert")}<span>Esta guía es de ${f.anio}. Puede haber recomendaciones más nuevas: verificá en <a href="https://www.argentina.gob.ar/salud/recursos" target="_blank" rel="noopener">argentina.gob.ar/salud</a> antes de aplicarla.</span></div>` : ""}
+    ${!f ? `<div class="aviso aviso-info aviso-edicion">${ico("info")}<span>Esta guía todavía no tiene ficha rápida: podés buscar en su texto y ver sus páginas originales.</span></div>` : ""}
     <nav class="tabs" role="tablist">
       ${tabs.map(([k, label, i, n]) => `<a class="tab ${k === tab ? "activo" : ""}" role="tab" aria-selected="${k === tab}" href="#/guia/${g.id}/${k}" data-reemplazar>${ico(i)}${label}${n ? `<span class="n">${n}</span>` : ""}</a>`).join("")}
     </nav>
     <section class="panel" id="panel"></section>`;
 
+  $("#btn-imprimir").addEventListener("click", () => window.print());
   const panel = $("#panel");
-  if (tab === "resumen") panelResumen(panel, g);
+  if (tab === "esencial") panelEsencial(panel, g);
   else if (tab === "algoritmos") panelAlgoritmos(panel, g, ancla);
   else if (tab === "tablas") panelTablas(panel, g);
-  else if (tab === "calculadora") panelCalculadora(panel, g);
-  else if (tab === "esquemas") panel.innerHTML = `<div class="galeria">${g.esquemas.map((e) => miniatura({ ...e, guia_id: g.id })).join("")}</div>`;
+  else if (tab === "calcular") panelCalcular(panel, g);
+  else if (tab === "paginas") panel.innerHTML = `<div class="galeria">${g.esquemas.map((e) => miniatura({ ...e, guia_id: g.id })).join("")}</div>`;
   else await panelTexto(panel, g);
 
   if (ancla && ancla !== "resumen" && !ancla.startsWith("alg-")) {
@@ -291,30 +450,33 @@ async function vistaGuia(id, tab, ancla) {
   }
 }
 
-function panelResumen(panel, g) {
+function panelEsencial(panel, g) {
   const f = g.ficha;
+  const alertas = (f.listas || []).filter((l) => l.estilo === "alerta");
+  const otras = (f.listas || []).filter((l) => l.estilo !== "alerta");
   panel.innerHTML = `
-    <div class="resumen-grid">
+    <div class="esencial-grid">
       <div>
         <div class="card intro">
           <p>${esc(f.resumen)}</p>
-          <dl>
-            ${f.poblacion ? `<dt>Población</dt><dd>${esc(f.poblacion)}</dd>` : ""}
-            <dt>Documento</dt><dd>${esc(g.titulo)}</dd>
-          </dl>
+          ${f.poblacion ? `<dl><dt>Población</dt><dd>${esc(f.poblacion)}</dd></dl>` : ""}
         </div>
         ${f.claves?.length ? `
-          <div class="seccion-cab" style="margin-top:28px;margin-bottom:0"><h2>Puntos clave</h2></div>
+          <h2 class="subtitulo">Puntos clave</h2>
           <ol class="claves">${f.claves.map((k) => `<li><div>${esc(k.texto)} ${pag(g.id, k.pagina)}</div></li>`).join("")}</ol>` : ""}
       </div>
-      <aside class="card atajos">
-        <h3>Ir directo a</h3>
-        ${(f.algoritmos || []).map((a) => `<a href="#/guia/${g.id}/algoritmos/alg-${a.id}">${ico("flow")}${esc(a.titulo)}</a>`).join("")}
-        ${(f.calculadoras || []).map((c) => `<a href="#/guia/${g.id}/calculadora">${ico("calc")}${esc(c.titulo)}</a>`).join("")}
-        ${(f.tablas || []).slice(0, 6).map((t) => `<a href="#/guia/${g.id}/tablas/tab-${t.id}">${ico("table")}${esc(t.titulo)}</a>`).join("")}
+      <aside class="esencial-lado">
+        ${alertas.map((l) => callout(g.id, l)).join("")}
+        <div class="card atajos">
+          <h3>Ir directo a</h3>
+          ${(f.algoritmos || []).map((a) => `<a href="#/guia/${g.id}/algoritmos/alg-${a.id}">${ico("flow")}${esc(a.titulo)}</a>`).join("")}
+          ${(f.escalas || []).map((e) => `<a href="#/guia/${g.id}/calcular/esc-${e.id}">${ico("gauge")}${esc(e.titulo)}</a>`).join("")}
+          ${(f.calculadoras || []).map((c) => `<a href="#/guia/${g.id}/calcular/calc-${c.id}">${ico("calc")}${esc(c.titulo)}</a>`).join("")}
+          ${(f.tablas || []).slice(0, 5).map((t) => `<a href="#/guia/${g.id}/tablas/tab-${t.id}">${ico("table")}${esc(t.titulo)}</a>`).join("")}
+        </div>
       </aside>
     </div>
-    ${f.listas?.length ? `<div class="callouts">${f.listas.map((l) => callout(g.id, l)).join("")}</div>` : ""}`;
+    ${otras.length ? `<div class="callouts">${otras.map((l) => callout(g.id, l)).join("")}</div>` : ""}`;
 }
 
 function callout(guiaId, l) {
@@ -341,8 +503,8 @@ function panelAlgoritmos(panel, g, ancla) {
         <div><h2>${esc(elegido.titulo)}</h2><p>${esc(elegido.descripcion || "")}</p></div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <div class="segmento" role="tablist">
-            <button type="button" data-modo="diagrama">${ico("flow")}Diagrama</button>
             <button type="button" data-modo="pasos">${ico("play")}Paso a paso</button>
+            <button type="button" data-modo="diagrama">${ico("flow")}Diagrama</button>
           </div>
           ${pag(g.id, elegido.pagina, "Ver original · pág. " + elegido.pagina)}
         </div>
@@ -480,11 +642,11 @@ function dibujarPasos(cuerpo, g, a) {
         <h3>${esc(actual.texto)}</h3>
         ${actual.detalle?.length ? `<ul>${actual.detalle.map((d) => `<li>${esc(d)}</li>`).join("")}</ul>` : ""}
         ${actual.opciones?.length ? `<div class="paso-opciones">${actual.opciones.map((o, i) => `<button class="opcion" type="button" data-opcion="${i}">${esc(o.etiqueta)}${ico("right")}</button>`).join("")}</div>` : ""}
-        ${actual.siguiente ? `<div><button class="btn btn-primary" type="button" data-seguir>Continuar${ico("right")}</button></div>` : ""}
+        ${actual.siguiente ? `<div><button class="btn btn-primary btn-grande" type="button" data-seguir>Continuar${ico("right")}</button></div>` : ""}
         ${terminal ? `<div class="fin">${ico(actual.tipo === "alerta" ? "alert" : "check")}Fin del algoritmo</div>` : ""}
         <div class="paso-pie">
           ${pag(g.id, actual.pagina, "Fuente · pág. " + actual.pagina)}
-          ${camino.length > 1 ? `<button class="btn btn-sm btn-ghost" type="button" data-reiniciar>${ico("reset")}Reiniciar</button>` : ""}
+          ${camino.length > 1 ? `<button class="btn btn-sm btn-ghost" type="button" data-atras>${ico("left")}Paso anterior</button><button class="btn btn-sm btn-ghost" type="button" data-reiniciar>${ico("reset")}Reiniciar</button>` : ""}
         </div>
       </div>
     </div>`;
@@ -495,14 +657,16 @@ function dibujarPasos(cuerpo, g, a) {
     dibujarPasos(cuerpo, g, a);
     if (innerWidth < 820) $(".paso", cuerpo).scrollIntoView({ behavior: "smooth", block: "start" });
   };
-  $$("[data-opcion]", cuerpo).forEach((b) => b.addEventListener("click", () => { const o = actual.opciones[+b.dataset.opcion]; ir(o.ir, o.etiqueta); }));
-  $("[data-seguir]", cuerpo)?.addEventListener("click", () => ir(actual.siguiente, null));
-  $("[data-reiniciar]", cuerpo)?.addEventListener("click", () => { estado.algo.camino = [{ id: a.inicio }]; dibujarPasos(cuerpo, g, a); });
-  $$("[data-volver]", cuerpo).forEach((b) => b.addEventListener("click", () => {
-    estado.algo.camino = camino.slice(0, +b.dataset.volver + 1);
+  const volverA = (i) => {
+    estado.algo.camino = camino.slice(0, i + 1);
     delete estado.algo.camino[estado.algo.camino.length - 1].eleccion;
     dibujarPasos(cuerpo, g, a);
-  }));
+  };
+  $$("[data-opcion]", cuerpo).forEach((b) => b.addEventListener("click", () => { const o = actual.opciones[+b.dataset.opcion]; ir(o.ir, o.etiqueta); }));
+  $("[data-seguir]", cuerpo)?.addEventListener("click", () => ir(actual.siguiente, null));
+  $("[data-atras]", cuerpo)?.addEventListener("click", () => volverA(camino.length - 2));
+  $("[data-reiniciar]", cuerpo)?.addEventListener("click", () => { estado.algo.camino = [{ id: a.inicio }]; dibujarPasos(cuerpo, g, a); });
+  $$("[data-volver]", cuerpo).forEach((b) => b.addEventListener("click", () => volverA(+b.dataset.volver)));
 }
 
 // --- Tablas ----------------------------------------------------------------------
@@ -554,16 +718,69 @@ function panelTablas(panel, g) {
   });
 }
 
-// --- Calculadora -------------------------------------------------------------------
+// --- Calcular: escalas y dosis por peso ------------------------------------------
 
-function panelCalculadora(panel, g) {
-  panel.innerHTML = g.ficha.calculadoras.map((c) => `<article class="card calc" id="calc-${c.id}" style="margin-bottom:20px"></article>`).join("");
-  g.ficha.calculadoras.forEach((c) => {
-    const st = { farmaco: 0, grupo: 0, peso: "" };
-    const el = $(`#calc-${c.id}`, panel);
-    const render = () => dibujarCalculadora(el, g, c, st, render);
-    render();
+function panelCalcular(panel, g) {
+  const f = g.ficha;
+  const calcs = f.calculadoras || [];
+  panel.innerHTML = `
+    ${calcs.length ? `
+    <div class="card peso-barra">
+      <label for="peso-global">${ico("calc")}Peso del paciente</label>
+      <div class="input-peso"><input id="peso-global" inputmode="decimal" placeholder="0" value="${esc(estado.peso)}" autocomplete="off"><span>kg</span></div>
+      <small>Se usa en todas las calculadoras de esta pantalla. No se guarda al cerrar la página.</small>
+      ${estado.peso ? `<button class="btn btn-sm btn-ghost" type="button" id="peso-borrar">${ico("close")}Borrar</button>` : ""}
+    </div>` : ""}
+    ${(f.escalas || []).map((e) => `<article class="card escala" id="esc-${e.id}"></article>`).join("")}
+    ${calcs.map((c) => `<article class="card calc" id="calc-${c.id}"></article>`).join("")}`;
+
+  (f.escalas || []).forEach((e) => dibujarEscala($(`#esc-${e.id}`, panel), g, e));
+
+  const estados = calcs.map(() => ({ farmaco: 0, grupo: 0 }));
+  const renderTodas = () => calcs.forEach((c, i) => dibujarCalculadora($(`#calc-${c.id}`, panel), g, c, estados[i], renderTodas));
+  renderTodas();
+  const input = $("#peso-global", panel);
+  input?.addEventListener("input", () => {
+    estado.peso = input.value;
+    renderTodas();
+    const b = $("#peso-borrar", panel);
+    if (!estado.peso && b) b.remove();
   });
+  $("#peso-borrar", panel)?.addEventListener("click", () => { estado.peso = ""; panelCalcular(panel, g); });
+}
+
+function dibujarEscala(el, g, e) {
+  const resp = estado.escalas.get(e.id) || e.items.map(() => null);
+  estado.escalas.set(e.id, resp);
+  const total = resp.reduce((s, r, i) => s + (r === null ? 0 : e.items[i].opciones[r].puntos), 0);
+  const faltan = resp.filter((r) => r === null).length;
+  const interp = (e.interpretacion || []).find((x) => total >= x.min && total <= x.max);
+  el.innerHTML = `
+    <div class="escala-cab">
+      <div><h3>${esc(e.titulo)}</h3></div>
+      <div class="escala-acc">${pag(g.id, e.pagina)}<button class="btn btn-sm btn-ghost" type="button" data-limpiar>${ico("reset")}Limpiar</button></div>
+    </div>
+    <div class="escala-cuerpo">
+      <ol class="escala-items">
+        ${e.items.map((it, i) => `
+          <li>
+            <span class="escala-preg">${esc(it.texto)}</span>
+            <div class="opciones-btn" role="radiogroup" aria-label="${esc(it.texto)}">
+              ${it.opciones.map((o, j) => `<button type="button" role="radio" aria-checked="${resp[i] === j}" class="${resp[i] === j ? "activo" : ""}" data-item="${i}" data-op="${j}">${esc(o.texto)}<span class="pts">${o.puntos}</span></button>`).join("")}
+            </div>
+          </li>`).join("")}
+      </ol>
+      <div class="escala-res">
+        <div class="escala-total"><small>Puntaje</small><strong>${total}</strong>${faltan ? `<span>Faltan ${faltan} respuesta${faltan > 1 ? "s" : ""}</span>` : ""}</div>
+        ${!faltan && interp ? `<div class="aviso aviso-${interp.estilo === "danger" ? "danger" : interp.estilo === "warn" ? "warn" : "ok"}">${ico(interp.estilo === "ok" ? "check" : "alert")}<span>${esc(interp.texto)}</span></div>` : ""}
+        ${e.nota ? `<p class="ayuda">${ico("info")}${esc(e.nota)}</p>` : ""}
+      </div>
+    </div>`;
+  $$("[data-op]", el).forEach((b) => b.addEventListener("click", () => {
+    resp[+b.dataset.item] = +b.dataset.op;
+    dibujarEscala(el, g, e);
+  }));
+  $("[data-limpiar]", el).addEventListener("click", () => { estado.escalas.set(e.id, e.items.map(() => null)); dibujarEscala(el, g, e); });
 }
 
 function grupoPorPeso(fx, peso) {
@@ -574,7 +791,7 @@ function grupoPorPeso(fx, peso) {
 
 function dibujarCalculadora(el, g, c, st, render) {
   const fx = c.farmacos[st.farmaco];
-  const peso = parseFloat(String(st.peso).replace(",", "."));
+  const peso = parseFloat(String(estado.peso).replace(",", "."));
   const pesoOk = peso > 0.3 && peso <= 250;
   if (fx.por_peso && pesoOk) st.grupo = grupoPorPeso(fx, peso);
   const gr = fx.grupos[Math.min(st.grupo, fx.grupos.length - 1)];
@@ -582,30 +799,19 @@ function dibujarCalculadora(el, g, c, st, render) {
   el.innerHTML = `
     <div class="calc-form">
       <div><h3>${esc(c.titulo)}</h3><p>${esc(c.descripcion || "")} ${pag(g.id, c.pagina)}</p></div>
+      ${c.farmacos.length > 1 ? `
       <div class="campo"><span class="lbl">Fármaco</span>
         <div class="opciones-btn">${c.farmacos.map((f, i) => `<button type="button" class="${i === st.farmaco ? "activo" : ""}" data-farmaco="${i}">${esc(f.nombre)}</button>`).join("")}</div>
-      </div>
+      </div>` : ""}
       ${!fx.por_peso && fx.grupos.length > 1 ? `
-      <div class="campo"><span class="lbl">Grupo de edad</span>
+      <div class="campo"><span class="lbl">Grupo</span>
         <div class="opciones-btn">${fx.grupos.map((x, i) => `<button type="button" class="${i === st.grupo ? "activo" : ""}" data-grupo="${i}">${esc(x.etiqueta)}</button>`).join("")}</div>
       </div>` : ""}
-      <div class="campo"><label for="peso-${c.id}">Peso del paciente</label>
-        <div class="input-peso"><input id="peso-${c.id}" inputmode="decimal" placeholder="0" value="${esc(st.peso)}" autocomplete="off"><span>kg</span></div>
-      </div>
     </div>
     <div class="calc-res" aria-live="polite">${resultadoCalculo(fx, gr, peso, pesoOk)}</div>`;
 
   $$("[data-farmaco]", el).forEach((b) => b.addEventListener("click", () => { st.farmaco = +b.dataset.farmaco; st.grupo = Math.min(st.grupo, c.farmacos[st.farmaco].grupos.length - 1); render(); }));
   $$("[data-grupo]", el).forEach((b) => b.addEventListener("click", () => { st.grupo = +b.dataset.grupo; render(); }));
-  const input = $(`#peso-${c.id}`, el);
-  input.addEventListener("input", () => {
-    st.peso = input.value;
-    const pos = input.selectionStart;
-    render();
-    const nuevo = $(`#peso-${c.id}`, el);
-    nuevo.focus();
-    nuevo.setSelectionRange(pos, pos);
-  });
 }
 
 function resultadoCalculo(fx, gr, peso, pesoOk) {
@@ -614,44 +820,49 @@ function resultadoCalculo(fx, gr, peso, pesoOk) {
   }
   const necesitaPeso = gr.fases.some((f) => f.mgkg);
   if (necesitaPeso && !pesoOk) {
-    return `<p class="ayuda">${ico("info")}Ingresá el peso para calcular la dosis de ${esc(fx.nombre.toLowerCase())}${fx.por_peso ? "" : ` en ${esc(gr.etiqueta.toLowerCase())}`}.</p>
+    return `<p class="ayuda">${ico("info")}Ingresá el peso arriba para calcular ${esc(fx.nombre)}${fx.por_peso ? "" : ` (${esc(gr.etiqueta.toLowerCase())})`}.</p>
       ${gr.fases.map((f) => `<div class="fase"><div class="fase-cab"><span>${esc(f.etiqueta)}</span><span>${esc(reglaTexto(f))}</span></div></div>`).join("")}`;
   }
   const avisos = [];
+  const rango = (a, b) => (Math.abs(a - b) < 0.05 ? fmt(a) : `${fmt(a)}–${fmt(b)}`);
   const fases = gr.fases.map((f) => {
+    const u = f.unidad || "mg";
     let lo, hi, tope = false;
     if (f.fija) { lo = hi = f.fija; }
     else {
       lo = f.mgkg[0] * peso; hi = f.mgkg[1] * peso;
       if (f.max && hi > f.max) { tope = true; hi = f.max; lo = Math.min(lo, f.max); }
     }
-    if (tope) avisos.push(`${f.etiqueta}: se alcanzó la dosis máxima (${fmt(f.max)} mg/día).`);
-    const rango = (a, b) => (Math.abs(a - b) < 0.05 ? fmt(a) : `${fmt(a)}–${fmt(b)}`);
-    const intervalo = f.tomas > 1 ? `cada ${24 / f.tomas} h` : "dosis única diaria";
+    if (tope) avisos.push(`${f.etiqueta} (${fmt(f.max)} ${u})`);
+    const intervalo = f.tomas > 1 ? `cada ${24 / f.tomas} h` : f.por === "dosis" ? "" : "dosis única diaria";
+    const datos = f.por === "dosis"
+      ? `<div class="fase-dato"><small>Dosis</small><strong>${rango(lo, hi)}<em>${u}</em></strong>${f.tomas > 1 ? `<div class="det">${intervalo}</div>` : ""}</div>
+         ${f.tomas > 1 ? `<div class="fase-dato"><small>Total diario</small><strong>${rango(lo * f.tomas, hi * f.tomas)}<em>${u}/día</em></strong><div class="det">${f.tomas} dosis</div></div>` : ""}`
+      : `<div class="fase-dato"><small>Dosis diaria</small><strong>${rango(lo, hi)}<em>${u}/día</em></strong></div>
+         <div class="fase-dato"><small>Por toma</small><strong>${rango(lo / f.tomas, hi / f.tomas)}<em>${u}</em></strong><div class="det">${f.tomas} toma${f.tomas > 1 ? "s" : ""} · ${intervalo}</div></div>`;
     return `
       <div class="fase">
         <div class="fase-cab"><span>${esc(f.etiqueta)}</span><span>${esc(reglaTexto(f))}</span></div>
-        <div class="fase-cuerpo">
-          <div class="fase-dato"><small>Dosis diaria</small><strong>${rango(lo, hi)}<em>mg/día</em></strong></div>
-          <div class="fase-dato"><small>Por toma</small><strong>${rango(lo / f.tomas, hi / f.tomas)}<em>mg</em></strong><div class="det">${f.tomas} toma${f.tomas > 1 ? "s" : ""} · ${intervalo}</div></div>
-        </div>
+        <div class="fase-cuerpo">${datos}</div>
       </div>`;
   });
   return `
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-      <strong style="font-size:16px">${esc(fx.nombre)}</strong>
+    <div class="calc-res-cab">
+      <strong>${esc(fx.nombre)}</strong>
       <span class="badge">${esc(gr.etiqueta)}${pesoOk && necesitaPeso ? ` · ${fmt(peso)} kg` : ""}</span>
     </div>
     ${fases.join("")}
-    ${avisos.map((a) => `<div class="aviso aviso-warn">${ico("alert")}<span>${esc(a)}</span></div>`).join("")}
+    ${avisos.length ? `<div class="aviso aviso-warn">${ico("alert")}<span>Se aplicó la dosis máxima de la guía: ${esc(avisos.join(" · "))}.</span></div>` : ""}
     ${gr.nota ? `<div class="aviso aviso-info">${ico("info")}<span>${esc(gr.nota)}</span></div>` : ""}
     <p class="ayuda" style="font-size:12.5px">${ico("info")}Cálculo orientativo según la guía. Ajustar con criterio clínico y presentaciones disponibles.</p>`;
 }
 
 function reglaTexto(f) {
-  if (f.fija) return `${fmt(f.fija)} mg/día`;
+  const u = f.unidad || "mg";
+  if (f.fija) return `${fmt(f.fija)} ${u}/día`;
   const [a, b] = f.mgkg;
-  return `${a === b ? fmt(a) : fmt(a) + "–" + fmt(b)} mg/kg/día${f.max ? ` · máx. ${fmt(f.max)} mg` : ""}`;
+  const por = f.por === "dosis" ? `${u}/kg/dosis` : `${u}/kg/día`;
+  return `${a === b ? fmtKg(a) : fmtKg(a) + "–" + fmtKg(b)} ${por}${f.max ? ` · máx. ${fmt(f.max)} ${u}` : ""}`;
 }
 
 // --- Texto completo ------------------------------------------------------------------
@@ -659,7 +870,7 @@ function reglaTexto(f) {
 async function panelTexto(panel, g) {
   panel.innerHTML = `<div class="cargando"><span class="spinner"></span> Cargando texto…</div>`;
   const parrafos = await api(`/api/guia/${g.id}/texto`);
-  let html = "", seccion = undefined;
+  let html = "", seccion;
   for (const p of parrafos) {
     if (p.seccion !== seccion) {
       seccion = p.seccion;
@@ -671,7 +882,7 @@ async function panelTexto(panel, g) {
     <form class="filtro-tablas" id="buscar-en-guia">
       <div class="search">${ico("search")}<input type="search" name="q" placeholder="Buscar en esta guía…" aria-label="Buscar en esta guía"></div>
     </form>
-    <div class="card texto-completo">${html || '<p class="vacio">Sin texto extraído.</p>'}</div>`;
+    <div class="card texto-completo">${html || '<p class="vacio">Este documento es un afiche sin texto: miralo en "Páginas de la guía".</p>'}</div>`;
   $("#buscar-en-guia", panel).addEventListener("submit", (ev) => {
     ev.preventDefault();
     const q = ev.target.q.value.trim();
@@ -772,6 +983,14 @@ $("#btn-tema").addEventListener("click", () => {
   try { localStorage.setItem("tema", nuevo); } catch (e) {}
   if (location.hash.includes("/algoritmos")) router(); // redibuja el diagrama con los colores nuevos
 });
+
+// Uso sin conexión: guarda la app y lo que se va consultando.
+const avisoOffline = $("#aviso-offline");
+const actualizarConexion = () => { avisoOffline.hidden = navigator.onLine; };
+window.addEventListener("online", actualizarConexion);
+window.addEventListener("offline", actualizarConexion);
+actualizarConexion();
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
 
 window.addEventListener("hashchange", router);
 router();

@@ -1,0 +1,114 @@
+{
+  "archivo": "06-2016-guia-intoxicaciones-monoxido.pdf",
+  "titulo_corto": "Intoxicación por monóxido de carbono",
+  "subtitulo": "Diagnóstico, tratamiento con oxígeno y prevención en el hogar",
+  "especialidad": "Toxicología · Emergencias",
+  "categorias": ["guardia", "invierno"],
+  "anio": 2016,
+  "poblacion": "Todas las edades; mayor riesgo en embarazadas, lactantes, niños, personas mayores, anemia y cardiopatías",
+  "resumen": "Guía nacional de prevención, diagnóstico, tratamiento y vigilancia. Tierra del Fuego figura entre las provincias con tasas de notificación superiores a 20 por 100.000 habitantes en algunos años. El tratamiento central es oxígeno normobárico al 100% precoz y continuo.",
+  "claves": [
+    {"texto": "Oxígeno al 100% con máscara con reservorio a 10–12 L/min, precoz y continuo, mínimo 6 horas o hasta COHb < 5% y paciente asintomático.", "pagina": 32},
+    {"texto": "El oxímetro de pulso NO sirve para descartar la intoxicación: no diferencia oxihemoglobina de carboxihemoglobina.", "pagina": 24},
+    {"texto": "Una COHb normal no descarta la intoxicación si hubo oxígeno previo, consulta tardía o se trata de niños.", "pagina": 23},
+    {"texto": "Citar a todos los convivientes expuestos para medir COHb, aunque estén asintomáticos.", "pagina": 24},
+    {"texto": "Antes del alta, asegurarse de que el ambiente al que vuelve la persona sea seguro.", "pagina": 34}
+  ],
+  "algoritmos": [
+    {
+      "id": "tratamiento",
+      "titulo": "Exposición aguda a CO en paciente sintomático",
+      "descripcion": "Algoritmo para el tratamiento de la guía (adaptado de Goldfrank). Los valores de COHb no reflejan necesariamente la gravedad de la exposición.",
+      "pagina": 34,
+      "inicio": "c0",
+      "nodos": [
+        {"id": "c0", "tipo": "inicio", "texto": "Exposición aguda a CO con paciente sintomático", "detalle": ["Retirar del ambiente contaminado lo antes posible.", "Pensar en CO ante cefalea, náuseas, mareos o síncope en varios convivientes que usan calefacción o combustión en ambientes cerrados."], "pagina": 27, "siguiente": "c1"},
+        {"id": "c1", "tipo": "accion", "texto": "O2 al 100% con máscara no recirculante con reservorio, alto flujo", "detalle": ["No tapar los orificios de salida de la máscara.", "Evaluar intubación endotraqueal.", "Acceso venoso, monitoreo cardíaco, ECG, EAB, hemograma, enzimas cardíacas y Rx de tórax si es necesario.", "Medir carboxihemoglobina (COHb)."], "pagina": 34, "siguiente": "c2"},
+        {"id": "c2", "tipo": "decision", "texto": "¿Hubo síncope, coma, convulsiones, Glasgow < 15, isquemia cardíaca o arritmias ventriculares?", "pagina": 34, "opciones": [{"etiqueta": "Sí", "ir": "int1"}, {"etiqueta": "No", "ir": "c3"}]},
+        {"id": "int1", "tipo": "alerta", "texto": "Internar y evaluar oxígeno hiperbárico", "detalle": ["La OHB depende de la disponibilidad de cámara y de que la persona pueda trasladarse; considerarla dentro de las 6 a 12 h (pág. 32–33).", "Formas severas: internación en Unidad de Cuidados Intensivos (pág. 31)."], "pagina": 34},
+        {"id": "c3", "tipo": "decision", "texto": "¿Embarazo, trastornos neuropsiquiátricos, Rx de tórax anormal, intoxicación intencional, acidosis metabólica, COHb ≥ 10% o enfermedad coronaria?", "pagina": 34, "opciones": [{"etiqueta": "Sí", "ir": "int2"}, {"etiqueta": "No", "ir": "c4"}]},
+        {"id": "int2", "tipo": "alerta", "texto": "Internar y evaluar oxígeno hiperbárico", "detalle": ["Embarazada: OHB recomendable si está sintomática (cualquier COHb) o asintomática con COHb > 20% (pág. 33).", "Intento de suicidio: interconsulta con salud mental y descartar otros tóxicos (pág. 25)."], "pagina": 34},
+        {"id": "c4", "tipo": "accion", "texto": "Continuar FiO2 100% durante 6 h o hasta COHb < 5%", "detalle": ["Reevaluar clínicamente a las 2 horas de iniciado el oxígeno (pág. 28)."], "pagina": 34, "siguiente": "c5"},
+        {"id": "c5", "tipo": "decision", "texto": "¿Persisten cefalea, náuseas o mareos?", "pagina": 34, "opciones": [{"etiqueta": "Sí", "ir": "int3"}, {"etiqueta": "No", "ir": "alta"}]},
+        {"id": "int3", "tipo": "alerta", "texto": "Internar", "pagina": 34},
+        {"id": "alta", "tipo": "resultado", "texto": "Alta: asintomático y COHb < 5%", "detalle": ["Constatar que el ambiente al que regresa sea seguro y corregir la fuente.", "Control clínico-neurológico a la semana: buscar síndrome neurológico tardío (puede afectar hasta al 40%, pág. 36)."], "pagina": 34}
+      ]
+    }
+  ],
+  "tablas": [
+    {
+      "id": "gravedad",
+      "titulo": "Conducta según gravedad",
+      "pagina": 27,
+      "columnas": ["Cuadro", "Clínica", "Oxígeno", "Internación", "Seguimiento"],
+      "filas": [
+        ["Leve", "Cefalea, náuseas, vómitos, sin síntomas neurológicos ni cardiológicos", "100% hasta COHb < 5% y asintomático; sin cooxímetro, mínimo 6 h", "24 h si embarazo, cardiopatía isquémica, intento de suicidio o COHb > 15% en la 1.ª hora", "Control clínico-neurológico a la semana"],
+        ["Moderado", "Además: mareos, trastorno de conciencia, síncope, visión borrosa, debilidad", "100% hasta asintomático (nunca < 6 h), luego 35–50%", "Mínimo 24 h de observación", "Control a la semana y al mes; oftalmología, cardiología, psicopatología"],
+        ["Severo", "Coma, convulsiones o isquemia / arritmia", "100% mientras persista COHb elevada (nunca < 6 h); no suspender", "Unidad de Cuidados Intensivos; evaluar OHB", "Rehabilitación; controles a la semana, al mes, a los 6 meses y al año"]
+      ],
+      "notas": ["Criterios de alta en todos los casos: asintomático, COHb < 5%, ECG normal, CPK normal (pág. 28–31)."]
+    },
+    {
+      "id": "cohb",
+      "titulo": "Carboxihemoglobina: valores de referencia",
+      "pagina": 23,
+      "columnas": ["Población", "COHb esperable"],
+      "filas": [
+        ["No fumadores", "Hasta 3%"],
+        ["Fumadores", "Hasta 7–10%"],
+        ["Menores de 3 meses", "Hasta 7% por hemoglobina fetal, sin intoxicación"]
+      ],
+      "notas": ["Cefalea suele aparecer con COHb > 10%; daño cerebral y cardíaco grave con > 20% (pág. 23).", "Muestra: 3 ml de sangre entera en jeringa heparinizada sin aire; la COHb venosa es adecuada."]
+    },
+    {
+      "id": "ohb",
+      "titulo": "Oxígeno hiperbárico: cuándo considerarlo",
+      "pagina": 32,
+      "columnas": ["Indicación (dentro de 6–12 h)", "Detalle"],
+      "filas": [
+        ["Trastornos neurológicos", "Pérdida de conciencia transitoria o prolongada, convulsiones, signos focales"],
+        ["Examen anormal", "Exploración cardiovascular o neurológica claramente anormal"],
+        ["Acidosis grave", "—"],
+        ["Exposición prolongada", "> 36 años con exposición ≥ 24 h (aun intermitente), o COHb ≥ 25%"],
+        ["Embarazo", "Sintomática (cualquier COHb) o asintomática con COHb > 20%"]
+      ],
+      "notas": ["Contraindicación absoluta: neumotórax no tratado (pág. 35).", "Si no hay OHB disponible: oxígeno normobárico al 100% como tratamiento indicado."]
+    }
+  ],
+  "listas": [
+    {"id": "internacion", "titulo": "Criterios de ingreso hospitalario", "estilo": "alerta", "pagina": 26, "items": [
+      "Trastornos de conciencia.",
+      "Alteraciones neurológicas que no mejoran con oxígeno al 100%.",
+      "Déficit neurológico significativo, ataxia, convulsiones, neuropatía, visión borrosa.",
+      "Isquemia o arritmia cardíaca clínica o en el ECG.",
+      "Acidosis metabólica o rabdomiólisis.",
+      "Radiografía de tórax patológica.",
+      "Embarazo.",
+      "Tentativa suicida con monóxido de carbono."
+    ]},
+    {"id": "errores", "titulo": "Los 7 errores típicos", "estilo": "precaucion", "pagina": 36, "items": [
+      "Confundirla con intoxicación por gas butano.",
+      "Esperar el color “rojo cereza” de la piel (solo se ve en el cadáver).",
+      "Interpretar la oxigenación con oxímetros convencionales.",
+      "Sobrevalorar la COHb: un valor normal no descarta la intoxicación.",
+      "Desestimar la OHB si está disponible.",
+      "Retrasar la OHB.",
+      "Desestimar el síndrome neurológico tardío."
+    ]},
+    {"id": "prevencion", "titulo": "Consejería para el hogar en invierno", "estilo": "info", "pagina": 41, "items": [
+      "Revisar estufas, calefones, salamandras, hogares a leña y calderas con gasista matriculado.",
+      "Señales de mal funcionamiento: llama anaranjada, manchas negras en techo o pared junto al caño de evacuación (pág. 42).",
+      "No dormir con brasas o braseros encendidos; apagarlos fuera de la casa (pág. 42).",
+      "No calefaccionar con el horno ni las hornallas; no usar disipadores sobre las hornallas (pág. 42).",
+      "El calefón no debe estar en el baño ni en espacios cerrados o mal ventilados (pág. 42).",
+      "No encender motores, grupos electrógenos ni el auto en garajes o ambientes cerrados (pág. 42).",
+      "Ventilar toda la casa una vez al día y dejar una puerta o ventana entreabierta, aunque haga frío (pág. 42).",
+      "Instalar detectores de monóxido de carbono (pág. 42)."
+    ]},
+    {"id": "recursos", "titulo": "Recursos listados en la guía", "estilo": "neutro", "pagina": 61, "items": [
+      "Cámara hiperbárica multiplaza, 24 h: Hospital Naval Ushuaia, Yaganes y Gobernador Paz · Tel. (2901) 42-2038 (dato de 2016: verificar vigencia).",
+      "Centro Nacional de Intoxicaciones, Hospital Posadas: 0800-333-0160 (cobro revertido)."
+    ]}
+  ],
+  "calculadoras": []
+}

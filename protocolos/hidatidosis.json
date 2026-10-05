@@ -1,0 +1,345 @@
+{
+  "archivo": "0000000797cnt-2012-03-29_hidatidosis-guia-medica.pdf",
+  "titulo_corto": "Hidatidosis",
+  "subtitulo": "Equinococosis quística · diagnóstico, tratamiento y seguimiento",
+  "especialidad": "Infectología · Zoonosis",
+  "categorias": [
+    "infecciones",
+    "region"
+  ],
+  "anio": 2012,
+  "poblacion": "Todas las edades; la infección suele adquirirse en la niñez",
+  "resumen": "Tierra del Fuego integra el foco endémico mayor patagónico de Echinococcus granulosus. El diagnóstico se apoya en antecedentes epidemiológicos, ecografía y serología. El albendazol es el tratamiento de elección en quistes hepáticos asintomáticos; la cirugía, en los pulmonares y en los hepáticos sintomáticos.",
+  "claves": [
+    {
+      "texto": "Área patagónica endémica: Tierra del Fuego, Santa Cruz, Chubut, Río Negro y Neuquén.",
+      "pagina": 11
+    },
+    {
+      "texto": "Sospechar ante masa quística (abdomen, tórax u otra localización) con antecedentes epidemiológicos: lugar de origen, contacto con perros, familiares con hidatidosis.",
+      "pagina": 15
+    },
+    {
+      "texto": "La serología negativa no descarta: falsos negativos 10–20% en quistes hepáticos y 40% en pulmonares; los niños con quistes tipo I suelen ser seronegativos.",
+      "pagina": 16
+    },
+    {
+      "texto": "A todo quiste hepático, pedir Rx de tórax (frente) antes de decidir conducta.",
+      "pagina": 19
+    },
+    {
+      "texto": "Albendazol 10–15 mg/kg/día en dos tomas, con comida grasa, mínimo 3 meses. Lo provee el Ministerio de Salud de la Nación a las provincias.",
+      "pagina": 20
+    }
+  ],
+  "algoritmos": [
+    {
+      "id": "manejo",
+      "titulo": "Sospecha y conducta ante un quiste hidatídico",
+      "descripcion": "Para definir el tratamiento se consideran la persona, la localización y las características del quiste, y la experiencia del equipo.",
+      "pagina": 19,
+      "inicio": "h0",
+      "nodos": [
+        {
+          "id": "h0",
+          "tipo": "inicio",
+          "texto": "Masa quística + antecedentes epidemiológicos",
+          "detalle": [
+            "Lugar de origen, contacto con perros, familiares con hidatidosis.",
+            "O sospecha surgida de una ecografía poblacional."
+          ],
+          "pagina": 15,
+          "siguiente": "h1"
+        },
+        {
+          "id": "h1",
+          "tipo": "accion",
+          "texto": "Ecografía con estadificación y serología",
+          "detalle": [
+            "Ecografía: método de elección en abdomen (sensibilidad ~100%).",
+            "Serología: ELISA de elección; Western Blot confirma.",
+            "Rx de tórax (frente) en todo quiste hepático."
+          ],
+          "pagina": 17,
+          "siguiente": "h2"
+        },
+        {
+          "id": "h2",
+          "tipo": "alerta",
+          "texto": "Notificar todo caso sospechoso al SNVS (C2, individual, semanal)",
+          "detalle": [
+            "Completar la planilla de investigación epidemiológica (PIEC-Hidatidosis)."
+          ],
+          "pagina": 23,
+          "siguiente": "h3"
+        },
+        {
+          "id": "h3",
+          "tipo": "decision",
+          "texto": "¿Qué quiste es?",
+          "pagina": 23,
+          "opciones": [
+            {
+              "etiqueta": "Pulmonar (con o sin síntomas)",
+              "ir": "cir"
+            },
+            {
+              "etiqueta": "Hepático sintomático o > 7–10 cm",
+              "ir": "cir"
+            },
+            {
+              "etiqueta": "Hepático asintomático",
+              "ir": "alb"
+            },
+            {
+              "etiqueta": "Sólido (CE4) o calcificado (CE5)",
+              "ir": "obs"
+            }
+          ]
+        },
+        {
+          "id": "cir",
+          "tipo": "resultado",
+          "texto": "Cirugía en un centro con experiencia",
+          "detalle": [
+            "Albendazol prequirúrgico: 10–15 mg/kg/día los 30 días previos y los 60 días posteriores (pág. 22).",
+            "También indicado si hubo ruptura con vuelco del contenido a la cavidad abdominal."
+          ],
+          "pagina": 23
+        },
+        {
+          "id": "alb",
+          "tipo": "accion",
+          "texto": "Albendazol 10–15 mg/kg/día, en 2 tomas, luego de una comida con grasas",
+          "detalle": [
+            "Mínimo 3 meses, hasta 6. Tratamiento supervisado (enfermería o agentes sanitarios).",
+            "Ecografía al 2.º mes o al finalizar: el cambio de tipo ecográfico indica buena respuesta."
+          ],
+          "pagina": 20,
+          "siguiente": "alb2"
+        },
+        {
+          "id": "alb2",
+          "tipo": "decision",
+          "texto": "¿Hubo respuesta luego de 3 meses?",
+          "pagina": 22,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "seg"
+            },
+            {
+              "etiqueta": "No respuesta o nuevos quistes",
+              "ir": "alb3"
+            }
+          ]
+        },
+        {
+          "id": "alb3",
+          "tipo": "accion",
+          "texto": "Segundo esquema de albendazol con la misma dosis y controles",
+          "pagina": 22,
+          "siguiente": "seg"
+        },
+        {
+          "id": "obs",
+          "tipo": "resultado",
+          "texto": "Esperar y observar",
+          "detalle": [
+            "CE4: ecografía semestral o anual (pueden reactivarse con aparición de vesículas).",
+            "CE5: ecografía anual, sobre todo para detectar quistes nuevos."
+          ],
+          "pagina": 23
+        },
+        {
+          "id": "seg",
+          "tipo": "resultado",
+          "texto": "Control ecográfico durante los 2 primeros años postratamiento",
+          "detalle": [
+            "Ecografía y control clínico a los 6 y 12 meses de terminado (ver tabla de controles)."
+          ],
+          "pagina": 22
+        }
+      ]
+    }
+  ],
+  "tablas": [
+    {
+      "id": "clasificacion",
+      "titulo": "Clasificación ecográfica (OMS y Gharbi)",
+      "pagina": 17,
+      "columnas": [
+        "OMS",
+        "Gharbi",
+        "Imagen",
+        "Significado"
+      ],
+      "filas": [
+        [
+          "CL",
+          "—",
+          "Unilocular, pared no visible, contenido anecoico",
+          "Indistinguible de quiste simple; muy temprano y fértil"
+        ],
+        [
+          "CE1",
+          "Tipo I",
+          "Univesicular, membrana visible, contenido homogéneo ± signo del nevado",
+          "Vital; diferenciar de quiste simple"
+        ],
+        [
+          "CE2",
+          "Tipo III",
+          "Multivesicular, en panal de abeja o rueda de carro",
+          "Usualmente fértil; tiende a complicarse (vía biliar)"
+        ],
+        [
+          "CE3",
+          "Tipo II",
+          "Univesicular con desprendimiento de membrana",
+          "Sufrimiento parasitario; usualmente fértil"
+        ],
+        [
+          "CE4",
+          "Tipo IV",
+          "Heterogéneo, predominantemente sólido",
+          "En regresión; raramente vital"
+        ],
+        [
+          "CE5",
+          "Tipo V",
+          "Sólido hiperecogénico con sombra acústica",
+          "Calcificado, inactivo"
+        ]
+      ]
+    },
+    {
+      "id": "controles",
+      "titulo": "Controles durante el tratamiento con albendazol",
+      "pagina": 21,
+      "columnas": [
+        "Momento",
+        "Laboratorio*",
+        "Ecografía abdominal",
+        "Rx de tórax",
+        "Control clínico**"
+      ],
+      "filas": [
+        [
+          "Antes del tratamiento",
+          "✓",
+          "✓",
+          "✓",
+          "—"
+        ],
+        [
+          "A los 30 días",
+          "✓",
+          "✓",
+          "—",
+          "✓"
+        ],
+        [
+          "A los 2 meses",
+          "✓",
+          "—",
+          "—",
+          "✓"
+        ],
+        [
+          "Al finalizar",
+          "✓",
+          "✓",
+          "—",
+          "✓"
+        ],
+        [
+          "A los 6 y 12 meses de terminado",
+          "—",
+          "✓",
+          "—",
+          "✓"
+        ]
+      ],
+      "notas": [
+        "* Hemograma y enzimas hepáticas; test de embarazo en mujeres en edad fértil.",
+        "** Intolerancia, efectos adversos o aparición de síntomas."
+      ]
+    }
+  ],
+  "listas": [
+    {
+      "id": "suspender",
+      "titulo": "Suspender el albendazol si",
+      "estilo": "alerta",
+      "pagina": 21,
+      "items": [
+        "Las transaminasas aumentan en forma progresiva o superan 3 veces el valor normal.",
+        "Los glóbulos blancos bajan de 3000.",
+        "Reiniciar al normalizarse, con seguimiento estricto."
+      ]
+    },
+    {
+      "id": "embarazo",
+      "titulo": "Embarazo y lactancia",
+      "estilo": "precaucion",
+      "pagina": 21,
+      "items": [
+        "No se recomienda durante el embarazo: evaluar riesgo-beneficio con un servicio de referencia.",
+        "Lactancia: pasaje limitado a la leche (≈ 1,5% de la dosis materna por kilo)."
+      ]
+    },
+    {
+      "id": "sospecha",
+      "titulo": "Presentaciones que hacen pensar en hidatidosis",
+      "estilo": "neutro",
+      "pagina": 14,
+      "items": [
+        "Hepático: dolor en hipocondrio derecho, masa palpable, dispepsia; ictericia obstructiva o colangitis si se abre a la vía biliar.",
+        "Pulmonar: dolor torácico, tos crónica, disnea, hemoptisis, broncoespasmo (pág. 15).",
+        "Vómica: expectoración de membranas “como clara de huevo” y líquido salado; es patognomónica (pág. 15).",
+        "Ruptura: abdomen agudo o reacción anafiláctica.",
+        "En niños, toda lesión quística hepática o pulmonar debe hacer sospechar hidatidosis."
+      ]
+    },
+    {
+      "id": "red",
+      "titulo": "Referentes listados en la guía (2012)",
+      "estilo": "info",
+      "pagina": 47,
+      "items": [
+        "Red de hidatidosis en Tierra del Fuego: Hospital Regional de Ushuaia y Hospital Regional de Río Grande.",
+        "Medicación específica: pedirla a la Dirección de Epidemiología o al Departamento de Zoonosis de la jurisdicción (pág. 22)."
+      ]
+    }
+  ],
+  "calculadoras": [
+    {
+      "id": "albendazol",
+      "titulo": "Dosis de albendazol por peso",
+      "pagina": 20,
+      "descripcion": "Mínimo 3 meses (hasta 6). Prequirúrgico: 30 días antes y 60 después.",
+      "farmacos": [
+        {
+          "nombre": "Albendazol",
+          "grupos": [
+            {
+              "etiqueta": "Todas las edades",
+              "fases": [
+                {
+                  "etiqueta": "Diario",
+                  "mgkg": [
+                    10,
+                    15
+                  ],
+                  "tomas": 2
+                }
+              ],
+              "nota": "Cada 12 h, luego de una comida con grasas. La guía no fija una dosis máxima diaria."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

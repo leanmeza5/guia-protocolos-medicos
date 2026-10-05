@@ -1,0 +1,126 @@
+{
+  "_nota": "Configuración regional. Todo dato local debe citar el PDF y la página de donde sale. Para agregar teléfonos propios del servicio, sumalos a 'contactos' con 'fuente': 'Equipo local' y la fecha.",
+  "nombre": "Tierra del Fuego",
+  "titulo_sitio": "Protocolos Clínicos",
+  "region_etiqueta": "Tierra del Fuego",
+  "bajada": "Guías nacionales del Ministerio de Salud, organizadas para los equipos de salud fueguinos.",
+  "aviso": "Sitio independiente de consulta rápida. No es un sitio oficial del Ministerio de Salud de la Nación ni del Ministerio de Salud de Tierra del Fuego.",
+  "temporadas": [
+    {
+      "meses": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "titulo": "Invierno fueguino",
+      "texto": "Época de calefacción y virus respiratorios: pensá en monóxido de carbono ante cefalea o mareos en varios convivientes, y revisá las indicaciones de antibióticos en infecciones respiratorias.",
+      "enlaces": [
+        {
+          "texto": "Intoxicación por CO",
+          "archivo": "06-2016-guia-intoxicaciones-monoxido.pdf",
+          "ancla": "alg-tratamiento"
+        },
+        {
+          "texto": "Neumonía y EPOC reagudizada",
+          "archivo": "algoritmo-neumonia-adquirida-comunidad-reagudizacion-de-epoc-bronquitis.pdf",
+          "ancla": "alg-antibiotico"
+        },
+        {
+          "texto": "Coqueluche",
+          "archivo": "20251215-guiacoqueluche_23122025.pdf",
+          "ancla": "alg-clasificacion"
+        }
+      ]
+    },
+    {
+      "meses": [
+        10,
+        11,
+        12,
+        1,
+        2,
+        3,
+        4
+      ],
+      "titulo": "Temporada de campo y viajes",
+      "texto": "Más actividad rural y viajes por la Patagonia: hidatidosis ante masas quísticas con contacto con perros, y hantavirus ante fiebre sin foco con antecedente rural.",
+      "enlaces": [
+        {
+          "texto": "Hidatidosis",
+          "archivo": "0000000797cnt-2012-03-29_hidatidosis-guia-medica.pdf",
+          "ancla": "alg-manejo"
+        },
+        {
+          "texto": "Hantavirus",
+          "archivo": "0000000066cnt-02-flujograma-hantavirus.pdf",
+          "ancla": "alg-flujograma"
+        }
+      ]
+    }
+  ],
+  "contexto": [
+    {
+      "titulo": "Monóxido de carbono",
+      "texto": "Tierra del Fuego está entre las provincias con tasas de notificación de intoxicación por CO superiores a 20 por 100.000 habitantes en algunos años (2011–2015).",
+      "archivo": "06-2016-guia-intoxicaciones-monoxido.pdf",
+      "pagina": 9
+    },
+    {
+      "titulo": "Hidatidosis endémica",
+      "texto": "La provincia integra el foco endémico mayor patagónico de Echinococcus granulosus, junto a Santa Cruz, Chubut, Río Negro y Neuquén.",
+      "archivo": "0000000797cnt-2012-03-29_hidatidosis-guia-medica.pdf",
+      "pagina": 11
+    },
+    {
+      "titulo": "Chagas también acá",
+      "texto": "Por la transmisión vertical y otras vías, puede haber personas con Chagas en todo el país, no solo donde hay vinchucas: estudiar a toda persona embarazada.",
+      "archivo": "boceto_guia_de_bolsillo_chagas-91225.pdf",
+      "pagina": 3
+    }
+  ],
+  "contactos": [
+    {
+      "nombre": "Cámara hiperbárica · Hospital Naval Ushuaia",
+      "detalle": "Yaganes y Gobernador Paz, Ushuaia · multiplaza, 24 h",
+      "telefono": "(2901) 42-2038",
+      "nota": "Dato de 2016: verificar vigencia",
+      "archivo": "06-2016-guia-intoxicaciones-monoxido.pdf",
+      "pagina": 61
+    },
+    {
+      "nombre": "Centro Nacional de Intoxicaciones",
+      "detalle": "Hospital Posadas · cobro revertido",
+      "telefono": "0800-333-0160",
+      "archivo": "06-2016-guia-intoxicaciones-monoxido.pdf",
+      "pagina": 61
+    },
+    {
+      "nombre": "Red de hidatidosis en la provincia",
+      "detalle": "Hospital Regional Ushuaia y Hospital Regional Río Grande",
+      "nota": "Dato de 2012",
+      "archivo": "0000000797cnt-2012-03-29_hidatidosis-guia-medica.pdf",
+      "pagina": 47
+    },
+    {
+      "nombre": "Instituto Fatala Chaben · área clínica (Chagas)",
+      "telefono": "011-7092-4083",
+      "archivo": "boceto_guia_de_bolsillo_chagas-91225.pdf",
+      "pagina": 8
+    },
+    {
+      "nombre": "Línea VIH e ITS · Ministerio de Salud",
+      "telefono": "0800-333-3444",
+      "archivo": "06-25-algoritmos_vih_sifilis_hepatitis_b_y_chagas_2025.pdf",
+      "pagina": 54
+    },
+    {
+      "nombre": "Línea del Ministerio de Salud de la Nación",
+      "telefono": "0800-222-1002",
+      "archivo": "boceto_guia_de_bolsillo_chagas-91225.pdf",
+      "pagina": 8,
+      "detalle": "Opción 8: Chagas"
+    }
+  ]
+}

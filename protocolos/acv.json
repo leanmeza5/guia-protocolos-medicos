@@ -1,0 +1,107 @@
+{
+  "archivo": "protocolo-manejo-inicial-ataque-cerebro-cardiovascular.pdf",
+  "titulo_corto": "ACV isquémico agudo",
+  "subtitulo": "Manejo inicial y criterios de trombolisis",
+  "especialidad": "Emergencias · Neurología",
+  "categorias": ["guardia"],
+  "anio": 2015,
+  "poblacion": "Mayores de 18 años con sospecha de ACV isquémico",
+  "resumen": "Protocolo nacional de manejo inicial (2015). El ACV es una emergencia: reconocerlo, asegurar ABC, medir glucemia, registrar la hora de inicio y trasladar sin demora a un centro con tomografía y equipo entrenado para evaluar trombolisis.",
+  "claves": [
+    {"texto": "Registrar la hora de inicio o la última vez que se lo vio normal: define la posibilidad de trombolisis.", "pagina": 10},
+    {"texto": "Glucemia inmediata a todos; corregir la hipoglucemia (< 70 mg/dl).", "pagina": 13},
+    {"texto": "En el prehospitalario no bajar la PA si es < 220/120 mmHg, salvo situaciones urgentes.", "pagina": 32},
+    {"texto": "Nada por boca, no sueros con dextrosa sin hipoglucemia y oxígeno solo si la saturación es < 94%.", "pagina": 10},
+    {"texto": "Ante la duda, actuar como si fuese un ACV para no demorar el tratamiento.", "pagina": 31}
+  ],
+  "algoritmos": [
+    {
+      "id": "inicial",
+      "titulo": "Sospecha de ACV: manejo inicial",
+      "descripcion": "Desde la primera atención hasta la decisión de trombolisis.",
+      "pagina": 18,
+      "inicio": "a0",
+      "nodos": [
+        {"id": "a0", "tipo": "inicio", "texto": "Déficit neurológico focal de inicio brusco", "detalle": ["Paresia facial aguda, alteración del lenguaje, caída o pérdida brusca de fuerza en un brazo, sin trauma previo.", "Usar la escala de Cincinnati de esta ficha."], "pagina": 30, "siguiente": "a1"},
+        {"id": "a1", "tipo": "alerta", "texto": "Código ACV: ABC, glucemia, hora de inicio y traslado inmediato con aviso previo", "detalle": ["Monitoreo cardíaco y acceso venoso en el brazo no parético.", "No bajar la PA si < 220/120; no fluidos en exceso; no dextrosa sin hipoglucemia; nada por boca.", "O2 solo si saturación < 94% (pág. 14)."], "pagina": 10, "siguiente": "a2"},
+        {"id": "a2", "tipo": "accion", "texto": "TC de cerebro sin contraste (< 25 min de la llegada), glucemia y saturación", "detalle": ["Laboratorio, ECG y coagulograma sin demorar la decisión, salvo sospecha de coagulopatía o anticoagulación."], "pagina": 15, "siguiente": "a3"},
+        {"id": "a3", "tipo": "decision", "texto": "¿Tiempo desde el inicio de los síntomas?", "pagina": 18, "opciones": [{"etiqueta": "< 3 horas", "ir": "t3"}, {"etiqueta": "3 a 4,5 horas", "ir": "t45"}, {"etiqueta": "> 4,5 h o desconocido", "ir": "no"}]},
+        {"id": "t3", "tipo": "decision", "texto": "¿Cumple criterios para rt-PA?", "detalle": ["> 18 años, TC sin hemorragia (isquemia ≤ 1/3 de la ACM), NIHSS 4–25, sin exclusiones.", "PA < 185/110 mmHg."], "pagina": 27, "opciones": [{"etiqueta": "Sí", "ir": "rtpa"}, {"etiqueta": "No", "ir": "no"}]},
+        {"id": "t45", "tipo": "decision", "texto": "¿Cumple criterios ampliados?", "detalle": ["18 a 80 años, sin anticoagulantes orales ni heparina, sin ACV previo + diabetes, ACV no severo (NIHSS 4–25), sin exclusiones."], "pagina": 18, "opciones": [{"etiqueta": "Sí", "ir": "rtpa"}, {"etiqueta": "No", "ir": "no"}]},
+        {"id": "rtpa", "tipo": "accion", "texto": "rt-PA 0,9 mg/kg (máx. 90 mg): 10% en bolo en 1 minuto y el resto en 1 hora", "detalle": ["Solo con protocolo estricto y personal entrenado (ver calculadora).", "Sin heparina ni anticoagulantes las 24 h siguientes.", "NIHSS cada 15 min durante la infusión; suspender y hacer TC si hay sospecha de sangrado."], "pagina": 29, "siguiente": "mon"},
+        {"id": "mon", "tipo": "resultado", "texto": "Monitoreo, preferentemente en Unidad de Cuidados Intensivos", "detalle": ["PA cada 15 min en la infusión y la hora siguiente, cada 30 min por 6 h y luego cada hora hasta 24 h."], "pagina": 29},
+        {"id": "no", "tipo": "resultado", "texto": "Sin trombolisis: cuidados generales y estudio etiológico", "detalle": ["Glucemia 140–180 mg/dl, temperatura < 37,5 °C, solución fisiológica.", "La hora de inicio desconocida es criterio de exclusión absoluto (pág. 27)."], "pagina": 14}
+      ]
+    }
+  ],
+  "escalas": [
+    {
+      "id": "cincinnati",
+      "titulo": "Escala prehospitalaria de Cincinnati",
+      "pagina": 24,
+      "items": [
+        {"texto": "Asimetría facial (que sonría o muestre los dientes)", "opciones": [{"texto": "Simétrica", "puntos": 0}, {"texto": "Un lado no se mueve igual", "puntos": 1}]},
+        {"texto": "Fuerza en los brazos (ojos cerrados, brazos extendidos 10 s)", "opciones": [{"texto": "Iguales", "puntos": 0}, {"texto": "Uno cae o no se mueve", "puntos": 1}]},
+        {"texto": "Lenguaje (que repita una frase)", "opciones": [{"texto": "Normal", "puntos": 0}, {"texto": "Arrastra, se equivoca o no habla", "puntos": 1}]}
+      ],
+      "interpretacion": [
+        {"min": 0, "max": 0, "texto": "Sin hallazgos en la escala. Si la sospecha persiste, evaluar igual.", "estilo": "ok"},
+        {"min": 1, "max": 3, "texto": "Hallazgo anormal: tratar como posible ACV y activar el código ACV.", "estilo": "danger"}
+      ],
+      "nota": "La guía indica que, ante la duda, se proceda como si fuese un ACV (pág. 31)."
+    }
+  ],
+  "tablas": [
+    {
+      "id": "estudios",
+      "titulo": "Estudios inmediatos ante sospecha de ACV",
+      "pagina": 17,
+      "columnas": ["Cuándo", "Estudios"],
+      "filas": [
+        ["Todos, antes de decidir", "TC de cerebro sin contraste o RM · glucemia · saturación de oxígeno"],
+        ["Todos, sin demorar el tratamiento", "Ionograma, creatinina, hemograma, TP y KPTT, ECG, marcadores de isquemia cardíaca"],
+        ["Seleccionados", "Coagulograma completo, hepatograma, tóxicos, test de embarazo, gases, Rx de tórax, PL, EEG"]
+      ]
+    }
+  ],
+  "listas": [
+    {"id": "exclusion", "titulo": "Exclusiones absolutas para rt-PA", "estilo": "alerta", "pagina": 27, "items": [
+      "Hemorragia intracraneal en la TC o historia de hemorragia intracraneal.",
+      "Hora de inicio desconocida; síntomas menores o en franca mejoría; NIHSS > 25.",
+      "Síntomas de hemorragia subaracnoidea aunque la TC sea normal.",
+      "Heparina en las 48 h previas o KPTT elevado; anticoagulantes orales (podría considerarse si RIN < 1,7).",
+      "ACV en los 3 meses previos; cirugía mayor o trauma significativo en 3 meses (pág. 28).",
+      "Plaquetas < 100.000; glucemia < 50 o > 400 mg/dl.",
+      "PAS > 185 o PAD > 110 mmHg.",
+      "Diátesis hemorrágica, hemorragia grave reciente, punción arterial no compresible en 10 días (pág. 28)."
+    ]},
+    {"id": "pa", "titulo": "Presión arterial en el ACV", "estilo": "precaucion", "pagina": 13, "items": [
+      "Prehospitalario: no tratar si < 220/120 mmHg salvo IC izquierda, síndrome coronario agudo o disección aórtica (pág. 32).",
+      "Valores > 220/120: descender 15% y no más de 25% en las primeras 24 h.",
+      "Evitar vasodilatadores sublinguales y descensos bruscos (> 20% en < 24 h, pág. 32).",
+      "Plan de trombolisis: PA < 185/110 antes y durante la infusión; labetalol 10–20 mg EV si es necesario (pág. 29)."
+    ]},
+    {"id": "ait", "titulo": "AIT: no pensar primero en él ante síntomas aislados", "estilo": "neutro", "pagina": 30, "items": [
+      "Confusión, vértigo, mareos, amnesia, disfagia o disartria aislados.",
+      "Escotoma centelleante, incontinencia, pérdida de conciencia o síncope.",
+      "Síntomas focales asociados a migraña o progresión paulatina de síntomas sensitivos."
+    ]}
+  ],
+  "calculadoras": [
+    {
+      "id": "rtpa",
+      "titulo": "Dosis de rt-PA (alteplasa)",
+      "pagina": 29,
+      "descripcion": "0,9 mg/kg, dosis máxima 90 mg. Solo bajo protocolo y con personal entrenado.",
+      "farmacos": [
+        {"nombre": "rt-PA", "grupos": [
+          {"etiqueta": "Adultos", "fases": [
+            {"etiqueta": "Dosis total", "mgkg": [0.9, 0.9], "max": 90, "tomas": 1, "por": "dosis"},
+            {"etiqueta": "Bolo (10%) en 1 minuto", "mgkg": [0.09, 0.09], "max": 9, "tomas": 1, "por": "dosis"},
+            {"etiqueta": "Infusión (90%) en 60 minutos", "mgkg": [0.81, 0.81], "max": 81, "tomas": 1, "por": "dosis"}
+          ]}
+        ]}
+      ]
+    }
+  ]
+}

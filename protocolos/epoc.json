@@ -1,0 +1,82 @@
+{
+  "archivo": "heart-epoc10_1962025.pdf",
+  "titulo_corto": "EPOC estable",
+  "subtitulo": "Detección y manejo · vía clínica",
+  "especialidad": "Clínica médica · Neumonología",
+  "categorias": ["cronicos", "invierno"],
+  "anio": 2025,
+  "poblacion": "Adultos con síntomas respiratorios crónicos o alta carga tabáquica",
+  "resumen": "Vía clínica nacional de una página: cuándo pedir espirometría, cómo clasificar la obstrucción y el tratamiento inhalado escalonado. Meta: síntomas controlados y evitar exacerbaciones.",
+  "claves": [
+    {"texto": "Espirometría pre y post broncodilatador ante síntomas respiratorios crónicos (tos o expectoración ≥ 3 meses, disnea o sibilancias) o carga tabáquica ≥ 40 paquetes/año.", "pagina": 1},
+    {"texto": "Diagnóstico: VEF1/CVF < 70% post-broncodilatador.", "pagina": 1},
+    {"texto": "Asintomáticos: no iniciar tratamiento inhalado.", "pagina": 1},
+    {"texto": "Antes de escalar: valorar adherencia y técnica inhalatoria.", "pagina": 1},
+    {"texto": "Para todos: dejar de fumar, automanejo, vacunas antigripal, antineumocócica y COVID, 30 minutos de actividad física aeróbica diaria.", "pagina": 1}
+  ],
+  "algoritmos": [
+    {
+      "id": "escalonado",
+      "titulo": "Tratamiento inhalado escalonado",
+      "descripcion": "Protocolo de tratamiento de la vía clínica. Intensificar ante síntomas o exacerbaciones; considerar rehabilitación respiratoria y oxigenoterapia.",
+      "pagina": 1,
+      "inicio": "p0",
+      "nodos": [
+        {"id": "p0", "tipo": "inicio", "texto": "Sospecha de EPOC", "detalle": ["Tos o expectoración de 3 meses, disnea o sibilancias (fumadores y no fumadores).", "Carga tabáquica ≥ 40 paquetes/año."], "pagina": 1, "siguiente": "p1"},
+        {"id": "p1", "tipo": "accion", "texto": "Espirometría pre y post broncodilatador", "detalle": ["EPOC: VEF1/CVF < 70% post-BD.", "Severidad (VEF1 post-BD): leve ≥ 80% · moderada 50–79% · severa < 50%."], "pagina": 1, "siguiente": "p2"},
+        {"id": "p2", "tipo": "decision", "texto": "¿Cómo está la persona?", "pagina": 1, "opciones": [{"etiqueta": "Asintomática", "ir": "asint"}, {"etiqueta": "Síntomas y VEF1 ≥ 50%", "ir": "s1"}, {"etiqueta": "≥ 2 exacerbaciones/año o VEF1 < 50%", "ir": "s2"}]},
+        {"id": "asint", "tipo": "resultado", "texto": "No iniciar tratamiento inhalado", "detalle": ["Cesación tabáquica, vacunas y actividad física igual que todas las personas con EPOC."], "pagina": 1},
+        {"id": "s1", "tipo": "accion", "texto": "Salbutamol y/o ipratropio, reglados o a demanda", "pagina": 1, "siguiente": "d1"},
+        {"id": "d1", "tipo": "decision", "texto": "¿Persisten síntomas o exacerbaciones?", "detalle": ["Antes de escalar: adherencia y técnica inhalatoria."], "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "s2"}, {"etiqueta": "No", "ir": "seg"}]},
+        {"id": "s2", "tipo": "accion", "texto": "LAMA, o LABA + LAMA", "detalle": ["Si coexiste con asma: LABA + CI."], "pagina": 1, "siguiente": "d2"},
+        {"id": "d2", "tipo": "decision", "texto": "¿Persisten síntomas o exacerbaciones?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "s3"}, {"etiqueta": "No", "ir": "seg"}]},
+        {"id": "s3", "tipo": "accion", "texto": "LABA + LAMA, o LABA + CI", "pagina": 1, "siguiente": "d3"},
+        {"id": "d3", "tipo": "decision", "texto": "¿Persisten síntomas o exacerbaciones?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "s4"}, {"etiqueta": "No", "ir": "seg"}]},
+        {"id": "s4", "tipo": "accion", "texto": "Triple terapia: LAMA + LABA + CI", "detalle": ["Considerar rehabilitación respiratoria y oxigenoterapia."], "pagina": 1, "siguiente": "seg"},
+        {"id": "seg", "tipo": "resultado", "texto": "Seguimiento", "detalle": ["Valorar adherencia y técnica inhalatoria.", "Espirometría pre y post-BD ante cada cambio clínico o de tratamiento.", "Interrogar capacidad física y comorbilidades."], "pagina": 1}
+      ]
+    }
+  ],
+  "tablas": [
+    {
+      "id": "inhaladores",
+      "titulo": "Abreviaturas de los inhaladores",
+      "pagina": 1,
+      "columnas": ["Sigla", "Grupo", "Ejemplos"],
+      "filas": [
+        ["LAMA", "Antimuscarínico de larga acción", "Tiotropio, glicopirronio"],
+        ["LABA", "β2 adrenérgico de larga acción", "Salmeterol, formoterol"],
+        ["Ultra-LABA", "β2 adrenérgico de acción ultra larga", "Indacaterol, vilanterol"],
+        ["CI", "Corticoide inhalado", "Budesonida, fluticasona"]
+      ]
+    }
+  ],
+  "listas": [
+    {"id": "todos", "titulo": "Todas las personas con EPOC", "estilo": "info", "pagina": 1, "items": [
+      "Cesación tabáquica.",
+      "Educación para el automanejo.",
+      "Vacunación antigripal, antineumocócica y contra COVID, según calendario.",
+      "30 minutos de actividad física aeróbica diaria."
+    ]},
+    {"id": "derivacion", "titulo": "Derivación oportuna", "estilo": "alerta", "pagina": 1, "items": [
+      "Dudas en el diagnóstico.",
+      "Cor pulmonale o sospecha de apnea del sueño.",
+      "Descenso acelerado de la función pulmonar (más de 50 ml de VEF1 por año).",
+      "Exacerbaciones y hospitalizaciones frecuentes.",
+      "Síntomas desproporcionados para el deterioro de la función pulmonar.",
+      "Obstrucción severa.",
+      "Dificultades en el manejo.",
+      "Indicación de oxigenoterapia crónica domiciliaria.",
+      "Manejo del déficit de alfa-1 antitripsina."
+    ]},
+    {"id": "comorbilidades", "titulo": "Comorbilidades a valorar", "estilo": "neutro", "pagina": 1, "items": [
+      "Apnea del sueño, hipertensión pulmonar, cor pulmonale.",
+      "Cardiopatía isquémica, ACV, arteriopatía periférica.",
+      "Osteoporosis, artrosis; ansiedad y depresión.",
+      "Asma, TEP, neumonía, neumotórax.",
+      "Cáncer de pulmón y otros relacionados al tabaco.",
+      "HTA, diabetes y otras."
+    ]}
+  ],
+  "calculadoras": []
+}

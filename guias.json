@@ -1,0 +1,65 @@
+{
+  "_nota": "Guías que recolector.py descarga siempre. Agregá URLs de PDFs del MSAL para sumar guías.",
+  "guias": [
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/guia-breve-hta-2026-14-05.pdf",
+      "titulo": "Guía de Práctica Nacional.  Prevención, Diagnóstico y Tratamiento de la Hipertensión Arterial (HTA) 2026 (Versión breve para el equipo de salud)"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/20251215-guiacoqueluche_23122025.pdf",
+      "titulo": "Coqueluche: Guía de vigilancia, prevención y control 2025"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/boceto_guia_de_bolsillo_chagas-91225.pdf",
+      "titulo": "Guía breve para equipos de salud"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/bancos/2021-01/guia-nacional-practica-clinica-diabetes-mellitius-tipo2_version-abreviada.pdf",
+      "titulo": "Guía de Práctica Clínica Nacional sobre Prevención, Diagnóstico y Tratamiento de la Diabetes Mellitus Tipo 2 (DM2) - Versión abreviada"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/bancos/2023-12/algoritmo-neumonia-adquirida-comunidad-reagudizacion-de-epoc-bronquitis.pdf",
+      "titulo": "Algoritmo de manejo ambulatorio de Neumonía adquirida en la comunidad: Reagudización de EPOC Bronquitis aguda"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/bancos/2020-10/06-2016-guia-intoxicaciones-monoxido.pdf",
+      "titulo": "Guía de prevención, diagnóstico, tratamiento y vigilancia epidemiológica de las intoxicaciones por monóxido de carbono"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/bancos/2018-10/0000000797cnt-2012-03-29_hidatidosis-guia-medica.pdf",
+      "titulo": "Guía para el equipo de salud de hidatidosis"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/2023/10/heart-epoc10_1962025.pdf",
+      "titulo": "Vía clínica Detección y Manejo de la EPOC Estable"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/06-25-algoritmos_vih_sifilis_hepatitis_b_y_chagas_2025.pdf",
+      "titulo": "Algoritmos de diagnóstico y tratamiento para el control de las infecciones perinatales por VIH, sífilis, hepatitis B y Chagas Iniciativa ETMI-PLUS"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/bancos/2023-05/gpc-asma.pdf",
+      "titulo": "Guía de práctica clínica Nacional del Tratamiento del Asma Leve en personas adultas. 2022"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/bancos/2020-01/protocolo-manejo-inicial-ataque-cerebro-cardiovascular.pdf",
+      "titulo": "Protocolo de Manejo Inicial del Ataque Cerebrovascular Isquémico Agudo"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/bancos/2018-10/0000000159cnt-g03.hemorragia-algoritmo-a4-a3.pdf",
+      "titulo": "Manejo de la hemorragia postparto (algoritmo)"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/bancos/2018-10/0000000066cnt-02-flujograma-hantavirus.pdf",
+      "titulo": "Flujograma de manejo de casos sospechosos de hantavirus"
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/bancos/2023-08/recomendaciones_primer_y_segundo_nivel.pdf",
+      "titulo": "Recomendaciones para la atención de situaciones de intento y/o riesgo de suicidio en el primer y segundo nivel de atención."
+    },
+    {
+      "url": "https://www.argentina.gob.ar/sites/default/files/2023/10/gpc-tabaco-breve-08-2024_2392024-2.pdf",
+      "titulo": "Guía de Práctica Clínica Nacional de Tratamiento de la Adicción al Tabaco. Version breve"
+    }
+  ]
+}

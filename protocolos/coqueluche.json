@@ -6,11 +6,26 @@
   "poblacion": "Todas las edades; énfasis en menores de 1 año y embarazadas",
   "resumen": "Guía de diciembre 2025. Actualiza las definiciones de caso y el algoritmo de clasificación, el manejo clínico inmediato, el control de contactos con quimioprofilaxis y las estrategias de vacunación. Evento de notificación obligatoria inmediata (Ley 15.465).",
   "claves": [
-    {"texto": "Ante la sospecha: aislar, iniciar macrólidos de inmediato, notificar al SNVS 2.0 y dar quimioprofilaxis a los contactos.", "pagina": 12},
-    {"texto": "La azitromicina es el macrólido de elección en menores de 1 mes (riesgo de hipertrofia pilórica con eritromicina).", "pagina": 18},
-    {"texto": "La quimioprofilaxis es más eficaz cuanto antes se administre, dentro de los 14 días de la exposición.", "pagina": 18},
-    {"texto": "Vacunación en cada embarazo (dTpa, desde la semana 20): principal estrategia para reducir la mortalidad en lactantes.", "pagina": 6},
-    {"texto": "Derivar ante signos de alarma: < 6 meses, dificultad respiratoria, apneas, cianosis, deshidratación, comorbilidades.", "pagina": 16}
+    {
+      "texto": "Ante la sospecha: aislar, iniciar macrólidos de inmediato, notificar al SNVS 2.0 y dar quimioprofilaxis a los contactos.",
+      "pagina": 12
+    },
+    {
+      "texto": "La azitromicina es el macrólido de elección en menores de 1 mes (riesgo de hipertrofia pilórica con eritromicina).",
+      "pagina": 18
+    },
+    {
+      "texto": "La quimioprofilaxis es más eficaz cuanto antes se administre, dentro de los 14 días de la exposición.",
+      "pagina": 18
+    },
+    {
+      "texto": "Vacunación en cada embarazo (dTpa, desde la semana 20): principal estrategia para reducir la mortalidad en lactantes.",
+      "pagina": 6
+    },
+    {
+      "texto": "Derivar ante signos de alarma: < 6 meses, dificultad respiratoria, apneas, cianosis, deshidratación, comorbilidades.",
+      "pagina": 16
+    }
   ],
   "algoritmos": [
     {
@@ -20,17 +35,158 @@
       "pagina": 12,
       "inicio": "c0",
       "nodos": [
-        {"id": "c0", "tipo": "decision", "texto": "¿Qué tipo de caso sospechoso es?", "detalle": ["< 6 meses: IRA + apnea, cianosis, estridor inspiratorio, vómitos post-tos o tos paroxística.", "6 meses a 11 años: tos ≥ 14 días + tos paroxística, estridor o vómitos post-tos.", "> 11 años: tos persistente ≥ 14 días sin otra causa aparente."], "pagina": 9, "opciones": [{"etiqueta": "Clínica completa (cumple criterios por edad)", "ir": "inm"}, {"etiqueta": "Clínica incompleta (el profesional sospecha)", "ir": "inm"}]},
-        {"id": "inm", "tipo": "alerta", "texto": "Inmediatamente: aislar e iniciar tratamiento antibiótico", "detalle": ["Notificar al SNVS 2.0.", "Identificar contactos e iniciar quimioprofilaxis.", "Completar esquemas de vacunación."], "pagina": 12, "siguiente": "c1"},
-        {"id": "c1", "tipo": "decision", "texto": "¿Con qué información se cuenta?", "pagina": 12, "opciones": [{"etiqueta": "Resultado de laboratorio", "ir": "lab"}, {"etiqueta": "Nexo epidemiológico (+)*", "ir": "clinep"}, {"etiqueta": "Sin nexo y laboratorio no posible", "ir": "compat"}]},
-        {"id": "lab", "tipo": "decision", "texto": "Resultado de laboratorio", "detalle": ["Cultivo, PCR o IgG anti toxina pertussis (pág. 9–10)."], "pagina": 12, "opciones": [{"etiqueta": "Positivo", "ir": "conf"}, {"etiqueta": "Negativo", "ir": "nexo2"}]},
-        {"id": "conf", "tipo": "resultado", "texto": "Caso confirmado por laboratorio", "pagina": 12},
-        {"id": "nexo2", "tipo": "decision", "texto": "¿Nexo epidemiológico?*", "detalle": ["* Solo casos con clínica completa y contacto con un caso confirmado por laboratorio 3 a 21 días antes del inicio de síntomas."], "pagina": 12, "opciones": [{"etiqueta": "Sí", "ir": "clinep"}, {"etiqueta": "No", "ir": "desc"}]},
-        {"id": "clinep", "tipo": "resultado", "texto": "Caso de coqueluche por criterio clínico-epidemiológico", "detalle": ["Reciben el mismo tratamiento que los confirmados (pág. 10)."], "pagina": 12},
-        {"id": "desc", "tipo": "decision", "texto": "¿Cumple criterios para descartar el caso?**", "detalle": ["** Solo casos sin nexo epidemiológico.", "Por laboratorio: > 12 años con serología negativa en una muestra (semana 2–12 de tos).", "Clínico + laboratorio: clínica incompleta, PCR negativa antes de los 14 días y diagnóstico alternativo que explica el cuadro."], "pagina": 12, "opciones": [{"etiqueta": "Sí, se puede descartar", "ir": "descartado"}, {"etiqueta": "No es posible descartar", "ir": "noconc"}]},
-        {"id": "descartado", "tipo": "resultado", "texto": "Caso descartado", "pagina": 12},
-        {"id": "noconc", "tipo": "resultado", "texto": "Caso sospechoso no conclusivo", "detalle": ["La técnica no permite descartar: recibe el mismo tratamiento que los confirmados (pág. 10)."], "pagina": 12},
-        {"id": "compat", "tipo": "resultado", "texto": "Caso compatible", "detalle": ["Recibe el mismo tratamiento que los confirmados.", "Luego de 30 días desde el inicio de síntomas sin laboratorio ni nexo: “falla de vigilancia”."], "pagina": 12}
+        {
+          "id": "c0",
+          "tipo": "decision",
+          "texto": "¿Qué tipo de caso sospechoso es?",
+          "detalle": [
+            "< 6 meses: IRA + apnea, cianosis, estridor inspiratorio, vómitos post-tos o tos paroxística.",
+            "6 meses a 11 años: tos ≥ 14 días + tos paroxística, estridor o vómitos post-tos.",
+            "> 11 años: tos persistente ≥ 14 días sin otra causa aparente."
+          ],
+          "pagina": 9,
+          "opciones": [
+            {
+              "etiqueta": "Clínica completa (cumple criterios por edad)",
+              "ir": "inm"
+            },
+            {
+              "etiqueta": "Clínica incompleta (el profesional sospecha)",
+              "ir": "inm"
+            }
+          ]
+        },
+        {
+          "id": "inm",
+          "tipo": "alerta",
+          "texto": "Inmediatamente: aislar e iniciar tratamiento antibiótico",
+          "detalle": [
+            "Notificar al SNVS 2.0.",
+            "Identificar contactos e iniciar quimioprofilaxis.",
+            "Completar esquemas de vacunación."
+          ],
+          "pagina": 12,
+          "siguiente": "c1"
+        },
+        {
+          "id": "c1",
+          "tipo": "decision",
+          "texto": "¿Con qué información se cuenta?",
+          "pagina": 12,
+          "opciones": [
+            {
+              "etiqueta": "Resultado de laboratorio",
+              "ir": "lab"
+            },
+            {
+              "etiqueta": "Nexo epidemiológico (+)*",
+              "ir": "clinep"
+            },
+            {
+              "etiqueta": "Sin nexo y laboratorio no posible",
+              "ir": "compat"
+            }
+          ]
+        },
+        {
+          "id": "lab",
+          "tipo": "decision",
+          "texto": "Resultado de laboratorio",
+          "detalle": [
+            "Cultivo, PCR o IgG anti toxina pertussis (pág. 9–10)."
+          ],
+          "pagina": 12,
+          "opciones": [
+            {
+              "etiqueta": "Positivo",
+              "ir": "conf"
+            },
+            {
+              "etiqueta": "Negativo",
+              "ir": "nexo2"
+            }
+          ]
+        },
+        {
+          "id": "conf",
+          "tipo": "resultado",
+          "texto": "Caso confirmado por laboratorio",
+          "pagina": 12
+        },
+        {
+          "id": "nexo2",
+          "tipo": "decision",
+          "texto": "¿Nexo epidemiológico?*",
+          "detalle": [
+            "* Solo casos con clínica completa y contacto con un caso confirmado por laboratorio 3 a 21 días antes del inicio de síntomas."
+          ],
+          "pagina": 12,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "clinep"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "desc"
+            }
+          ]
+        },
+        {
+          "id": "clinep",
+          "tipo": "resultado",
+          "texto": "Caso de coqueluche por criterio clínico-epidemiológico",
+          "detalle": [
+            "Reciben el mismo tratamiento que los confirmados (pág. 10)."
+          ],
+          "pagina": 12
+        },
+        {
+          "id": "desc",
+          "tipo": "decision",
+          "texto": "¿Cumple criterios para descartar el caso?**",
+          "detalle": [
+            "** Solo casos sin nexo epidemiológico.",
+            "Por laboratorio: > 12 años con serología negativa en una muestra (semana 2–12 de tos).",
+            "Clínico + laboratorio: clínica incompleta, PCR negativa antes de los 14 días y diagnóstico alternativo que explica el cuadro."
+          ],
+          "pagina": 12,
+          "opciones": [
+            {
+              "etiqueta": "Sí, se puede descartar",
+              "ir": "descartado"
+            },
+            {
+              "etiqueta": "No es posible descartar",
+              "ir": "noconc"
+            }
+          ]
+        },
+        {
+          "id": "descartado",
+          "tipo": "resultado",
+          "texto": "Caso descartado",
+          "pagina": 12
+        },
+        {
+          "id": "noconc",
+          "tipo": "resultado",
+          "texto": "Caso sospechoso no conclusivo",
+          "detalle": [
+            "La técnica no permite descartar: recibe el mismo tratamiento que los confirmados (pág. 10)."
+          ],
+          "pagina": 12
+        },
+        {
+          "id": "compat",
+          "tipo": "resultado",
+          "texto": "Caso compatible",
+          "detalle": [
+            "Recibe el mismo tratamiento que los confirmados.",
+            "Luego de 30 días desde el inicio de síntomas sin laboratorio ni nexo: “falla de vigilancia”."
+          ],
+          "pagina": 12
+        }
       ]
     }
   ],
@@ -39,12 +195,42 @@
       "id": "antibioticos",
       "titulo": "Antibióticos: tratamiento y profilaxis postexposición",
       "pagina": 18,
-      "columnas": ["Edad", "Azitromicina", "Eritromicina", "Claritromicina", "TMP-SMZ**"],
+      "columnas": [
+        "Edad",
+        "Azitromicina",
+        "Eritromicina",
+        "Claritromicina",
+        "TMP-SMZ**"
+      ],
       "filas": [
-        ["Menor de 1 mes", "10 mg/kg/día dosis única × 5 días. De primera elección.", "40–50 mg/kg/día en 4 dosis × 14 días. No de primera elección*", "No recomendado (sin datos de seguridad)", "Contraindicado en < 2 meses (riesgo de kernicterus)"],
-        ["1–5 meses", "10 mg/kg/día dosis única × 5 días", "40–50 mg/kg/día en 4 dosis × 14 días", "15 mg/kg/día en 2 dosis × 7 días", "> 2 meses: TMP 8 mg/kg/día + SMZ 40 mg/kg/día en 2 dosis × 14 días"],
-        ["≥ 6 meses y niños", "Día 1: 10 mg/kg (máx. 500 mg). Días 2–5: 5 mg/kg/día (máx. 250 mg/día)", "40–50 mg/kg/día (máx. 2 g/día) en 4 dosis × 14 días", "15 mg/kg/día (máx. 1 g/día) en 2 dosis × 7 días", "TMP 8 mg/kg/día + SMZ 40 mg/kg/día en 2 dosis × 14 días"],
-        ["Adolescentes y adultos", "Día 1: 500 mg. Días 2–5: 250 mg/día", "2 g/día en 4 dosis × 14 días", "1 g/día en 2 dosis × 7 días", "TMP 320 mg/día + SMZ 1600 mg/día en 2 dosis × 14 días"]
+        [
+          "Menor de 1 mes",
+          "10 mg/kg/día dosis única × 5 días. De primera elección.",
+          "40–50 mg/kg/día en 4 dosis × 14 días. No de primera elección*",
+          "No recomendado (sin datos de seguridad)",
+          "Contraindicado en < 2 meses (riesgo de kernicterus)"
+        ],
+        [
+          "1–5 meses",
+          "10 mg/kg/día dosis única × 5 días",
+          "40–50 mg/kg/día en 4 dosis × 14 días",
+          "15 mg/kg/día en 2 dosis × 7 días",
+          "> 2 meses: TMP 8 mg/kg/día + SMZ 40 mg/kg/día en 2 dosis × 14 días"
+        ],
+        [
+          "≥ 6 meses y niños",
+          "Día 1: 10 mg/kg (máx. 500 mg). Días 2–5: 5 mg/kg/día (máx. 250 mg/día)",
+          "40–50 mg/kg/día (máx. 2 g/día) en 4 dosis × 14 días",
+          "15 mg/kg/día (máx. 1 g/día) en 2 dosis × 7 días",
+          "TMP 8 mg/kg/día + SMZ 40 mg/kg/día en 2 dosis × 14 días"
+        ],
+        [
+          "Adolescentes y adultos",
+          "Día 1: 500 mg. Días 2–5: 250 mg/día",
+          "2 g/día en 4 dosis × 14 días",
+          "1 g/día en 2 dosis × 7 días",
+          "TMP 320 mg/día + SMZ 1600 mg/día en 2 dosis × 14 días"
+        ]
       ],
       "notas": [
         "* Azitromicina: macrólido de elección en < 1 mes por riesgo de hipertrofia pilórica con eritromicina.",
@@ -56,72 +242,155 @@
       "id": "vacunas-brote",
       "titulo": "Vacunación: esquema regular vs. esquema en brote",
       "pagina": 6,
-      "columnas": ["Dosis", "Esquema regular", "Esquema en brote"],
-      "filas": [
-        ["Primaria 1", "2 meses", "6 semanas de edad"],
-        ["Primaria 2", "4 meses", "30 días después de la 1.ª dosis"],
-        ["Primaria 3", "6 meses", "30 días después de la 2.ª dosis"],
-        ["Refuerzo 1", "18 meses", "6 meses después de la 3.ª dosis (nunca antes de los 12 meses)"],
-        ["Refuerzo 2", "5 años", "5 años (según cohorte de nacimiento)"]
+      "columnas": [
+        "Dosis",
+        "Esquema regular",
+        "Esquema en brote"
       ],
-      "notas": ["El cambio a esquema en brote lo decide la autoridad sanitaria según la situación epidemiológica."]
+      "filas": [
+        [
+          "Primaria 1",
+          "2 meses",
+          "6 semanas de edad"
+        ],
+        [
+          "Primaria 2",
+          "4 meses",
+          "30 días después de la 1.ª dosis"
+        ],
+        [
+          "Primaria 3",
+          "6 meses",
+          "30 días después de la 2.ª dosis"
+        ],
+        [
+          "Refuerzo 1",
+          "18 meses",
+          "6 meses después de la 3.ª dosis (nunca antes de los 12 meses)"
+        ],
+        [
+          "Refuerzo 2",
+          "5 años",
+          "5 años (según cohorte de nacimiento)"
+        ]
+      ],
+      "notas": [
+        "El cambio a esquema en brote lo decide la autoridad sanitaria según la situación epidemiológica."
+      ]
     },
     {
       "id": "atrasados",
       "titulo": "Esquemas atrasados",
       "pagina": 7,
-      "columnas": ["Edad", "Esquema sugerido"],
-      "filas": [
-        ["2 meses a 4 años", "3 dosis + 1 refuerzo (DTP-Hib-HB)"],
-        ["5 a 6 años", "3 dosis (DTP-Hib-HB) + 1 dosis (DTP)"],
-        ["7 a 17 años", "3 dosis (dTpa)"]
+      "columnas": [
+        "Edad",
+        "Esquema sugerido"
       ],
-      "notas": ["Intervalos mínimos (quíntuple/séxtuple): 1.ª–2.ª: 1 mes · 2.ª–3.ª: 1 mes · última–1.er refuerzo: 6 meses · 1.er–2.º refuerzo: 6 meses.", "Mayores de 7 años: DTP contraindicada; usar dTpa."]
+      "filas": [
+        [
+          "2 meses a 4 años",
+          "3 dosis + 1 refuerzo (DTP-Hib-HB)"
+        ],
+        [
+          "5 a 6 años",
+          "3 dosis (DTP-Hib-HB) + 1 dosis (DTP)"
+        ],
+        [
+          "7 a 17 años",
+          "3 dosis (dTpa)"
+        ]
+      ],
+      "notas": [
+        "Intervalos mínimos (quíntuple/séxtuple): 1.ª–2.ª: 1 mes · 2.ª–3.ª: 1 mes · última–1.er refuerzo: 6 meses · 1.er–2.º refuerzo: 6 meses.",
+        "Mayores de 7 años: DTP contraindicada; usar dTpa."
+      ]
     },
     {
       "id": "laboratorio",
       "titulo": "¿Cuándo pedir cada estudio?",
       "pagina": 13,
-      "columnas": ["Método", "Ventana útil", "Observaciones"],
-      "filas": [
-        ["Cultivo (Regan Lowe / Bordet Gengou)", "Primeras 2 semanas de tos", "Gold standard, 100% especificidad. Todas las edades."],
-        ["PCR (≥ 2 targets: IS481 + ptxP)", "Hasta 4 semanas (mayor sensibilidad en las primeras 2)", "Más sensible que el cultivo. Todas las edades."],
-        ["IgG anti toxina pertussis (ELISA)", "Semana 2 a 12 de tos (ideal 2–8)", "Adolescentes y adultos. Valor epidemiológico."]
+      "columnas": [
+        "Método",
+        "Ventana útil",
+        "Observaciones"
       ],
-      "notas": ["Muestra de elección: aspirado nasofaríngeo. Alternativa: hisopado nasofaríngeo con dacrón, nylon o rayón."]
+      "filas": [
+        [
+          "Cultivo (Regan Lowe / Bordet Gengou)",
+          "Primeras 2 semanas de tos",
+          "Gold standard, 100% especificidad. Todas las edades."
+        ],
+        [
+          "PCR (≥ 2 targets: IS481 + ptxP)",
+          "Hasta 4 semanas (mayor sensibilidad en las primeras 2)",
+          "Más sensible que el cultivo. Todas las edades."
+        ],
+        [
+          "IgG anti toxina pertussis (ELISA)",
+          "Semana 2 a 12 de tos (ideal 2–8)",
+          "Adolescentes y adultos. Valor epidemiológico."
+        ]
+      ],
+      "notas": [
+        "Muestra de elección: aspirado nasofaríngeo. Alternativa: hisopado nasofaríngeo con dacrón, nylon o rayón."
+      ]
     }
   ],
   "listas": [
-    {"id": "manejo", "titulo": "Ante la sospecha clínica, inmediatamente", "estilo": "alerta", "pagina": 16, "items": [
-      "Colocar barbijo quirúrgico al paciente y alejarlo en la sala de espera.",
-      "Reforzar el uso de equipo de protección personal.",
-      "Tomar muestra según recomendaciones del Laboratorio Nacional de Referencia.",
-      "Iniciar macrólidos de inmediato en el paciente y sus contactos estrechos.",
-      "Completar esquemas de vacunación en todos los contactos.",
-      "Asegurar aislamiento respiratorio durante el período de contagio."
-    ]},
-    {"id": "alarma", "titulo": "Signos de alarma: derivar a mayor complejidad", "estilo": "alerta", "pagina": 16, "items": [
-      "Edad menor de 6 meses.",
-      "Dificultad respiratoria, apneas o cianosis.",
-      "Deshidratación.",
-      "Comorbilidades, entre otras."
-    ]},
-    {"id": "contactos", "titulo": "Contactos estrechos", "estilo": "neutro", "pagina": 16, "items": [
-      "Contacto cara a cara con el caso sintomático.",
-      "Compartir un espacio reducido (misma habitación) más de 1 hora (pág. 17).",
-      "Contacto sin protección con secreciones respiratorias (pág. 17).",
-      "Alto riesgo de enfermedad severa: < 1 año o convivientes de < 1 año, inmunodeficiencias o enfermedad pulmonar, embarazadas y personal de salud (pág. 17).",
-      "Quimioprofilaxis con macrólidos a todos los contactos estrechos, independientemente de la vacunación (pág. 17).",
-      "Contactos < 7 años: no concurrir a instituciones educativas hasta completar 5 días de profilaxis (pág. 17)."
-    ]},
-    {"id": "calendario", "titulo": "Calendario nacional con componente pertussis", "estilo": "info", "pagina": 6, "items": [
-      "Esquema primario: 2, 4 y 6 meses (quíntuple celular).",
-      "Refuerzos: 15–18 meses (quíntuple), 5 años (triple bacteriana celular), 11 años (dTpa).",
-      "En cada embarazo: dTpa, desde la semana 20.",
-      "Puerperio inmediato: dTpa si no se vacunó en el embarazo.",
-      "Personal de salud en contacto con < 1 año: 1 dosis de dTpa cada 5 años.",
-      "Hijos de madre no vacunada en el embarazo: 1.ª dosis a las 6 semanas, luego a las 10 y 14 semanas."
-    ]}
+    {
+      "id": "manejo",
+      "titulo": "Ante la sospecha clínica, inmediatamente",
+      "estilo": "alerta",
+      "pagina": 16,
+      "items": [
+        "Colocar barbijo quirúrgico al paciente y alejarlo en la sala de espera.",
+        "Reforzar el uso de equipo de protección personal.",
+        "Tomar muestra según recomendaciones del Laboratorio Nacional de Referencia.",
+        "Iniciar macrólidos de inmediato en el paciente y sus contactos estrechos.",
+        "Completar esquemas de vacunación en todos los contactos.",
+        "Asegurar aislamiento respiratorio durante el período de contagio."
+      ]
+    },
+    {
+      "id": "alarma",
+      "titulo": "Signos de alarma: derivar a mayor complejidad",
+      "estilo": "alerta",
+      "pagina": 16,
+      "items": [
+        "Edad menor de 6 meses.",
+        "Dificultad respiratoria, apneas o cianosis.",
+        "Deshidratación.",
+        "Comorbilidades, entre otras."
+      ]
+    },
+    {
+      "id": "contactos",
+      "titulo": "Contactos estrechos",
+      "estilo": "neutro",
+      "pagina": 16,
+      "items": [
+        "Contacto cara a cara con el caso sintomático.",
+        "Compartir un espacio reducido (misma habitación) más de 1 hora (pág. 17).",
+        "Contacto sin protección con secreciones respiratorias (pág. 17).",
+        "Alto riesgo de enfermedad severa: < 1 año o convivientes de < 1 año, inmunodeficiencias o enfermedad pulmonar, embarazadas y personal de salud (pág. 17).",
+        "Quimioprofilaxis con macrólidos a todos los contactos estrechos, independientemente de la vacunación (pág. 17).",
+        "Contactos < 7 años: no concurrir a instituciones educativas hasta completar 5 días de profilaxis (pág. 17)."
+      ]
+    },
+    {
+      "id": "calendario",
+      "titulo": "Calendario nacional con componente pertussis",
+      "estilo": "info",
+      "pagina": 6,
+      "items": [
+        "Esquema primario: 2, 4 y 6 meses (quíntuple celular).",
+        "Refuerzos: 15–18 meses (quíntuple), 5 años (triple bacteriana celular), 11 años (dTpa).",
+        "En cada embarazo: dTpa, desde la semana 20.",
+        "Puerperio inmediato: dTpa si no se vacunó en el embarazo.",
+        "Personal de salud en contacto con < 1 año: 1 dosis de dTpa cada 5 años.",
+        "Hijos de madre no vacunada en el embarazo: 1.ª dosis a las 6 semanas, luego a las 10 y 14 semanas."
+      ]
+    }
   ],
   "calculadoras": [
     {
@@ -130,31 +399,232 @@
       "pagina": 18,
       "descripcion": "Tratamiento y profilaxis postexposición (Cuadro 1).",
       "farmacos": [
-        {"nombre": "Azitromicina", "grupos": [
-          {"etiqueta": "Menor de 1 mes", "fases": [{"etiqueta": "Días 1 a 5", "mgkg": [10, 10], "tomas": 1}], "nota": "De primera elección en < 1 mes."},
-          {"etiqueta": "1 a 5 meses", "fases": [{"etiqueta": "Días 1 a 5", "mgkg": [10, 10], "tomas": 1}]},
-          {"etiqueta": "≥ 6 meses y niños", "fases": [{"etiqueta": "Día 1", "mgkg": [10, 10], "max": 500, "tomas": 1}, {"etiqueta": "Días 2 a 5", "mgkg": [5, 5], "max": 250, "tomas": 1}]},
-          {"etiqueta": "Adolescentes y adultos", "fases": [{"etiqueta": "Día 1", "fija": 500, "tomas": 1}, {"etiqueta": "Días 2 a 5", "fija": 250, "tomas": 1}]}
-        ]},
-        {"nombre": "Claritromicina", "grupos": [
-          {"etiqueta": "Menor de 1 mes", "no_recomendado": "No recomendado (no hay datos de seguridad)."},
-          {"etiqueta": "1 a 5 meses", "fases": [{"etiqueta": "7 días", "mgkg": [15, 15], "tomas": 2}]},
-          {"etiqueta": "≥ 6 meses y niños", "fases": [{"etiqueta": "7 días", "mgkg": [15, 15], "max": 1000, "tomas": 2}]},
-          {"etiqueta": "Adolescentes y adultos", "fases": [{"etiqueta": "7 días", "fija": 1000, "tomas": 2}]}
-        ]},
-        {"nombre": "Eritromicina", "grupos": [
-          {"etiqueta": "Menor de 1 mes", "fases": [{"etiqueta": "14 días", "mgkg": [40, 50], "tomas": 4}], "nota": "No de primera elección: riesgo de hipertrofia pilórica."},
-          {"etiqueta": "1 a 5 meses", "fases": [{"etiqueta": "14 días", "mgkg": [40, 50], "tomas": 4}]},
-          {"etiqueta": "≥ 6 meses y niños", "fases": [{"etiqueta": "14 días", "mgkg": [40, 50], "max": 2000, "tomas": 4}]},
-          {"etiqueta": "Adolescentes y adultos", "fases": [{"etiqueta": "14 días", "fija": 2000, "tomas": 4}]}
-        ]},
-        {"nombre": "TMP-SMZ (dosis de TMP)", "grupos": [
-          {"etiqueta": "Menor de 1 mes", "no_recomendado": "Contraindicado en menores de 2 meses (riesgo de kernicterus)."},
-          {"etiqueta": "1 a 5 meses", "fases": [{"etiqueta": "14 días", "mgkg": [8, 8], "tomas": 2}], "nota": "Solo mayores de 2 meses. SMZ: 40 mg/kg/día."},
-          {"etiqueta": "≥ 6 meses y niños", "fases": [{"etiqueta": "14 días", "mgkg": [8, 8], "tomas": 2}], "nota": "SMZ: 40 mg/kg/día."},
-          {"etiqueta": "Adolescentes y adultos", "fases": [{"etiqueta": "14 días", "fija": 320, "tomas": 2}], "nota": "SMZ: 1600 mg/día."}
-        ]}
+        {
+          "nombre": "Azitromicina",
+          "grupos": [
+            {
+              "etiqueta": "Menor de 1 mes",
+              "fases": [
+                {
+                  "etiqueta": "Días 1 a 5",
+                  "mgkg": [
+                    10,
+                    10
+                  ],
+                  "tomas": 1
+                }
+              ],
+              "nota": "De primera elección en < 1 mes."
+            },
+            {
+              "etiqueta": "1 a 5 meses",
+              "fases": [
+                {
+                  "etiqueta": "Días 1 a 5",
+                  "mgkg": [
+                    10,
+                    10
+                  ],
+                  "tomas": 1
+                }
+              ]
+            },
+            {
+              "etiqueta": "≥ 6 meses y niños",
+              "fases": [
+                {
+                  "etiqueta": "Día 1",
+                  "mgkg": [
+                    10,
+                    10
+                  ],
+                  "max": 500,
+                  "tomas": 1
+                },
+                {
+                  "etiqueta": "Días 2 a 5",
+                  "mgkg": [
+                    5,
+                    5
+                  ],
+                  "max": 250,
+                  "tomas": 1
+                }
+              ]
+            },
+            {
+              "etiqueta": "Adolescentes y adultos",
+              "fases": [
+                {
+                  "etiqueta": "Día 1",
+                  "fija": 500,
+                  "tomas": 1
+                },
+                {
+                  "etiqueta": "Días 2 a 5",
+                  "fija": 250,
+                  "tomas": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Claritromicina",
+          "grupos": [
+            {
+              "etiqueta": "Menor de 1 mes",
+              "no_recomendado": "No recomendado (no hay datos de seguridad)."
+            },
+            {
+              "etiqueta": "1 a 5 meses",
+              "fases": [
+                {
+                  "etiqueta": "7 días",
+                  "mgkg": [
+                    15,
+                    15
+                  ],
+                  "tomas": 2
+                }
+              ]
+            },
+            {
+              "etiqueta": "≥ 6 meses y niños",
+              "fases": [
+                {
+                  "etiqueta": "7 días",
+                  "mgkg": [
+                    15,
+                    15
+                  ],
+                  "max": 1000,
+                  "tomas": 2
+                }
+              ]
+            },
+            {
+              "etiqueta": "Adolescentes y adultos",
+              "fases": [
+                {
+                  "etiqueta": "7 días",
+                  "fija": 1000,
+                  "tomas": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Eritromicina",
+          "grupos": [
+            {
+              "etiqueta": "Menor de 1 mes",
+              "fases": [
+                {
+                  "etiqueta": "14 días",
+                  "mgkg": [
+                    40,
+                    50
+                  ],
+                  "tomas": 4
+                }
+              ],
+              "nota": "No de primera elección: riesgo de hipertrofia pilórica."
+            },
+            {
+              "etiqueta": "1 a 5 meses",
+              "fases": [
+                {
+                  "etiqueta": "14 días",
+                  "mgkg": [
+                    40,
+                    50
+                  ],
+                  "tomas": 4
+                }
+              ]
+            },
+            {
+              "etiqueta": "≥ 6 meses y niños",
+              "fases": [
+                {
+                  "etiqueta": "14 días",
+                  "mgkg": [
+                    40,
+                    50
+                  ],
+                  "max": 2000,
+                  "tomas": 4
+                }
+              ]
+            },
+            {
+              "etiqueta": "Adolescentes y adultos",
+              "fases": [
+                {
+                  "etiqueta": "14 días",
+                  "fija": 2000,
+                  "tomas": 4
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "TMP-SMZ (dosis de TMP)",
+          "grupos": [
+            {
+              "etiqueta": "Menor de 1 mes",
+              "no_recomendado": "Contraindicado en menores de 2 meses (riesgo de kernicterus)."
+            },
+            {
+              "etiqueta": "1 a 5 meses",
+              "fases": [
+                {
+                  "etiqueta": "14 días",
+                  "mgkg": [
+                    8,
+                    8
+                  ],
+                  "tomas": 2
+                }
+              ],
+              "nota": "Solo mayores de 2 meses. SMZ: 40 mg/kg/día."
+            },
+            {
+              "etiqueta": "≥ 6 meses y niños",
+              "fases": [
+                {
+                  "etiqueta": "14 días",
+                  "mgkg": [
+                    8,
+                    8
+                  ],
+                  "tomas": 2
+                }
+              ],
+              "nota": "SMZ: 40 mg/kg/día."
+            },
+            {
+              "etiqueta": "Adolescentes y adultos",
+              "fases": [
+                {
+                  "etiqueta": "14 días",
+                  "fija": 320,
+                  "tomas": 2
+                }
+              ],
+              "nota": "SMZ: 1600 mg/día."
+            }
+          ]
+        }
       ]
     }
-  ]
+  ],
+  "categorias": [
+    "infecciones",
+    "invierno"
+  ],
+  "anio": 2025
 }

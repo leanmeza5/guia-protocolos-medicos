@@ -1,0 +1,161 @@
+{
+  "archivo": "06-25-algoritmos_vih_sifilis_hepatitis_b_y_chagas_2025.pdf",
+  "titulo_corto": "Control prenatal: VIH, sífilis, hepatitis B y Chagas",
+  "subtitulo": "Algoritmos de diagnóstico y tratamiento para la transmisión perinatal",
+  "especialidad": "Obstetricia · Infectología · Neonatología",
+  "categorias": ["embarazo", "infecciones"],
+  "anio": 2025,
+  "poblacion": "Embarazadas, sus parejas sexuales y recién nacidos expuestos",
+  "resumen": "Algoritmos nacionales 2025 para la estrategia ETMI-Plus. Tamizaje en la primera consulta prenatal priorizando pruebas rápidas, tratamiento inmediato de la sífilis con penicilina benzatínica y manejo del recién nacido expuesto.",
+  "claves": [
+    {"texto": "Sífilis: tratar a la embarazada y a su/s pareja/s con penicilina de inmediato, sin esperar las pruebas confirmatorias.", "pagina": 20},
+    {"texto": "El tratamiento de la sífilis previene la sífilis congénita si se INICIA al menos 30 días antes del parto.", "pagina": 23},
+    {"texto": "Registrar en el carnet perinatal las dosis de penicilina con fechas y los títulos de VDRL.", "pagina": 20},
+    {"texto": "VIH: el embarazo es un escenario de urgencia para diagnosticar e iniciar tratamiento; repetir el tamizaje en el 2.º y 3.er trimestre si es negativo.", "pagina": 14},
+    {"texto": "RN de madre HBsAg positiva: vacuna HB + gammaglobulina dentro de las 12 h. La lactancia no está contraindicada.", "pagina": 27}
+  ],
+  "algoritmos": [
+    {
+      "id": "sifilis",
+      "titulo": "Sífilis en el embarazo (inicio con prueba no treponémica)",
+      "descripcion": "Escenario 1 de la guía. Si se empieza con prueba treponémica (ej. prueba rápida), ver escenario 2 en la pág. 22.",
+      "pagina": 21,
+      "inicio": "s0",
+      "nodos": [
+        {"id": "s0", "tipo": "inicio", "texto": "Prueba para sífilis en la primera consulta prenatal", "detalle": ["Priorizar pruebas rápidas.", "Repetir en cada trimestre y en el periparto si la última tiene más de 30 días.", "15 a 24 años: evaluar repetir cada 60 días."], "pagina": 20, "siguiente": "s1"},
+        {"id": "s1", "tipo": "decision", "texto": "Prueba no treponémica (VDRL / USR / RPR)", "pagina": 21, "opciones": [{"etiqueta": "Positiva (cuantificar)", "ir": "s_pos"}, {"etiqueta": "Negativa", "ir": "s_neg"}]},
+        {"id": "s_pos", "tipo": "alerta", "texto": "Iniciar tratamiento ya, a la espera de la prueba treponémica", "detalle": ["Tratar también a la/s pareja/s sexual/es.", "Notificar: sífilis en embarazadas (SNVS 2.0)."], "pagina": 21, "siguiente": "s2"},
+        {"id": "s2", "tipo": "decision", "texto": "Prueba treponémica", "pagina": 21, "opciones": [{"etiqueta": "Positiva", "ir": "s_conf"}, {"etiqueta": "Negativa", "ir": "s_fp"}]},
+        {"id": "s_conf", "tipo": "resultado", "texto": "Confirma sífilis: estadificar y completar tratamiento", "detalle": ["Ver la tabla de tratamiento según estadio.", "PNT a las 4–8 semanas de terminado y luego cada 8 semanas."], "pagina": 21},
+        {"id": "s_fp", "tipo": "resultado", "texto": "Descarta sífilis: considerar falso positivo de la PNT", "pagina": 21},
+        {"id": "s_neg", "tipo": "decision", "texto": "¿Sospecha de sífilis primaria reciente o de fenómeno prozona?", "pagina": 21, "opciones": [{"etiqueta": "Sífilis primaria reciente", "ir": "s_prim"}, {"etiqueta": "Fenómeno prozona", "ir": "s_proz"}, {"etiqueta": "No", "ir": "s_desc"}]},
+        {"id": "s_prim", "tipo": "accion", "texto": "Iniciar tratamiento, realizar prueba treponémica y repetir PNT en 2–4 semanas", "pagina": 21},
+        {"id": "s_proz", "tipo": "accion", "texto": "Realizar PNT cuantitativa y prueba treponémica", "pagina": 21},
+        {"id": "s_desc", "tipo": "resultado", "texto": "Descarta sífilis", "detalle": ["Repetir en cada trimestre y en el periparto."], "pagina": 21}
+      ]
+    },
+    {
+      "id": "rn-sifilis",
+      "titulo": "Recién nacido expuesto a sífilis gestacional",
+      "descripcion": "Algoritmo para la evaluación y tratamiento del RN de gestante con sífilis confirmada.",
+      "pagina": 24,
+      "inicio": "n0",
+      "nodos": [
+        {"id": "n0", "tipo": "decision", "texto": "¿La gestante fue adecuadamente tratada?", "detalle": ["Adecuado: penicilina benzatínica según estadio, INICIADA al menos 30 días antes del parto."], "pagina": 24, "opciones": [{"etiqueta": "Sí", "ir": "n_ok"}, {"etiqueta": "No o inadecuadamente", "ir": "n_ev"}]},
+        {"id": "n_ok", "tipo": "decision", "texto": "PNT del RN / PNT materna (par serológico simultáneo)", "pagina": 24, "opciones": [{"etiqueta": "≤ 4 títulos", "ir": "n_sin"}, {"etiqueta": "> 4 títulos", "ir": "n_sint"}]},
+        {"id": "n_sin", "tipo": "resultado", "texto": "Sin tratamiento. Seguimiento clínico y serológico", "pagina": 24},
+        {"id": "n_ev", "tipo": "decision", "texto": "¿RN con síntomas?", "detalle": ["Si está asintomático: PNT madre-RN, TGO/TGP, hemograma, Rx de huesos largos."], "pagina": 24, "opciones": [{"etiqueta": "Asintomático", "ir": "n_ev2"}, {"etiqueta": "Con síntomas", "ir": "n_sint"}]},
+        {"id": "n_ev2", "tipo": "decision", "texto": "Resultado de la evaluación", "detalle": ["Anormal: PNT RN/madre > 4 títulos, transaminasas elevadas, Rx de huesos largos patológica, o anemia moderada a severa con plaquetopenia."], "pagina": 24, "opciones": [{"etiqueta": "Normal", "ir": "n_benz"}, {"etiqueta": "Anormal", "ir": "n_sint"}]},
+        {"id": "n_benz", "tipo": "resultado", "texto": "Penicilina benzatínica 50.000 U/kg IM, dosis única", "detalle": ["Seguimiento clínico y serológico."], "pagina": 24},
+        {"id": "n_sint", "tipo": "alerta", "texto": "Penicilina G sódica 50.000 U/kg/dosis EV por 10 días", "detalle": ["Cada 12 h en la 1.ª semana de vida; cada 8 h después.", "Antes: PL con citoquímico y VDRL, Rx de huesos largos, orina, hemograma, hepatograma, ecografía cerebral y abdominal.", "Notificar: sífilis congénita (SNVS 2.0)."], "pagina": 24}
+      ]
+    },
+    {
+      "id": "hepatitis-b",
+      "titulo": "Hepatitis B en el embarazo",
+      "descripcion": "Diagnóstico y tratamiento para evitar la transmisión vertical.",
+      "pagina": 26,
+      "inicio": "b0",
+      "nodos": [
+        {"id": "b0", "tipo": "inicio", "texto": "HBsAg en la primera consulta prenatal", "detalle": ["Usar test rápido donde no se garantice el laboratorio.", "Si hay disponibilidad: tamizaje con HBsAg y anti-HBs."], "pagina": 26, "siguiente": "b1"},
+        {"id": "b1", "tipo": "decision", "texto": "Resultado", "pagina": 26, "opciones": [{"etiqueta": "No reactivo", "ir": "b_neg"}, {"etiqueta": "Reactivo", "ir": "b_pos"}]},
+        {"id": "b_neg", "tipo": "resultado", "texto": "Evaluar vacunación: iniciar o completar el esquema", "detalle": ["Repetir HBsAg en el 3.er trimestre si no recibe la vacuna."], "pagina": 26},
+        {"id": "b_pos", "tipo": "accion", "texto": "Hepatograma, coagulograma y carga viral (DNA VHB)", "detalle": ["HBeAg / anti-HBe si está disponible.", "Evaluación y monitoreo por especialista.", "Notificar: hepatitis B en embarazadas (SNVS 2.0)."], "pagina": 27, "siguiente": "b2"},
+        {"id": "b2", "tipo": "decision", "texto": "DNA VHB", "pagina": 27, "opciones": [{"etiqueta": "≥ 200.000 UI/ml (alto riesgo)", "ir": "b_tdf"}, {"etiqueta": "< 200.000 UI/ml (bajo riesgo)", "ir": "b_no"}]},
+        {"id": "b_tdf", "tipo": "accion", "texto": "Iniciar TDF o TAF hasta 3 meses posparto", "pagina": 27, "siguiente": "b_rn"},
+        {"id": "b_no", "tipo": "accion", "texto": "No iniciar tratamiento (salvo criterio del especialista)", "detalle": ["Repetir carga viral en la semana 26–28."], "pagina": 27, "siguiente": "b_rn"},
+        {"id": "b_rn", "tipo": "alerta", "texto": "RN: vacuna VHB + gammaglobulina HB (HBIg) dentro de las 12 h de vida", "detalle": ["La HBIg tiene eficacia máxima en las primeras 72 h; no aplicar después de los 7 días (pág. 28).", "Anti-HBs entre los 9 y 12 meses.", "La lactancia no está contraindicada."], "pagina": 27}
+      ]
+    },
+    {
+      "id": "vih",
+      "titulo": "VIH en el embarazo",
+      "descripcion": "El algoritmo diagnóstico es el mismo que en otras personas adultas; el embarazo es un escenario de urgencia.",
+      "pagina": 13,
+      "inicio": "v0",
+      "nodos": [
+        {"id": "v0", "tipo": "inicio", "texto": "Tamizaje en la primera consulta prenatal (embarazada y pareja)", "detalle": ["Priorizar pruebas rápidas de 4.ª generación en el primer nivel."], "pagina": 13, "siguiente": "v1"},
+        {"id": "v1", "tipo": "decision", "texto": "Resultado", "pagina": 13, "opciones": [{"etiqueta": "Negativo", "ir": "v_neg"}, {"etiqueta": "Positivo (preliminar)", "ir": "v_cv"}]},
+        {"id": "v_neg", "tipo": "resultado", "texto": "Repetir tamizaje en el 2.º y 3.er trimestre", "pagina": 13},
+        {"id": "v_cv", "tipo": "accion", "texto": "Confirmar con carga viral", "detalle": ["Si la carga viral demora más de 7 días: confirmar con 2 pruebas de tamizaje seriadas de distinta técnica.", "Tomar la muestra de carga viral antes de iniciar tratamiento."], "pagina": 14, "siguiente": "v2"},
+        {"id": "v2", "tipo": "decision", "texto": "Carga viral", "pagina": 13, "opciones": [{"etiqueta": "Detectable", "ir": "v_tarv"}, {"etiqueta": "No detectable", "ir": "v_wb"}]},
+        {"id": "v_tarv", "tipo": "alerta", "texto": "Infección confirmada: iniciar TARV lo antes posible", "detalle": ["Preferido: DTG 50 mg + TDF/3TC 300/300 (o TDF/FTC) (pág. 15).", "No esperar el test de resistencia.", "Notificar: VIH en embarazo (SNVS 2.0)."], "pagina": 14},
+        {"id": "v_wb", "tipo": "resultado", "texto": "Derivar para completar evaluación diagnóstica (WB/LIA)", "pagina": 13}
+      ]
+    },
+    {
+      "id": "chagas",
+      "titulo": "Chagas en el embarazo y en el recién nacido",
+      "descripcion": "Diagnóstico con 2 técnicas de distinto principio en la primera consulta prenatal.",
+      "pagina": 29,
+      "inicio": "c0",
+      "nodos": [
+        {"id": "c0", "tipo": "inicio", "texto": "Dos técnicas serológicas en paralelo en la primera consulta prenatal", "detalle": ["Duplas: ELISA-HAI, ELISA-IFI o HAI-IFI."], "pagina": 29, "siguiente": "c1"},
+        {"id": "c1", "tipo": "decision", "texto": "Resultado", "pagina": 29, "opciones": [{"etiqueta": "Ambas positivas", "ir": "c_conf"}, {"etiqueta": "Discordantes", "ir": "c_3"}, {"etiqueta": "Ambas negativas", "ir": "c_desc"}]},
+        {"id": "c_3", "tipo": "decision", "texto": "Tercera técnica", "pagina": 29, "opciones": [{"etiqueta": "Positiva", "ir": "c_conf"}, {"etiqueta": "Negativa", "ir": "c_desc"}]},
+        {"id": "c_desc", "tipo": "resultado", "texto": "Infección descartada", "pagina": 29},
+        {"id": "c_conf", "tipo": "accion", "texto": "Infección confirmada", "detalle": ["ECG y, si es posible, ecocardiograma.", "Estudiar a los hijos anteriores no estudiados.", "Tratamiento específico después del parto o de la lactancia. La lactancia no está contraindicada.", "Notificar: Chagas crónico en embarazadas (SNVS 2.0)."], "pagina": 29, "siguiente": "c_rn"},
+        {"id": "c_rn", "tipo": "decision", "texto": "Recién nacido: PCR o micrométodo", "pagina": 30, "opciones": [{"etiqueta": "Positivo", "ir": "c_trat"}, {"etiqueta": "Negativo", "ir": "c_10m"}]},
+        {"id": "c_10m", "tipo": "decision", "texto": "Serología por 2 técnicas a partir de los 10 meses", "pagina": 30, "opciones": [{"etiqueta": "Positiva", "ir": "c_trat"}, {"etiqueta": "Negativa", "ir": "c_alta"}]},
+        {"id": "c_trat", "tipo": "alerta", "texto": "Infección confirmada: iniciar tratamiento específico", "detalle": ["Benznidazol 5–10 mg/kg/día en 2 tomas, o nifurtimox según peso (pág. 31).", "Prematuros o bajo peso: iniciar con dosis bajas y aumentar cada 48–72 h con hemograma."], "pagina": 30},
+        {"id": "c_alta", "tipo": "resultado", "texto": "Sin infección: alta del seguimiento", "pagina": 30}
+      ]
+    }
+  ],
+  "tablas": [
+    {
+      "id": "sifilis-tto",
+      "titulo": "Sífilis en la embarazada: tratamiento según estadio",
+      "pagina": 23,
+      "columnas": ["Estadio", "Penicilina benzatínica 2.400.000 UI IM"],
+      "filas": [
+        ["Primaria, secundaria o latente temprana", "1 dosis"],
+        ["Duración desconocida, latente tardía o terciaria", "3 dosis, con 1 semana de intervalo"]
+      ],
+      "notas": ["Es el único tratamiento recomendado en la gestación.", "Alergia referida: evaluar con el cuestionario del Anexo 3; si es de alto riesgo, desensibilización (Anexo 4).", "Seguimiento con PNT a las 4–8 semanas y luego cada 8 semanas; un cambio significativo es > 4 títulos (2 diluciones)."]
+    },
+    {
+      "id": "tamizaje",
+      "titulo": "Cuándo pedir cada prueba en el embarazo",
+      "pagina": 20,
+      "columnas": ["Infección", "Primera consulta", "Repetir"],
+      "filas": [
+        ["Sífilis", "✓ (prueba rápida)", "Cada trimestre y periparto si la última tiene > 30 días; 15–24 años: cada 60 días"],
+        ["VIH", "✓ (prueba rápida 4.ª gen.)", "2.º y 3.er trimestre si es negativa"],
+        ["Hepatitis B (HBsAg)", "✓", "3.er trimestre si no recibe vacuna"],
+        ["Chagas", "✓ (2 técnicas)", "—"]
+      ],
+      "notas": ["Ofrecer siempre el testeo a la/s pareja/s sexual/es (pág. 14 y 20)."]
+    }
+  ],
+  "listas": [
+    {"id": "rn-seg", "titulo": "Seguimiento del RN expuesto a sífilis", "estilo": "info", "pagina": 25, "items": [
+      "Control clínico mensual.",
+      "Evaluación oftalmológica y auditiva (OEA + ABR antes de los 6 meses; PEA después).",
+      "PNT a los 1, 3, 6 y 12 meses o hasta negativizar.",
+      "Retratar: no tratados con PNT reactiva después de los 6 meses; tratados con PNT reactiva después de los 12 meses."
+    ]},
+    {"id": "parejas", "titulo": "No olvidar", "estilo": "alerta", "pagina": 20, "items": [
+      "Testear, tratar y seguir a la/s pareja/s sexual/es para evitar reinfecciones.",
+      "Registrar dosis y fechas de penicilina y títulos de VDRL en el instrumento de control del embarazo.",
+      "Notificar al SNVS 2.0 cada evento (sífilis, VIH, hepatitis B, Chagas)."
+    ]}
+  ],
+  "calculadoras": [
+    {
+      "id": "penicilina-rn",
+      "titulo": "Penicilina en el recién nacido expuesto a sífilis",
+      "pagina": 24,
+      "descripcion": "Dosis por kilo del recién nacido.",
+      "farmacos": [
+        {"nombre": "Penicilina benzatínica IM", "grupos": [
+          {"etiqueta": "RN con evaluación normal", "fases": [{"etiqueta": "Dosis única", "mgkg": [50000, 50000], "tomas": 1, "por": "dosis", "unidad": "UI"}]}
+        ]},
+        {"nombre": "Penicilina G sódica EV", "grupos": [
+          {"etiqueta": "≤ 1 semana de vida", "fases": [{"etiqueta": "10 días", "mgkg": [50000, 50000], "tomas": 2, "por": "dosis", "unidad": "UI"}], "nota": "Cada 12 h."},
+          {"etiqueta": "> 1 semana de vida", "fases": [{"etiqueta": "10 días", "mgkg": [50000, 50000], "tomas": 3, "por": "dosis", "unidad": "UI"}], "nota": "Cada 8 h."}
+        ]}
+      ]
+    }
+  ]
+}

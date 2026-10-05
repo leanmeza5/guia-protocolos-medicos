@@ -6,11 +6,26 @@
   "poblacion": "Personas de 18 años o más, atención ambulatoria (primer nivel)",
   "resumen": "Versión breve 2026 de la Guía de Práctica Clínica Nacional de HTA. Integra 43 recomendaciones sobre prevención, diagnóstico, metas, tratamiento, daño de órgano blanco, adherencia y urgencia hipertensiva.",
   "claves": [
-    {"texto": "Rastreo de HTA desde los 18 años con toma de PA en consultorio; punto de corte diagnóstico 140/90 mmHg.", "pagina": 6},
-    {"texto": "Meta general < 140/90 mmHg. Alto riesgo y buena tolerancia: cercana a 130/80. ≥ 80 años recién diagnosticados: < 150/90.", "pagina": 6},
-    {"texto": "Iniciar el tratamiento farmacológico con dos antihipertensivos a dosis bajas, preferentemente en una sola toma.", "pagina": 6},
-    {"texto": "No retrasar el tratamiento por estudiar daño de órgano blanco: ECG, RACo y FGe dentro del año del diagnóstico.", "pagina": 6},
-    {"texto": "Urgencia hipertensiva: manejo ambulatorio con descenso gradual de la PA.", "pagina": 6}
+    {
+      "texto": "Rastreo de HTA desde los 18 años con toma de PA en consultorio; punto de corte diagnóstico 140/90 mmHg.",
+      "pagina": 6
+    },
+    {
+      "texto": "Meta general < 140/90 mmHg. Alto riesgo y buena tolerancia: cercana a 130/80. ≥ 80 años recién diagnosticados: < 150/90.",
+      "pagina": 6
+    },
+    {
+      "texto": "Iniciar el tratamiento farmacológico con dos antihipertensivos a dosis bajas, preferentemente en una sola toma.",
+      "pagina": 6
+    },
+    {
+      "texto": "No retrasar el tratamiento por estudiar daño de órgano blanco: ECG, RACo y FGe dentro del año del diagnóstico.",
+      "pagina": 6
+    },
+    {
+      "texto": "Urgencia hipertensiva: manejo ambulatorio con descenso gradual de la PA.",
+      "pagina": 6
+    }
   ],
   "algoritmos": [
     {
@@ -20,18 +35,142 @@
       "pagina": 7,
       "inicio": "dx",
       "nodos": [
-        {"id": "dx", "tipo": "inicio", "texto": "Diagnóstico de HTA: ≥ 140/90 mmHg confirmada en 2 visitas", "pagina": 7, "siguiente": "alerta"},
-        {"id": "alerta", "tipo": "alerta", "texto": "No aplicar este algoritmo en embarazadas ni en mujeres en edad fértil", "detalle": ["En mujeres en edad fértil NO usar IECA ni ARAII (pág. 18)."], "pagina": 7, "siguiente": "p1"},
-        {"id": "p1", "tipo": "accion", "texto": "Paso 1 · Losartán 25 mg + Amlodipina 2,5 mg, una toma diaria", "detalle": ["Iniciar inmediatamente al confirmar el diagnóstico."], "pagina": 7, "siguiente": "d1"},
-        {"id": "d1", "tipo": "decision", "texto": "¿En meta a las 4 semanas?", "detalle": ["Meta: < 140/90. Alto riesgo CV: PAS ≤ 130.", "Valorar adherencia antes de intensificar."], "pagina": 7, "opciones": [{"etiqueta": "Sí", "ir": "seg"}, {"etiqueta": "No", "ir": "p2"}]},
-        {"id": "p2", "tipo": "accion", "texto": "Paso 2 · Losartán 50 mg + Amlodipina 5 mg, una toma diaria", "pagina": 7, "siguiente": "d2"},
-        {"id": "d2", "tipo": "decision", "texto": "¿En meta a las 4 semanas?", "pagina": 7, "opciones": [{"etiqueta": "Sí", "ir": "seg"}, {"etiqueta": "No", "ir": "p3"}]},
-        {"id": "p3", "tipo": "accion", "texto": "Paso 3 · Losartán 100 mg + Amlodipina 10 mg, una toma diaria", "pagina": 7, "siguiente": "d3"},
-        {"id": "d3", "tipo": "decision", "texto": "¿En meta a las 4 semanas?", "pagina": 7, "opciones": [{"etiqueta": "Sí", "ir": "seg"}, {"etiqueta": "No", "ir": "p4"}]},
-        {"id": "p4", "tipo": "accion", "texto": "Paso 4 · Losartán 100 mg + Amlodipina 10 mg + Hidroclorotiazida 25 mg, una toma diaria", "pagina": 7, "siguiente": "d4"},
-        {"id": "d4", "tipo": "decision", "texto": "¿En meta a las 4 semanas?", "pagina": 7, "opciones": [{"etiqueta": "Sí", "ir": "seg"}, {"etiqueta": "No", "ir": "der"}]},
-        {"id": "seg", "tipo": "resultado", "texto": "Continuar tratamiento y seguimiento", "detalle": ["Todos: control cada 6 meses, suministro de medicación para 3 meses, vacuna COVID-19.", "Alto riesgo: control cada 3 meses + vacunas antigripal y antineumocócica.", "Daño de órgano blanco anual: ECG, filtrado glomerular, índice alb/creat en orina."], "pagina": 7},
-        {"id": "der", "tipo": "alerta", "texto": "Derivar: HTA refractaria (3 o más drogas)", "detalle": ["Referenciar a expertos en HTA si no se alcanzan metas con tres fármacos a dosis altas o máxima dosis tolerada (pág. 18)."], "pagina": 7}
+        {
+          "id": "dx",
+          "tipo": "inicio",
+          "texto": "Diagnóstico de HTA: ≥ 140/90 mmHg confirmada en 2 visitas",
+          "pagina": 7,
+          "siguiente": "alerta"
+        },
+        {
+          "id": "alerta",
+          "tipo": "alerta",
+          "texto": "No aplicar este algoritmo en embarazadas ni en mujeres en edad fértil",
+          "detalle": [
+            "En mujeres en edad fértil NO usar IECA ni ARAII (pág. 18)."
+          ],
+          "pagina": 7,
+          "siguiente": "p1"
+        },
+        {
+          "id": "p1",
+          "tipo": "accion",
+          "texto": "Paso 1 · Losartán 25 mg + Amlodipina 2,5 mg, una toma diaria",
+          "detalle": [
+            "Iniciar inmediatamente al confirmar el diagnóstico."
+          ],
+          "pagina": 7,
+          "siguiente": "d1"
+        },
+        {
+          "id": "d1",
+          "tipo": "decision",
+          "texto": "¿En meta a las 4 semanas?",
+          "detalle": [
+            "Meta: < 140/90. Alto riesgo CV: PAS ≤ 130.",
+            "Valorar adherencia antes de intensificar."
+          ],
+          "pagina": 7,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "seg"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "p2"
+            }
+          ]
+        },
+        {
+          "id": "p2",
+          "tipo": "accion",
+          "texto": "Paso 2 · Losartán 50 mg + Amlodipina 5 mg, una toma diaria",
+          "pagina": 7,
+          "siguiente": "d2"
+        },
+        {
+          "id": "d2",
+          "tipo": "decision",
+          "texto": "¿En meta a las 4 semanas?",
+          "pagina": 7,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "seg"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "p3"
+            }
+          ]
+        },
+        {
+          "id": "p3",
+          "tipo": "accion",
+          "texto": "Paso 3 · Losartán 100 mg + Amlodipina 10 mg, una toma diaria",
+          "pagina": 7,
+          "siguiente": "d3"
+        },
+        {
+          "id": "d3",
+          "tipo": "decision",
+          "texto": "¿En meta a las 4 semanas?",
+          "pagina": 7,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "seg"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "p4"
+            }
+          ]
+        },
+        {
+          "id": "p4",
+          "tipo": "accion",
+          "texto": "Paso 4 · Losartán 100 mg + Amlodipina 10 mg + Hidroclorotiazida 25 mg, una toma diaria",
+          "pagina": 7,
+          "siguiente": "d4"
+        },
+        {
+          "id": "d4",
+          "tipo": "decision",
+          "texto": "¿En meta a las 4 semanas?",
+          "pagina": 7,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "seg"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "der"
+            }
+          ]
+        },
+        {
+          "id": "seg",
+          "tipo": "resultado",
+          "texto": "Continuar tratamiento y seguimiento",
+          "detalle": [
+            "Todos: control cada 6 meses, suministro de medicación para 3 meses, vacuna COVID-19.",
+            "Alto riesgo: control cada 3 meses + vacunas antigripal y antineumocócica.",
+            "Daño de órgano blanco anual: ECG, filtrado glomerular, índice alb/creat en orina."
+          ],
+          "pagina": 7
+        },
+        {
+          "id": "der",
+          "tipo": "alerta",
+          "texto": "Derivar: HTA refractaria (3 o más drogas)",
+          "detalle": [
+            "Referenciar a expertos en HTA si no se alcanzan metas con tres fármacos a dosis altas o máxima dosis tolerada (pág. 18)."
+          ],
+          "pagina": 7
+        }
       ]
     },
     {
@@ -41,16 +180,126 @@
       "pagina": 25,
       "inicio": "u0",
       "nodos": [
-        {"id": "u0", "tipo": "inicio", "texto": "PA > 180 mmHg sistólica y/o > 120 mmHg diastólica", "pagina": 23, "siguiente": "u1"},
-        {"id": "u1", "tipo": "decision", "texto": "¿Síntomas o signos de daño agudo de órgano blanco?", "detalle": ["Dolor precordial o de espalda, disnea, edemas.", "Cefalea, convulsiones, alteraciones visuales o de conciencia, signos focales.", "Palpitaciones; oliguria, anuria, hematuria; extremidades frías."], "pagina": 24, "opciones": [{"etiqueta": "Sí", "ir": "emerg"}, {"etiqueta": "No", "ir": "u2"}]},
-        {"id": "emerg", "tipo": "alerta", "texto": "Emergencia hipertensiva: evaluación inmediata en servicio de emergencias", "detalle": ["Más allá de los valores de presión arterial. Su abordaje excede esta guía."], "pagina": 24},
-        {"id": "u2", "tipo": "decision", "texto": "¿Atribuible a pseudocrisis?", "detalle": ["Ansiedad, pánico, dolor, epistaxis, emociones intensas.", "Drogas: pseudoefedrina, anfetaminas, cocaína."], "pagina": 24, "opciones": [{"etiqueta": "Sí", "ir": "pseudo"}, {"etiqueta": "No", "ir": "urg"}]},
-        {"id": "pseudo", "tipo": "resultado", "texto": "Pseudocrisis: reposo y tratamiento de la causa", "detalle": ["Controlar epistaxis, aliviar el dolor, etc. Los controles de seguimiento mostrarán la PA fuera de estas situaciones."], "pagina": 24},
-        {"id": "urg", "tipo": "accion", "texto": "Urgencia hipertensiva: manejo ambulatorio", "detalle": ["Reposo (30 min en ambiente tranquilo): respuesta favorable en ~30%.", "Evitar descensos bruscos: disminución gradual con medicación oral."], "pagina": 24, "siguiente": "u3"},
-        {"id": "u3", "tipo": "decision", "texto": "¿Antecedente de hipertensión arterial?", "pagina": 25, "opciones": [{"etiqueta": "Sí", "ir": "intens"}, {"etiqueta": "No", "ir": "inicia"}]},
-        {"id": "intens", "tipo": "accion", "texto": "Intensificar o restaurar el tratamiento farmacológico", "pagina": 25, "siguiente": "useg"},
-        {"id": "inicia", "tipo": "accion", "texto": "Iniciar tratamiento farmacológico", "detalle": ["Estos valores permiten establecer el diagnóstico de HTA en una sola consulta (pág. 24)."], "pagina": 25, "siguiente": "useg"},
-        {"id": "useg", "tipo": "resultado", "texto": "Seguimiento ambulatorio con visitas frecuentes hasta la meta", "detalle": ["Reforzar adherencia y dar pautas de alarma.", "Evitar ejercicio moderado o mayor hasta PA < 160/100 mmHg."], "pagina": 25}
+        {
+          "id": "u0",
+          "tipo": "inicio",
+          "texto": "PA > 180 mmHg sistólica y/o > 120 mmHg diastólica",
+          "pagina": 23,
+          "siguiente": "u1"
+        },
+        {
+          "id": "u1",
+          "tipo": "decision",
+          "texto": "¿Síntomas o signos de daño agudo de órgano blanco?",
+          "detalle": [
+            "Dolor precordial o de espalda, disnea, edemas.",
+            "Cefalea, convulsiones, alteraciones visuales o de conciencia, signos focales.",
+            "Palpitaciones; oliguria, anuria, hematuria; extremidades frías."
+          ],
+          "pagina": 24,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "emerg"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "u2"
+            }
+          ]
+        },
+        {
+          "id": "emerg",
+          "tipo": "alerta",
+          "texto": "Emergencia hipertensiva: evaluación inmediata en servicio de emergencias",
+          "detalle": [
+            "Más allá de los valores de presión arterial. Su abordaje excede esta guía."
+          ],
+          "pagina": 24
+        },
+        {
+          "id": "u2",
+          "tipo": "decision",
+          "texto": "¿Atribuible a pseudocrisis?",
+          "detalle": [
+            "Ansiedad, pánico, dolor, epistaxis, emociones intensas.",
+            "Drogas: pseudoefedrina, anfetaminas, cocaína."
+          ],
+          "pagina": 24,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "pseudo"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "urg"
+            }
+          ]
+        },
+        {
+          "id": "pseudo",
+          "tipo": "resultado",
+          "texto": "Pseudocrisis: reposo y tratamiento de la causa",
+          "detalle": [
+            "Controlar epistaxis, aliviar el dolor, etc. Los controles de seguimiento mostrarán la PA fuera de estas situaciones."
+          ],
+          "pagina": 24
+        },
+        {
+          "id": "urg",
+          "tipo": "accion",
+          "texto": "Urgencia hipertensiva: manejo ambulatorio",
+          "detalle": [
+            "Reposo (30 min en ambiente tranquilo): respuesta favorable en ~30%.",
+            "Evitar descensos bruscos: disminución gradual con medicación oral."
+          ],
+          "pagina": 24,
+          "siguiente": "u3"
+        },
+        {
+          "id": "u3",
+          "tipo": "decision",
+          "texto": "¿Antecedente de hipertensión arterial?",
+          "pagina": 25,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "intens"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "inicia"
+            }
+          ]
+        },
+        {
+          "id": "intens",
+          "tipo": "accion",
+          "texto": "Intensificar o restaurar el tratamiento farmacológico",
+          "pagina": 25,
+          "siguiente": "useg"
+        },
+        {
+          "id": "inicia",
+          "tipo": "accion",
+          "texto": "Iniciar tratamiento farmacológico",
+          "detalle": [
+            "Estos valores permiten establecer el diagnóstico de HTA en una sola consulta (pág. 24)."
+          ],
+          "pagina": 25,
+          "siguiente": "useg"
+        },
+        {
+          "id": "useg",
+          "tipo": "resultado",
+          "texto": "Seguimiento ambulatorio con visitas frecuentes hasta la meta",
+          "detalle": [
+            "Reforzar adherencia y dar pautas de alarma.",
+            "Evitar ejercicio moderado o mayor hasta PA < 160/100 mmHg."
+          ],
+          "pagina": 25
+        }
       ]
     },
     {
@@ -60,13 +309,100 @@
       "pagina": 8,
       "inicio": "r0",
       "nodos": [
-        {"id": "r0", "tipo": "inicio", "texto": "Adulto ≥ 18 años: toma de PA en consultorio con técnica estandarizada", "detalle": ["Preferir tensiómetro automático validado de brazo.", "Primera consulta: medir en ambos brazos y seguir con el de valores más altos."], "pagina": 8, "siguiente": "r1"},
-        {"id": "r1", "tipo": "decision", "texto": "¿PA ≥ 140/90 mmHg confirmada en 2 visitas?", "pagina": 7, "opciones": [{"etiqueta": "Sí", "ir": "r2"}, {"etiqueta": "No", "ir": "r3"}]},
-        {"id": "r2", "tipo": "decision", "texto": "¿Sospecha de HTA de guardapolvo blanco?", "detalle": ["PA persistentemente elevada en consultorio, sin daño de órgano blanco."], "pagina": 10, "opciones": [{"etiqueta": "Sí", "ir": "mon"}, {"etiqueta": "No", "ir": "hta"}]},
-        {"id": "r3", "tipo": "decision", "texto": "¿Sospecha de HTA oculta?", "detalle": ["PA normal en consultorio con daño de órgano blanco (ej. HVI)."], "pagina": 10, "opciones": [{"etiqueta": "Sí", "ir": "mon"}, {"etiqueta": "No", "ir": "rastreo"}]},
-        {"id": "mon", "tipo": "accion", "texto": "Confirmar con MDPA o MAPA de 24 h", "detalle": ["MDPA: ≥ 135/85. MAPA: diurno ≥ 135/85, nocturno ≥ 120/70, 24 h ≥ 130/80."], "pagina": 11},
-        {"id": "hta", "tipo": "resultado", "texto": "Diagnóstico de HTA: iniciar tratamiento (ver vía clínica)", "detalle": ["No demorar el tratamiento farmacológico.", "Solicitar ECG, FGe y RACo dentro del año."], "pagina": 17},
-        {"id": "rastreo", "tipo": "resultado", "texto": "Repetir rastreo según riesgo", "detalle": ["18–40 años sin factores de riesgo y PA ≤ 130/80: cada 3 a 5 años.", "> 40 años, con factores de riesgo o PA 130–139/80–89: al menos 1 vez al año."], "pagina": 8}
+        {
+          "id": "r0",
+          "tipo": "inicio",
+          "texto": "Adulto ≥ 18 años: toma de PA en consultorio con técnica estandarizada",
+          "detalle": [
+            "Preferir tensiómetro automático validado de brazo.",
+            "Primera consulta: medir en ambos brazos y seguir con el de valores más altos."
+          ],
+          "pagina": 8,
+          "siguiente": "r1"
+        },
+        {
+          "id": "r1",
+          "tipo": "decision",
+          "texto": "¿PA ≥ 140/90 mmHg confirmada en 2 visitas?",
+          "pagina": 7,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "r2"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "r3"
+            }
+          ]
+        },
+        {
+          "id": "r2",
+          "tipo": "decision",
+          "texto": "¿Sospecha de HTA de guardapolvo blanco?",
+          "detalle": [
+            "PA persistentemente elevada en consultorio, sin daño de órgano blanco."
+          ],
+          "pagina": 10,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "mon"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "hta"
+            }
+          ]
+        },
+        {
+          "id": "r3",
+          "tipo": "decision",
+          "texto": "¿Sospecha de HTA oculta?",
+          "detalle": [
+            "PA normal en consultorio con daño de órgano blanco (ej. HVI)."
+          ],
+          "pagina": 10,
+          "opciones": [
+            {
+              "etiqueta": "Sí",
+              "ir": "mon"
+            },
+            {
+              "etiqueta": "No",
+              "ir": "rastreo"
+            }
+          ]
+        },
+        {
+          "id": "mon",
+          "tipo": "accion",
+          "texto": "Confirmar con MDPA o MAPA de 24 h",
+          "detalle": [
+            "MDPA: ≥ 135/85. MAPA: diurno ≥ 135/85, nocturno ≥ 120/70, 24 h ≥ 130/80."
+          ],
+          "pagina": 11
+        },
+        {
+          "id": "hta",
+          "tipo": "resultado",
+          "texto": "Diagnóstico de HTA: iniciar tratamiento (ver vía clínica)",
+          "detalle": [
+            "No demorar el tratamiento farmacológico.",
+            "Solicitar ECG, FGe y RACo dentro del año."
+          ],
+          "pagina": 17
+        },
+        {
+          "id": "rastreo",
+          "tipo": "resultado",
+          "texto": "Repetir rastreo según riesgo",
+          "detalle": [
+            "18–40 años sin factores de riesgo y PA ≤ 130/80: cada 3 a 5 años.",
+            "> 40 años, con factores de riesgo o PA 130–139/80–89: al menos 1 vez al año."
+          ],
+          "pagina": 8
+        }
       ]
     }
   ],
@@ -75,38 +411,108 @@
       "id": "criterios",
       "titulo": "Criterios diagnósticos según método",
       "pagina": 11,
-      "columnas": ["Método", "PAS ≥ (mmHg)", "", "PAD ≥ (mmHg)"],
+      "columnas": [
+        "Método",
+        "PAS ≥ (mmHg)",
+        "",
+        "PAD ≥ (mmHg)"
+      ],
       "filas": [
-        ["En consultorio", "140", "y/o", "90"],
-        ["MAPA · promedio diurno", "135", "y/o", "85"],
-        ["MAPA · promedio nocturno", "120", "y/o", "70"],
-        ["MAPA · promedio 24 horas", "130", "y/o", "80"],
-        ["MDPA", "135", "y/o", "85"]
+        [
+          "En consultorio",
+          "140",
+          "y/o",
+          "90"
+        ],
+        [
+          "MAPA · promedio diurno",
+          "135",
+          "y/o",
+          "85"
+        ],
+        [
+          "MAPA · promedio nocturno",
+          "120",
+          "y/o",
+          "70"
+        ],
+        [
+          "MAPA · promedio 24 horas",
+          "130",
+          "y/o",
+          "80"
+        ],
+        [
+          "MDPA",
+          "135",
+          "y/o",
+          "85"
+        ]
       ]
     },
     {
       "id": "combinaciones",
       "titulo": "Combinaciones de 2 fármacos",
       "pagina": 18,
-      "columnas": ["Categoría", "Combinaciones"],
-      "filas": [
-        ["Preferenciales", "IECA + AC-D · ARAII + AC-D · IECA + diurético (TZ-STZ) · ARAII + diurético (TZ-STZ)"],
-        ["Con betabloqueantes", "BB + AC-D · BB + IECA · BB + ARAII"],
-        ["Menos utilizadas", "BB + diurético (efectos metabólicos) · AC-D + diurético (menos estudiada)"]
+      "columnas": [
+        "Categoría",
+        "Combinaciones"
       ],
-      "notas": ["Triples más utilizadas: ARAII + AC-D + TZ-STZ · IECA + AC-D + TZ-STZ.", "Como regla general NO asociar IECA con ARAII."]
+      "filas": [
+        [
+          "Preferenciales",
+          "IECA + AC-D · ARAII + AC-D · IECA + diurético (TZ-STZ) · ARAII + diurético (TZ-STZ)"
+        ],
+        [
+          "Con betabloqueantes",
+          "BB + AC-D · BB + IECA · BB + ARAII"
+        ],
+        [
+          "Menos utilizadas",
+          "BB + diurético (efectos metabólicos) · AC-D + diurético (menos estudiada)"
+        ]
+      ],
+      "notas": [
+        "Triples más utilizadas: ARAII + AC-D + TZ-STZ · IECA + AC-D + TZ-STZ.",
+        "Como regla general NO asociar IECA con ARAII."
+      ]
     },
     {
       "id": "dosis-ieca",
       "titulo": "Dosis · IECA",
       "grupo": "Fármacos antihipertensivos (Anexo 1)",
       "pagina": 26,
-      "columnas": ["Fármaco", "Dosis baja", "Dosis media", "Dosis alta"],
+      "columnas": [
+        "Fármaco",
+        "Dosis baja",
+        "Dosis media",
+        "Dosis alta"
+      ],
       "filas": [
-        ["Enalapril", "5 mg c/12 h", "10 mg c/12 h", "20 mg c/12 h"],
-        ["Lisinopril", "5 mg/día", "10 mg/día", "20 mg/día"],
-        ["Perindopril", "2,5 mg/día", "5 mg/día", "10 mg/día"],
-        ["Ramipril", "2,5 mg/día", "5 mg/día", "10 mg/día"]
+        [
+          "Enalapril",
+          "5 mg c/12 h",
+          "10 mg c/12 h",
+          "20 mg c/12 h"
+        ],
+        [
+          "Lisinopril",
+          "5 mg/día",
+          "10 mg/día",
+          "20 mg/día"
+        ],
+        [
+          "Perindopril",
+          "2,5 mg/día",
+          "5 mg/día",
+          "10 mg/día"
+        ],
+        [
+          "Ramipril",
+          "2,5 mg/día",
+          "5 mg/día",
+          "10 mg/día"
+        ]
       ]
     },
     {
@@ -114,14 +520,49 @@
       "titulo": "Dosis · ARAII",
       "grupo": "Fármacos antihipertensivos (Anexo 1)",
       "pagina": 26,
-      "columnas": ["Fármaco", "Dosis baja", "Dosis media", "Dosis alta"],
+      "columnas": [
+        "Fármaco",
+        "Dosis baja",
+        "Dosis media",
+        "Dosis alta"
+      ],
       "filas": [
-        ["Candesartán", "8 mg/día", "16 mg/día", "32 mg/día"],
-        ["Irbesartán", "75 mg/día", "150 mg/día", "300 mg/día"],
-        ["Losartán", "25 mg/día", "50 mg/día", "100 mg/día"],
-        ["Olmesartán", "10 mg/día", "20 mg/día", "40 mg/día"],
-        ["Telmisartán", "20 mg/día", "40 mg/día", "80 mg/día"],
-        ["Valsartán", "80 mg/día", "160 mg/día", "320 mg/día"]
+        [
+          "Candesartán",
+          "8 mg/día",
+          "16 mg/día",
+          "32 mg/día"
+        ],
+        [
+          "Irbesartán",
+          "75 mg/día",
+          "150 mg/día",
+          "300 mg/día"
+        ],
+        [
+          "Losartán",
+          "25 mg/día",
+          "50 mg/día",
+          "100 mg/día"
+        ],
+        [
+          "Olmesartán",
+          "10 mg/día",
+          "20 mg/día",
+          "40 mg/día"
+        ],
+        [
+          "Telmisartán",
+          "20 mg/día",
+          "40 mg/día",
+          "80 mg/día"
+        ],
+        [
+          "Valsartán",
+          "80 mg/día",
+          "160 mg/día",
+          "320 mg/día"
+        ]
       ]
     },
     {
@@ -129,108 +570,394 @@
       "titulo": "Dosis · Antagonistas cálcicos (AC-D)",
       "grupo": "Fármacos antihipertensivos (Anexo 1)",
       "pagina": 26,
-      "columnas": ["Fármaco", "Dosis baja", "Dosis media", "Dosis alta"],
-      "filas": [
-        ["Amlodipina", "2,5 mg/día", "5 mg/día", "10 mg/día"],
-        ["Lercanidipina", "5 mg/día", "10 mg/día", "20 mg/día"],
-        ["Nifedipina*", "20–30 mg/día", "40–60 mg/día", "80–90 mg/día"]
+      "columnas": [
+        "Fármaco",
+        "Dosis baja",
+        "Dosis media",
+        "Dosis alta"
       ],
-      "notas": ["* Solo formulaciones de liberación prolongada."]
+      "filas": [
+        [
+          "Amlodipina",
+          "2,5 mg/día",
+          "5 mg/día",
+          "10 mg/día"
+        ],
+        [
+          "Lercanidipina",
+          "5 mg/día",
+          "10 mg/día",
+          "20 mg/día"
+        ],
+        [
+          "Nifedipina*",
+          "20–30 mg/día",
+          "40–60 mg/día",
+          "80–90 mg/día"
+        ]
+      ],
+      "notas": [
+        "* Solo formulaciones de liberación prolongada."
+      ]
     },
     {
       "id": "dosis-bb",
       "titulo": "Dosis · Betabloqueantes (BB)",
       "grupo": "Fármacos antihipertensivos (Anexo 1)",
       "pagina": 26,
-      "columnas": ["Fármaco", "Dosis baja", "Dosis media", "Dosis alta"],
-      "filas": [
-        ["Atenolol", "25 mg/día", "50 mg/día", "100 mg/día"],
-        ["Bisoprolol", "2,5 mg/día", "5 mg/día", "10 mg/día"],
-        ["Carvedilol", "6,25 mg c/12 h", "12,5 mg c/12 h", "25 mg c/12 h"],
-        ["Nebivolol", "5 mg/día", "10 mg/día", "20 mg/día"],
-        ["Metoprolol*", "50 mg/día", "100 mg/día", "200 mg/día"]
+      "columnas": [
+        "Fármaco",
+        "Dosis baja",
+        "Dosis media",
+        "Dosis alta"
       ],
-      "notas": ["* Formulaciones de liberación prolongada."]
+      "filas": [
+        [
+          "Atenolol",
+          "25 mg/día",
+          "50 mg/día",
+          "100 mg/día"
+        ],
+        [
+          "Bisoprolol",
+          "2,5 mg/día",
+          "5 mg/día",
+          "10 mg/día"
+        ],
+        [
+          "Carvedilol",
+          "6,25 mg c/12 h",
+          "12,5 mg c/12 h",
+          "25 mg c/12 h"
+        ],
+        [
+          "Nebivolol",
+          "5 mg/día",
+          "10 mg/día",
+          "20 mg/día"
+        ],
+        [
+          "Metoprolol*",
+          "50 mg/día",
+          "100 mg/día",
+          "200 mg/día"
+        ]
+      ],
+      "notas": [
+        "* Formulaciones de liberación prolongada."
+      ]
     },
     {
       "id": "dosis-tz",
       "titulo": "Dosis · Tiazidas (TZ-STZ)",
       "grupo": "Fármacos antihipertensivos (Anexo 1)",
       "pagina": 27,
-      "columnas": ["Fármaco", "Dosis baja", "Dosis media", "Dosis alta"],
-      "filas": [
-        ["Clortalidona", "6,25 mg/día", "12,5 mg/día", "25 mg/día"],
-        ["Hidroclorotiazida", "12,5 mg/día", "25 mg/día", "50 mg/día**"],
-        ["Indapamida", "1,25 mg/día", "2,5 mg/día", "—"]
+      "columnas": [
+        "Fármaco",
+        "Dosis baja",
+        "Dosis media",
+        "Dosis alta"
       ],
-      "notas": ["** Dosis no recomendada, por elevada tasa de efectos adversos."]
+      "filas": [
+        [
+          "Clortalidona",
+          "6,25 mg/día",
+          "12,5 mg/día",
+          "25 mg/día"
+        ],
+        [
+          "Hidroclorotiazida",
+          "12,5 mg/día",
+          "25 mg/día",
+          "50 mg/día**"
+        ],
+        [
+          "Indapamida",
+          "1,25 mg/día",
+          "2,5 mg/día",
+          "—"
+        ]
+      ],
+      "notas": [
+        "** Dosis no recomendada, por elevada tasa de efectos adversos."
+      ]
     },
     {
       "id": "estatinas",
       "titulo": "Dosis de estatinas por intensidad",
       "pagina": 20,
-      "columnas": ["Estatina", "Baja (LDL ↓ < 30%)", "Moderada (LDL ↓ 30–50%)", "Alta (LDL ↓ ≥ 50%)"],
-      "filas": [
-        ["Simvastatina", "10 mg/día", "20–40 mg/día", "—"],
-        ["Atorvastatina", "—", "10–20 mg/día", "40–80 mg/día"],
-        ["Rosuvastatina", "—", "5–10 mg/día", "20–40 mg/día"]
+      "columnas": [
+        "Estatina",
+        "Baja (LDL ↓ < 30%)",
+        "Moderada (LDL ↓ 30–50%)",
+        "Alta (LDL ↓ ≥ 50%)"
       ],
-      "notas": ["Sin ECV: moderada intensidad si DM, ERC G3a–G5 o riesgo CV > 10% a 10 años; moderada a alta si LDL ≥ 190 o CT ≥ 300 mg/dl.", "Con ECV establecida: alta intensidad + aspirina 100 mg/día (pág. 19)."]
+      "filas": [
+        [
+          "Simvastatina",
+          "10 mg/día",
+          "20–40 mg/día",
+          "—"
+        ],
+        [
+          "Atorvastatina",
+          "—",
+          "10–20 mg/día",
+          "40–80 mg/día"
+        ],
+        [
+          "Rosuvastatina",
+          "—",
+          "5–10 mg/día",
+          "20–40 mg/día"
+        ]
+      ],
+      "notas": [
+        "Sin ECV: moderada intensidad si DM, ERC G3a–G5 o riesgo CV > 10% a 10 años; moderada a alta si LDL ≥ 190 o CT ≥ 300 mg/dl.",
+        "Con ECV establecida: alta intensidad + aspirina 100 mg/día (pág. 19)."
+      ]
     },
     {
       "id": "estudios",
       "titulo": "Estudios complementarios y frecuencia",
       "pagina": 22,
-      "columnas": ["Práctica", "Al diagnóstico (1er año)", "Sin daño de órgano blanco", "Con daño de órgano blanco"],
-      "filas": [
-        ["Electrocardiograma", "✓", "Cada 1–3 años", "Anual"],
-        ["RACo", "✓", "Cada 1–3 años", "Anual*"],
-        ["Creatininemia y FGe", "✓", "Cada 1–3 años", "Anual*"],
-        ["Ecocardiograma", "Ante signos de daño en ECG y/o función renal", "—", "Cada 2–3 años"],
-        ["Ionograma (AC-D o BB)", "✓", "Cada 1–3 años", ""],
-        ["Ionograma (TZ-STZ, IECA o ARAII)", "✓", "Anual", ""],
-        ["Glucemia en ayunas", "✓", "Normal: cada 3–5 años", ""],
-        ["Colesterol total, HDL y TG", "✓", "Cada 1–3 años", ""]
+      "columnas": [
+        "Práctica",
+        "Al diagnóstico (1er año)",
+        "Sin daño de órgano blanco",
+        "Con daño de órgano blanco"
       ],
-      "notas": ["* Estadios G4 y G5: seguimiento conjunto con nefrología."]
+      "filas": [
+        [
+          "Electrocardiograma",
+          "✓",
+          "Cada 1–3 años",
+          "Anual"
+        ],
+        [
+          "RACo",
+          "✓",
+          "Cada 1–3 años",
+          "Anual*"
+        ],
+        [
+          "Creatininemia y FGe",
+          "✓",
+          "Cada 1–3 años",
+          "Anual*"
+        ],
+        [
+          "Ecocardiograma",
+          "Ante signos de daño en ECG y/o función renal",
+          "—",
+          "Cada 2–3 años"
+        ],
+        [
+          "Ionograma (AC-D o BB)",
+          "✓",
+          "Cada 1–3 años",
+          ""
+        ],
+        [
+          "Ionograma (TZ-STZ, IECA o ARAII)",
+          "✓",
+          "Anual",
+          ""
+        ],
+        [
+          "Glucemia en ayunas",
+          "✓",
+          "Normal: cada 3–5 años",
+          ""
+        ],
+        [
+          "Colesterol total, HDL y TG",
+          "✓",
+          "Cada 1–3 años",
+          ""
+        ]
+      ],
+      "notas": [
+        "* Estadios G4 y G5: seguimiento conjunto con nefrología."
+      ]
     }
   ],
   "listas": [
-    {"id": "metas", "titulo": "Metas del tratamiento", "estilo": "info", "pagina": 12, "items": [
-      "Meta general: PA < 140/90 mmHg.",
-      "Alto riesgo CV y bajo riesgo de efectos adversos: valores cercanos a 130/80 mmHg.",
-      "≥ 80 años que inician tratamiento: PA en consultorio < 150/90 mmHg.",
-      "≥ 80 años o frágiles que deambulan: guiar el tratamiento con la PAS de pie (tras ≥ 1 minuto)."
-    ]},
-    {"id": "alertas-fx", "titulo": "Alertas farmacológicas", "estilo": "alerta", "pagina": 18, "items": [
-      "Mujeres en edad fértil: NO usar IECA ni ARAII; suspender si se constata embarazo.",
-      "NO asociar IECA con ARAII (falla renal e hiperkalemia).",
-      "Diabetes y/o ERC: incluir IECA o ARAII en el esquema de inicio y mantenerlos (pág. 19).",
-      "FGe < 30 ml/min/1,73 m²: evaluación conjunta con nefrología (pág. 19).",
-      "Enfermedad coronaria con FEy ≥ 50%: iniciar con BB, IECA o ARAII; angina o SCA < 1 año: priorizar BB (pág. 19).",
-      "Fibrilación auricular: derivación precoz para evaluar anticoagulación (pág. 21)."
-    ]},
-    {"id": "secundaria", "titulo": "Sospechar HTA secundaria", "estilo": "neutro", "pagina": 11, "items": [
-      "HTA resistente o inducida por fármacos (descongestivos, AINE, herbales).",
-      "Inicio abrupto, antes de los 30 años, o HTA diastólica de inicio ≥ 65 años.",
-      "Empeoramiento de una HTA previamente controlada.",
-      "Daño de órgano desproporcionado; HTA acelerada o maligna.",
-      "Hipopotasemia no provocada o excesiva; nódulo suprarrenal.",
-      "Insomnio o somnolencia diurna; ictus de inicio temprano.",
-      "Causas más frecuentes: renovascular/parénquima renal, apnea obstructiva del sueño, hiperaldosteronismo primario."
-    ]},
-    {"id": "derivacion", "titulo": "Derivación oportuna", "estilo": "alerta", "pagina": 7, "items": [
-      "HTA refractaria: 3 o más drogas.",
-      "Desarrollo de enfermedad vascular (coronaria, cerebral o periférica).",
-      "Sospecha de HTA secundaria."
-    ]},
-    {"id": "tecnica", "titulo": "Técnica de toma de presión arterial", "estilo": "neutro", "pagina": 9, "items": [
-      "Sin cafeína, mate, tabaco ni ejercicio 30 minutos antes; 5 minutos de reposo sentado y en silencio.",
-      "Sentado, pies apoyados, piernas sin cruzar, espalda apoyada, brazo desnudo a la altura del corazón.",
-      "Manguito que cubra 80–100% de la circunferencia del brazo, 2 cm sobre el pliegue del codo (pág. 10).",
-      "Automático: 2 mediciones separadas por 30 segundos, promediar sin redondear (pág. 10).",
-      "Aneroide: repetir si la diferencia es > 10 mmHg PAS o > 5 mmHg PAD (pág. 10)."
-    ]}
+    {
+      "id": "metas",
+      "titulo": "Metas del tratamiento",
+      "estilo": "info",
+      "pagina": 12,
+      "items": [
+        "Meta general: PA < 140/90 mmHg.",
+        "Alto riesgo CV y bajo riesgo de efectos adversos: valores cercanos a 130/80 mmHg.",
+        "≥ 80 años que inician tratamiento: PA en consultorio < 150/90 mmHg.",
+        "≥ 80 años o frágiles que deambulan: guiar el tratamiento con la PAS de pie (tras ≥ 1 minuto)."
+      ]
+    },
+    {
+      "id": "alertas-fx",
+      "titulo": "Alertas farmacológicas",
+      "estilo": "alerta",
+      "pagina": 18,
+      "items": [
+        "Mujeres en edad fértil: NO usar IECA ni ARAII; suspender si se constata embarazo.",
+        "NO asociar IECA con ARAII (falla renal e hiperkalemia).",
+        "Diabetes y/o ERC: incluir IECA o ARAII en el esquema de inicio y mantenerlos (pág. 19).",
+        "FGe < 30 ml/min/1,73 m²: evaluación conjunta con nefrología (pág. 19).",
+        "Enfermedad coronaria con FEy ≥ 50%: iniciar con BB, IECA o ARAII; angina o SCA < 1 año: priorizar BB (pág. 19).",
+        "Fibrilación auricular: derivación precoz para evaluar anticoagulación (pág. 21)."
+      ]
+    },
+    {
+      "id": "secundaria",
+      "titulo": "Sospechar HTA secundaria",
+      "estilo": "neutro",
+      "pagina": 11,
+      "items": [
+        "HTA resistente o inducida por fármacos (descongestivos, AINE, herbales).",
+        "Inicio abrupto, antes de los 30 años, o HTA diastólica de inicio ≥ 65 años.",
+        "Empeoramiento de una HTA previamente controlada.",
+        "Daño de órgano desproporcionado; HTA acelerada o maligna.",
+        "Hipopotasemia no provocada o excesiva; nódulo suprarrenal.",
+        "Insomnio o somnolencia diurna; ictus de inicio temprano.",
+        "Causas más frecuentes: renovascular/parénquima renal, apnea obstructiva del sueño, hiperaldosteronismo primario."
+      ]
+    },
+    {
+      "id": "derivacion",
+      "titulo": "Derivación oportuna",
+      "estilo": "alerta",
+      "pagina": 7,
+      "items": [
+        "HTA refractaria: 3 o más drogas.",
+        "Desarrollo de enfermedad vascular (coronaria, cerebral o periférica).",
+        "Sospecha de HTA secundaria."
+      ]
+    },
+    {
+      "id": "tecnica",
+      "titulo": "Técnica de toma de presión arterial",
+      "estilo": "neutro",
+      "pagina": 9,
+      "items": [
+        "Sin cafeína, mate, tabaco ni ejercicio 30 minutos antes; 5 minutos de reposo sentado y en silencio.",
+        "Sentado, pies apoyados, piernas sin cruzar, espalda apoyada, brazo desnudo a la altura del corazón.",
+        "Manguito que cubra 80–100% de la circunferencia del brazo, 2 cm sobre el pliegue del codo (pág. 10).",
+        "Automático: 2 mediciones separadas por 30 segundos, promediar sin redondear (pág. 10).",
+        "Aneroide: repetir si la diferencia es > 10 mmHg PAS o > 5 mmHg PAD (pág. 10)."
+      ]
+    }
   ],
-  "calculadoras": []
+  "calculadoras": [],
+  "categorias": [
+    "cronicos",
+    "guardia"
+  ],
+  "anio": 2026,
+  "escalas": [
+    {
+      "id": "auditc",
+      "titulo": "AUDIT-C · consumo de riesgo de alcohol",
+      "pagina": 16,
+      "items": [
+        {
+          "texto": "¿Con qué frecuencia consume alguna bebida alcohólica?",
+          "opciones": [
+            {
+              "texto": "Nunca",
+              "puntos": 0
+            },
+            {
+              "texto": "1 o menos veces al mes",
+              "puntos": 1
+            },
+            {
+              "texto": "2 a 4 veces al mes",
+              "puntos": 2
+            },
+            {
+              "texto": "2 a 3 veces a la semana",
+              "puntos": 3
+            },
+            {
+              "texto": "4 o más veces a la semana",
+              "puntos": 4
+            }
+          ]
+        },
+        {
+          "texto": "¿Cuántas consumiciones en un día de consumo normal?",
+          "opciones": [
+            {
+              "texto": "1 o 2",
+              "puntos": 0
+            },
+            {
+              "texto": "3 o 4",
+              "puntos": 1
+            },
+            {
+              "texto": "5 o 6",
+              "puntos": 2
+            },
+            {
+              "texto": "7 a 9",
+              "puntos": 3
+            },
+            {
+              "texto": "10 o más",
+              "puntos": 4
+            }
+          ]
+        },
+        {
+          "texto": "¿Con qué frecuencia toma 6 o más bebidas en un solo día?",
+          "opciones": [
+            {
+              "texto": "Nunca",
+              "puntos": 0
+            },
+            {
+              "texto": "Menos de una vez al mes",
+              "puntos": 1
+            },
+            {
+              "texto": "Mensualmente",
+              "puntos": 2
+            },
+            {
+              "texto": "Semanalmente",
+              "puntos": 3
+            },
+            {
+              "texto": "A diario o casi a diario",
+              "puntos": 4
+            }
+          ]
+        }
+      ],
+      "interpretacion": [
+        {
+          "min": 0,
+          "max": 3,
+          "texto": "Rastreo negativo",
+          "estilo": "ok"
+        },
+        {
+          "min": 4,
+          "max": 4,
+          "texto": "Positivo en mujeres adultas (≥ 4); negativo en hombres",
+          "estilo": "warn"
+        },
+        {
+          "min": 5,
+          "max": 12,
+          "texto": "Rastreo positivo: consumo de riesgo o perjudicial",
+          "estilo": "danger"
+        }
+      ],
+      "nota": "Atención: la tabla de la guía numera las columnas de 1 a 5, pero los cortes que indica (≥ 4 mujeres, ≥ 5 hombres) corresponden a la puntuación validada del AUDIT-C, de 0 a 4 por pregunta, que es la que usa esta calculadora. Una UBE = 330 ml de cerveza, 140 ml de vino, 40 ml de destilados (pág. 15)."
+    }
+  ]
 }

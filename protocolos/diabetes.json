@@ -1,0 +1,161 @@
+{
+  "archivo": "guia-nacional-practica-clinica-diabetes-mellitius-tipo2_version-abreviada.pdf",
+  "titulo_corto": "Diabetes mellitus tipo 2",
+  "subtitulo": "Rastreo, diagnóstico, metas y tratamiento farmacológico",
+  "especialidad": "Clínica médica · Endocrinología",
+  "categorias": ["cronicos"],
+  "anio": 2019,
+  "poblacion": "Personas de 18 años o más, atención ambulatoria (primer nivel)",
+  "resumen": "Versión breve de la GPC Nacional 2019. Rastreo con glucemia en ayunas, meta general de HbA1c 7%, metformina como fármaco de inicio y criterios para intensificar e insulinizar.",
+  "claves": [
+    {"texto": "Rastreo con glucemia plasmática en ayunas desde los 45 años, o antes con al menos 1 factor de riesgo. No usar HbA1c como prueba inicial.", "pagina": 9},
+    {"texto": "El diagnóstico requiere 2 determinaciones sobre el punto de corte, salvo glucemia al azar ≥ 200 mg/dl con síntomas.", "pagina": 11},
+    {"texto": "Meta general HbA1c 7%; cercana a 8% en personas mayores frágiles o con expectativa de vida < 10 años.", "pagina": 22},
+    {"texto": "Metformina es el fármaco de inicio. Evitar la glibenclamida por hipoglucemias.", "pagina": 30},
+    {"texto": "Hiperglucemia sintomática al diagnóstico: insulina NPH al acostarse más metformina.", "pagina": 35}
+  ],
+  "algoritmos": [
+    {
+      "id": "diagnostico",
+      "titulo": "Rastreo y diagnóstico",
+      "descripcion": "Glucemia plasmática en ayunas como primer estudio; PTOG75 para la glucemia alterada en ayunas.",
+      "pagina": 11,
+      "inicio": "g0",
+      "nodos": [
+        {"id": "g0", "tipo": "inicio", "texto": "Glucemia plasmática en ayunas (GPA)", "detalle": ["Desde los 45 años, o antes con al menos 1 factor de riesgo.", "Factores: DM2 en familiar de 1.er grado, diabetes gestacional o macrosomía, sobrepeso u obesidad, sedentarismo, ECV o HTA, HDL < 35 o TG > 250, tabaquismo, SOP."], "pagina": 9, "siguiente": "g1"},
+        {"id": "g1", "tipo": "decision", "texto": "Resultado", "pagina": 10, "opciones": [{"etiqueta": "Normal: < 110 sin FR / < 100 con FR", "ir": "norm"}, {"etiqueta": "Alterada: 110–125 sin FR / 100–125 con FR", "ir": "ptog"}, {"etiqueta": "≥ 126 mg/dl", "ir": "rep"}, {"etiqueta": "Al azar ≥ 200 con síntomas", "ir": "dm"}]},
+        {"id": "norm", "tipo": "resultado", "texto": "Repetir cada 3 a 5 años", "detalle": ["O con más frecuencia según criterio médico."], "pagina": 9},
+        {"id": "ptog", "tipo": "accion", "texto": "Solicitar PTOG75", "detalle": ["Basal con 8–12 h de ayuno y a los 120 min de 75 g de glucosa.", "No cambiar la alimentación previa; no realizarla con cuadros agudos."], "pagina": 10, "siguiente": "ptog2"},
+        {"id": "ptog2", "tipo": "decision", "texto": "Glucemia a los 120 minutos", "pagina": 11, "opciones": [{"etiqueta": "< 140 mg/dl", "ir": "norm"}, {"etiqueta": "140–199 mg/dl", "ir": "pre"}, {"etiqueta": "≥ 200 mg/dl", "ir": "dm"}]},
+        {"id": "pre", "tipo": "resultado", "texto": "Prediabetes: programa intensivo de estilo de vida", "detalle": ["≥ 150 min/semana de actividad física moderada y consejería nutricional.", "Si no normaliza en 3–6 meses: considerar metformina 500–1700 mg/día (pág. 14)."], "pagina": 14},
+        {"id": "rep", "tipo": "accion", "texto": "Repetir para confirmar", "detalle": ["Se requieren 2 determinaciones sobre el punto de corte, del mismo o de distinto método (ej. GPA ≥ 126 + PTOG ≥ 200)."], "pagina": 11, "siguiente": "dm"},
+        {"id": "dm", "tipo": "resultado", "texto": "Diabetes mellitus tipo 2", "detalle": ["Ver el algoritmo de tratamiento."], "pagina": 11}
+      ]
+    },
+    {
+      "id": "tratamiento",
+      "titulo": "Tratamiento farmacológico",
+      "descripcion": "Evaluar cada 3 a 6 meses; intensificar si no se alcanza la meta con buena adherencia.",
+      "pagina": 30,
+      "inicio": "t0",
+      "nodos": [
+        {"id": "t0", "tipo": "decision", "texto": "¿Signos de descompensación aguda?", "detalle": ["Cetoacidosis: anorexia, náuseas, vómitos, dolor abdominal, aliento cetónico, taquipnea, confusión.", "Síndrome hiperosmolar: somnolencia a coma, deshidratación, hipotensión, taquicardia."], "pagina": 36, "opciones": [{"etiqueta": "Sí", "ir": "deriv"}, {"etiqueta": "No", "ir": "t1"}]},
+        {"id": "deriv", "tipo": "alerta", "texto": "Derivación inmediata para internación", "pagina": 36},
+        {"id": "t1", "tipo": "decision", "texto": "¿Hiperglucemia sintomática? (pérdida de peso, poliuria, polidipsia, polifagia)", "pagina": 35, "opciones": [{"etiqueta": "Sí", "ir": "ins"}, {"etiqueta": "No", "ir": "t2"}]},
+        {"id": "ins", "tipo": "accion", "texto": "Insulina NPH al acostarse + metformina", "detalle": ["Dosis inicial 0,1–0,2 UI/kg o 10 UI (ver calculadora).", "Glucemia capilar en ayunas diaria y control a las 72 h para ajustar.", "La insulinización la realiza personal entrenado."], "pagina": 36, "siguiente": "meta"},
+        {"id": "t2", "tipo": "decision", "texto": "HbA1c al diagnóstico", "pagina": 31, "opciones": [{"etiqueta": "Hasta 1,5% sobre la meta, sin complicaciones", "ir": "ev"}, {"etiqueta": "Lo habitual", "ir": "met"}, {"etiqueta": "> 2% sobre la meta, sin síntomas", "ir": "dos"}]},
+        {"id": "ev", "tipo": "accion", "texto": "Puede iniciarse solo con estilo de vida saludable, si la persona lo prefiere", "detalle": ["Continuar así solo si se mantiene el control glucémico."], "pagina": 31, "siguiente": "meta"},
+        {"id": "met", "tipo": "accion", "texto": "Metformina", "detalle": ["Iniciar 500 mg/día después de la cena y subir según tolerancia.", "Habitual: 850–1000 mg dos veces por día. Máximo 2550 mg/día.", "IFGe 30–45: mitad de dosis (≤ 1000 mg/día); no iniciar si IFGe < 45.", "Contraindicada: IC aguda o descompensada, insuficiencia hepática, IFGe < 30 (pág. 31)."], "pagina": 30, "siguiente": "meta"},
+        {"id": "dos", "tipo": "accion", "texto": "Iniciar con dos antidiabéticos orales", "detalle": ["Metformina + sulfonilurea (gliclazida, glimepirida o glipizida), iDPP4, repaglinida o pioglitazona."], "pagina": 32, "siguiente": "meta"},
+        {"id": "meta", "tipo": "decision", "texto": "¿Alcanza la meta de HbA1c a los 3–6 meses, con buena adherencia?", "pagina": 32, "opciones": [{"etiqueta": "Sí", "ir": "seg"}, {"etiqueta": "No", "ir": "ecv"}]},
+        {"id": "ecv", "tipo": "decision", "texto": "¿Enfermedad cardiovascular establecida? (coronaria, cerebral o periférica)", "pagina": 34, "opciones": [{"etiqueta": "Sí", "ir": "sglt"}, {"etiqueta": "No", "ir": "int1"}]},
+        {"id": "sglt", "tipo": "accion", "texto": "Agregar iSGLT2: empagliflozina 10–25 mg/día (o canagliflozina 100–300 mg/día)", "detalle": ["Alternativa con obesidad: aGLP1 (liraglutida preferencial).", "No asociar iDPP4 con aGLP1."], "pagina": 34, "siguiente": "seg"},
+        {"id": "int1", "tipo": "accion", "texto": "Primera intensificación: agregar sulfonilurea, iDPP4, repaglinida o pioglitazona", "detalle": ["No usar glibenclamida para iniciar.", "No asociar sulfonilurea + repaglinida, ni dos del mismo grupo."], "pagina": 32, "siguiente": "meta2"},
+        {"id": "meta2", "tipo": "decision", "texto": "¿Alcanza la meta a los 3–6 meses?", "pagina": 34, "opciones": [{"etiqueta": "Sí", "ir": "seg"}, {"etiqueta": "No", "ir": "int2"}]},
+        {"id": "int2", "tipo": "accion", "texto": "Segunda intensificación: tercer fármaco o insulina basal al acostarse", "detalle": ["Metformina + SU: agregar iDPP4 o pioglitazona, o suspender la SU y agregar insulina basal.", "No asociar SU + insulina ni repaglinida + insulina."], "pagina": 34, "siguiente": "seg"},
+        {"id": "seg", "tipo": "resultado", "texto": "Seguimiento con HbA1c", "detalle": ["Cada 3–6 meses hasta la meta; luego cada 6 meses si el tratamiento no cambia (pág. 21)."], "pagina": 21}
+      ]
+    }
+  ],
+  "escalas": [
+    {
+      "id": "findrisc",
+      "titulo": "Findrisc · riesgo de DM2 a 10 años",
+      "pagina": 12,
+      "items": [
+        {"texto": "Edad", "opciones": [{"texto": "< 45 años", "puntos": 0}, {"texto": "45–54", "puntos": 2}, {"texto": "55–64", "puntos": 3}, {"texto": "> 64", "puntos": 4}]},
+        {"texto": "IMC (kg/m²)", "opciones": [{"texto": "< 25", "puntos": 0}, {"texto": "25–30", "puntos": 1}, {"texto": "> 30", "puntos": 3}]},
+        {"texto": "Cintura (H / M)", "opciones": [{"texto": "< 94 / < 80 cm", "puntos": 0}, {"texto": "94–102 / 80–88 cm", "puntos": 3}, {"texto": "> 102 / > 88 cm", "puntos": 4}]},
+        {"texto": "¿≥ 30 min diarios de actividad física?", "opciones": [{"texto": "Sí", "puntos": 0}, {"texto": "No", "puntos": 2}]},
+        {"texto": "¿Come verduras o frutas todos los días?", "opciones": [{"texto": "Sí", "puntos": 0}, {"texto": "No", "puntos": 1}]},
+        {"texto": "¿Toma medicación para la HTA?", "opciones": [{"texto": "No", "puntos": 0}, {"texto": "Sí", "puntos": 2}]},
+        {"texto": "¿Alguna vez glucosa alta?", "opciones": [{"texto": "No", "puntos": 0}, {"texto": "Sí", "puntos": 5}]},
+        {"texto": "Familiares con diabetes", "opciones": [{"texto": "No", "puntos": 0}, {"texto": "Abuelos, tíos, primos", "puntos": 3}, {"texto": "Padres, hermanos, hijos", "puntos": 5}]}
+      ],
+      "interpretacion": [
+        {"min": 0, "max": 6, "texto": "Muy bajo riesgo (1%)", "estilo": "ok"},
+        {"min": 7, "max": 11, "texto": "Bajo riesgo (4%)", "estilo": "ok"},
+        {"min": 12, "max": 14, "texto": "Riesgo moderado (17%): solicitar glucemia en ayunas", "estilo": "warn"},
+        {"min": 15, "max": 20, "texto": "Alto riesgo (33%): solicitar glucemia en ayunas", "estilo": "danger"},
+        {"min": 21, "max": 26, "texto": "Muy alto riesgo (50%): solicitar glucemia en ayunas", "estilo": "danger"}
+      ],
+      "nota": "Punto de corte sugerido para pedir glucemia: 12 puntos. La GPC no emite recomendación sobre su uso; se incluye como material complementario."
+    }
+  ],
+  "tablas": [
+    {
+      "id": "criterios",
+      "titulo": "Criterios diagnósticos",
+      "pagina": 10,
+      "columnas": ["Prueba", "Normal", "Prediabetes", "Diabetes"],
+      "filas": [
+        ["Glucemia en ayunas", "< 110 sin FR · < 100 con FR", "GAA: 110–125 sin FR · 100–125 con FR", "≥ 126 mg/dl"],
+        ["Glucemia al azar", "—", "—", "≥ 200 mg/dl con síntomas"],
+        ["PTOG75 a las 2 h", "< 140 mg/dl", "TGA: 140–199 mg/dl", "≥ 200 mg/dl"],
+        ["HbA1c estandarizada", "< 5,7%", "5,7–6,4%", "≥ 6,5%"]
+      ],
+      "notas": ["Se requieren dos determinaciones sobre el punto de corte, salvo la glucemia al azar ≥ 200 con síntomas.", "No usar HbA1c como prueba inicial de diagnóstico."]
+    },
+    {
+      "id": "metas",
+      "titulo": "Metas de HbA1c",
+      "pagina": 22,
+      "columnas": ["Población", "HbA1c"],
+      "filas": [
+        ["Meta general", "7%"],
+        ["Antidiabéticos de bajo riesgo de hipoglucemia, sin complicaciones, expectativa de vida > 10 años", "Cercana a 6,5%"],
+        ["≥ 65 años frágiles o dependientes, comorbilidades significativas, expectativa < 10 años, alto riesgo por hipoglucemias", "Cercana a 8%"],
+        ["Enfermedad terminal y expectativa de vida limitada", "Cercana a 8,5%"]
+      ],
+      "notas": ["Alto riesgo por hipoglucemias: severas recurrentes o desapercibidas, conductores de transporte, trabajo con maquinarias."]
+    },
+    {
+      "id": "nph",
+      "titulo": "Ajuste de insulina NPH nocturna",
+      "pagina": 36,
+      "columnas": ["Promedio de 3 glucemias en ayunas", "Conducta"],
+      "filas": [
+        ["90–130 mg/dl", "No modificar la dosis"],
+        ["> 130 mg/dl, sin valores < 90", "Aumentar 2 UI"],
+        ["> 180 mg/dl", "Aumentar hasta 4 UI"],
+        ["Hipoglucemias o ayunas < 90 mg/dl", "Disminuir 4 UI"]
+      ],
+      "notas": ["Inicio: 0,1–0,2 UI/kg o 10 UI antes de dormir. Objetivo en ayunas: 90–130 mg/dl (meta HbA1c 7%)."]
+    }
+  ],
+  "listas": [
+    {"id": "hipoglucemia", "titulo": "Hipoglucemia: regla de los 15", "estilo": "alerta", "pagina": 39, "items": [
+      "Confirmar con glucosa capilar si es posible (≤ 70 mg/dl).",
+      "Dar 15 g de azúcar simple: 3 sobres de azúcar o un envase chico de jugo azucarado.",
+      "Repetir la glucosa a los 15 minutos; si persiste, otra dosis de azúcar.",
+      "Una vez normalizada, una colación con hidratos de carbono de absorción lenta."
+    ]},
+    {"id": "no-hacer", "titulo": "Evitar", "estilo": "precaucion", "pagina": 31, "items": [
+      "HbA1c como prueba inicial de diagnóstico (pág. 10).",
+      "Iniciar tratamiento con glibenclamida.",
+      "Asociar sulfonilurea + repaglinida, sulfonilurea + insulina o dos del mismo grupo (pág. 34).",
+      "Asociar iDPP4 con aGLP1 (pág. 34)."
+    ]},
+    {"id": "desapercibida", "titulo": "Mayor riesgo de hipoglucemia desapercibida", "estilo": "neutro", "pagina": 22, "items": [
+      "Más de 15 años de evolución de la diabetes.",
+      "Hipoglucemias frecuentes o control glucémico estricto.",
+      "Tratamiento con betabloqueantes o neuropatía autonómica.",
+      "Adultos mayores."
+    ]}
+  ],
+  "calculadoras": [
+    {
+      "id": "nph",
+      "titulo": "Dosis inicial de insulina NPH",
+      "pagina": 36,
+      "descripcion": "Una inyección antes de dormir. Alternativa: 10 UI fijas.",
+      "farmacos": [
+        {"nombre": "Insulina NPH", "grupos": [
+          {"etiqueta": "Habitual", "fases": [{"etiqueta": "Al acostarse", "mgkg": [0.1, 0.2], "tomas": 1, "por": "dosis", "unidad": "UI"}]},
+          {"etiqueta": "Personas mayores o con ERC", "fases": [{"etiqueta": "Al acostarse", "mgkg": [0.1, 0.1], "tomas": 1, "por": "dosis", "unidad": "UI"}], "nota": "Elegir la dosis más baja."},
+          {"etiqueta": "Obesidad o glucocorticoides", "fases": [{"etiqueta": "Al acostarse", "mgkg": [0.2, 0.2], "tomas": 1, "por": "dosis", "unidad": "UI"}], "nota": "Elegir la dosis más alta."}
+        ]}
+      ]
+    }
+  ]
+}

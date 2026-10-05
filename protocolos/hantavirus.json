@@ -1,0 +1,36 @@
+{
+  "archivo": "0000000066cnt-02-flujograma-hantavirus.pdf",
+  "titulo_corto": "Hantavirus: caso sospechoso",
+  "subtitulo": "Flujograma de manejo",
+  "especialidad": "Infectología · Emergencias",
+  "categorias": ["guardia", "infecciones"],
+  "poblacion": "Cualquier edad y sexo",
+  "resumen": "Flujograma nacional de una página para el caso sospechoso de hantavirus. La ausencia de riesgo epidemiológico no descarta la sospecha. Ante alto riesgo y hallazgos de laboratorio o Rx, hospitalizar en un establecimiento con acceso a terapia intensiva.",
+  "claves": [
+    {"texto": "Sospechar ante fiebre > 38 °C sin foco con mialgias, escalofríos, astenia, cefalea o dolor abdominal.", "pagina": 1},
+    {"texto": "También ante neumonía de la comunidad precedida de pródromos, trombocitopenia y/o inmunocitos.", "pagina": 1},
+    {"texto": "La ausencia de riesgo epidemiológico no debe descartar la sospecha diagnóstica.", "pagina": 1},
+    {"texto": "Notificar en forma inmediata y tomar muestra precoz (suero y coágulo).", "pagina": 1}
+  ],
+  "algoritmos": [
+    {
+      "id": "flujograma",
+      "titulo": "Manejo del caso sospechoso de hantavirus",
+      "descripcion": "Transcripción del flujograma oficial.",
+      "pagina": 1,
+      "inicio": "h0",
+      "nodos": [
+        {"id": "h0", "tipo": "inicio", "texto": "Caso sospechoso", "detalle": ["Fiebre > 38 °C sin foco + mialgias, escalofríos, astenia, cefalea o dolor abdominal.", "O NAC precedida de pródromos, trombocitopenia y/o inmunocitos."], "pagina": 1, "siguiente": "h1"},
+        {"id": "h1", "tipo": "decision", "texto": "Riesgo epidemiológico", "detalle": ["Residencia o excursiones a áreas rurales.", "Contacto con roedores silvestres, su orina o deposiciones.", "Desmalezamiento, limpieza de casas deshabitadas o bodegas.", "La ausencia de riesgo no descarta la sospecha."], "pagina": 1, "opciones": [{"etiqueta": "Bajo riesgo", "ir": "b1"}, {"etiqueta": "Alto riesgo", "ir": "a1"}]},
+        {"id": "b1", "tipo": "accion", "texto": "24 h de observación e investigar otras causas", "pagina": 1, "siguiente": "b2"},
+        {"id": "b2", "tipo": "resultado", "texto": "Si los resultados son negativos: otras 24 h de observación y repetir la evaluación", "pagina": 1},
+        {"id": "a1", "tipo": "accion", "texto": "Solicitar hemograma y Rx de tórax", "detalle": ["Buscar: saturación < 90%, hematocrito elevado, trombocitopenia, leucocitosis con desviación a la izquierda y linfocitos atípicos, infiltrados pulmonares."], "pagina": 1, "siguiente": "a2"},
+        {"id": "a2", "tipo": "alerta", "texto": "Hospitalizar en un establecimiento con acceso a Unidad de Cuidados Intensivos", "pagina": 1, "siguiente": "a3"},
+        {"id": "a3", "tipo": "resultado", "texto": "Muestra, notificación e investigación", "detalle": ["Tomar muestra para diagnóstico en forma precoz, incluyendo suero y coágulo.", "Notificar en forma inmediata.", "Investigación epidemiológica y medidas de control ambiental en el lugar probable de exposición (familiar, laboral o recreacional)."], "pagina": 1}
+      ]
+    }
+  ],
+  "tablas": [],
+  "listas": [],
+  "calculadoras": []
+}

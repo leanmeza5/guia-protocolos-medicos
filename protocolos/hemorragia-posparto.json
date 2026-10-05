@@ -1,0 +1,53 @@
+{
+  "archivo": "0000000159cnt-g03.hemorragia-algoritmo-a4-a3.pdf",
+  "titulo_corto": "Hemorragia posparto",
+  "subtitulo": "Algoritmo de la emergencia obstétrica",
+  "especialidad": "Obstetricia · Emergencias",
+  "categorias": ["guardia", "embarazo"],
+  "poblacion": "Puérperas en sala de partos o guardia",
+  "resumen": "Afiche nacional (Ministerio de Salud / UNICEF) para la atención integral de la emergencia obstétrica: medidas iniciales simultáneas y búsqueda ordenada de la causa, desde la retención placentaria hasta la coagulopatía.",
+  "claves": [
+    {"texto": "Proceder sin demora y pedir ayuda: tocoginecología, hemoterapia y anestesiología.", "pagina": 1},
+    {"texto": "Acceso venoso 16 G o mayor, soluciones expansoras, O2, sonda vesical con diuresis y muestra para compatibilidad, hematocrito, plaquetas y coagulograma.", "pagina": 1},
+    {"texto": "Atonía uterina: drogas útero-retractoras EV, masaje uterino y compresión bimanual; si no responde, balón intrauterino.", "pagina": 1}
+  ],
+  "algoritmos": [
+    {
+      "id": "hpp",
+      "titulo": "Manejo de la hemorragia posparto",
+      "descripcion": "Transcripción del algoritmo oficial. Las medidas iniciales se hacen en paralelo a la búsqueda de la causa.",
+      "pagina": 1,
+      "inicio": "m0",
+      "nodos": [
+        {"id": "m0", "tipo": "alerta", "texto": "Medidas iniciales: proceder sin demora y pedir ayuda", "detalle": ["Tocoginecólogo, hemoterapia, anestesiólogo.", "Evaluar pulso, TA, coloración y conciencia.", "Acceso venoso 16 G o mayor; soluciones expansoras; metoclopramida.", "Oxígeno; sonda vesical y diuresis.", "Muestra de sangre: compatibilidad, hematocrito, plaquetas, coagulograma (fibrinógeno, PDF)."], "pagina": 1, "siguiente": "q1"},
+        {"id": "q1", "tipo": "decision", "texto": "¿Se produjo el alumbramiento?", "pagina": 1, "opciones": [{"etiqueta": "No", "ir": "ret1"}, {"etiqueta": "Sí", "ir": "q2"}]},
+        {"id": "ret1", "tipo": "accion", "texto": "Ocitocina 10 UI EV + masaje uterino + tracción controlada del cordón", "pagina": 1, "siguiente": "ret2"},
+        {"id": "ret2", "tipo": "decision", "texto": "¿Respuesta después de 30 minutos?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "q2"}, {"etiqueta": "No: retención placentaria", "ir": "ret3"}]},
+        {"id": "ret3", "tipo": "accion", "texto": "Inyección intraumbilical de ocitocina", "pagina": 1, "siguiente": "ret4"},
+        {"id": "ret4", "tipo": "decision", "texto": "¿Respuesta?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "q2"}, {"etiqueta": "No", "ir": "ret5"}]},
+        {"id": "ret5", "tipo": "accion", "texto": "Alumbramiento manual bajo anestesia", "pagina": 1, "siguiente": "ret6"},
+        {"id": "ret6", "tipo": "decision", "texto": "¿Hay plano de clivaje?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "q2"}, {"etiqueta": "No: acretismo placentario", "ir": "hist"}]},
+        {"id": "hist", "tipo": "alerta", "texto": "Histerectomía subtotal o total", "pagina": 1},
+        {"id": "q2", "tipo": "decision", "texto": "¿Placenta íntegra?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "q3"}, {"etiqueta": "No: restos placentarios", "ir": "leg"}]},
+        {"id": "leg", "tipo": "resultado", "texto": "Legrado uterino", "pagina": 1},
+        {"id": "q3", "tipo": "decision", "texto": "¿Útero retraído in situ?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "q4"}, {"etiqueta": "No: atonía uterina", "ir": "aton"}, {"etiqueta": "No: inversión uterina", "ir": "inv"}]},
+        {"id": "aton", "tipo": "accion", "texto": "Drogas útero-retractoras EV, masaje uterino y compresión bimanual", "pagina": 1, "siguiente": "aton2"},
+        {"id": "aton2", "tipo": "decision", "texto": "¿Respuesta?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "q4"}, {"etiqueta": "No", "ir": "balon"}]},
+        {"id": "balon", "tipo": "accion", "texto": "Balón intrauterino", "pagina": 1, "siguiente": "balon2"},
+        {"id": "balon2", "tipo": "decision", "texto": "¿Respuesta?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "q4"}, {"etiqueta": "No", "ir": "lap1"}]},
+        {"id": "lap1", "tipo": "alerta", "texto": "Laparotomía exploradora", "detalle": ["Puntos de B-Lynch, ligaduras arteriales, histerectomía subtotal."], "pagina": 1},
+        {"id": "inv", "tipo": "accion", "texto": "Restitución manual bajo anestesia general con halogenados", "pagina": 1, "siguiente": "inv2"},
+        {"id": "inv2", "tipo": "decision", "texto": "¿Respuesta?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "q4"}, {"etiqueta": "No", "ir": "lap2"}]},
+        {"id": "lap2", "tipo": "alerta", "texto": "Laparotomía exploradora", "detalle": ["Corrección por vía abdomino-vaginal; cirugía de Haultain."], "pagina": 1},
+        {"id": "q4", "tipo": "decision", "texto": "¿Examen de vagina y cuello normal?", "pagina": 1, "opciones": [{"etiqueta": "Sí", "ir": "q5"}, {"etiqueta": "No: desgarros", "ir": "sut"}]},
+        {"id": "sut", "tipo": "resultado", "texto": "Sutura por vía vaginal", "pagina": 1},
+        {"id": "q5", "tipo": "decision", "texto": "¿Examen uterino manual normal?", "pagina": 1, "opciones": [{"etiqueta": "No: rotura uterina", "ir": "rot"}, {"etiqueta": "Sí", "ir": "coag"}]},
+        {"id": "rot", "tipo": "alerta", "texto": "Laparotomía exploradora: histerorrafia o histerectomía", "pagina": 1},
+        {"id": "coag", "tipo": "resultado", "texto": "Sospechar coagulopatía: tratamiento con hemoderivados", "detalle": ["Glóbulos rojos y plaquetas; crioprecipitados."], "pagina": 1}
+      ]
+    }
+  ],
+  "tablas": [],
+  "listas": [],
+  "calculadoras": []
+}

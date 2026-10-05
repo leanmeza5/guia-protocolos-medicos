@@ -2,7 +2,7 @@
 // rurales con mala señal). Guarda la interfaz al instalarse y, después, cada
 // ficha, página e imagen que se abre.
 
-const VERSION = "protocolos-v3";
+const VERSION = "protocolos-v4";
 const BASE = ["/", "/static/styles.css", "/static/app.js", "/static/icono-192.png", "/static/icono-512.png", "/static/apple-touch-icon.png", "/manifest.webmanifest", "/api/inicio"];
 
 self.addEventListener("install", (ev) => {

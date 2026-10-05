@@ -1,23 +1,127 @@
 {
   "_nota": "Grupos de términos equivalentes para la búsqueda (siglas y palabras de uso cotidiano). Escribir sin tildes.",
   "grupos": [
-    ["hta", "hipertension", "presion alta", "hipertenso"],
-    ["dm", "dm2", "dbt", "diabetes", "diabetico", "glucemia"],
-    ["epoc", "enfisema", "bronquitis cronica"],
-    ["nac", "neumonia"],
-    ["acv", "ataque cerebrovascular", "stroke", "ictus"],
-    ["co", "monoxido", "carboxihemoglobina", "cohb"],
-    ["coqueluche", "tos convulsa", "pertussis", "tos ferina"],
-    ["hidatidosis", "quiste hidatidico", "equinococosis", "echinococcus"],
-    ["hpp", "hemorragia posparto", "hemorragia postparto", "atonia uterina"],
-    ["vih", "hiv"],
-    ["vhb", "hbv", "hepatitis b", "hbsag"],
-    ["atb", "antibiotico"],
-    ["gripe", "influenza"],
-    ["embarazo", "embarazada", "gestante", "gestacion", "prenatal"],
-    ["rn", "recien nacido", "neonato"],
-    ["vdrl", "sifilis"],
-    ["rtpa", "rt-pa", "alteplasa", "trombolisis"],
-    ["nph", "insulina"]
+    [
+      "hta",
+      "hipertension",
+      "presion alta",
+      "hipertenso"
+    ],
+    [
+      "dm",
+      "dm2",
+      "dbt",
+      "diabetes",
+      "diabetico",
+      "glucemia"
+    ],
+    [
+      "epoc",
+      "enfisema",
+      "bronquitis cronica"
+    ],
+    [
+      "nac",
+      "neumonia"
+    ],
+    [
+      "acv",
+      "ataque cerebrovascular",
+      "stroke",
+      "ictus"
+    ],
+    [
+      "co",
+      "monoxido",
+      "carboxihemoglobina",
+      "cohb"
+    ],
+    [
+      "coqueluche",
+      "tos convulsa",
+      "pertussis",
+      "tos ferina"
+    ],
+    [
+      "hidatidosis",
+      "quiste hidatidico",
+      "equinococosis",
+      "echinococcus"
+    ],
+    [
+      "hpp",
+      "hemorragia posparto",
+      "hemorragia postparto",
+      "atonia uterina"
+    ],
+    [
+      "vih",
+      "hiv"
+    ],
+    [
+      "vhb",
+      "hbv",
+      "hepatitis b",
+      "hbsag"
+    ],
+    [
+      "atb",
+      "antibiotico"
+    ],
+    [
+      "gripe",
+      "influenza"
+    ],
+    [
+      "embarazo",
+      "embarazada",
+      "gestante",
+      "gestacion",
+      "prenatal"
+    ],
+    [
+      "rn",
+      "recien nacido",
+      "neonato"
+    ],
+    [
+      "vdrl",
+      "sifilis"
+    ],
+    [
+      "rtpa",
+      "rt-pa",
+      "alteplasa",
+      "trombolisis"
+    ],
+    [
+      "nph",
+      "insulina"
+    ],
+    [
+      "tbc",
+      "tb",
+      "tuberculosis",
+      "bk",
+      "baciloscopia",
+      "sintomatico respiratorio"
+    ],
+    [
+      "ppd",
+      "mantoux",
+      "tuberculina",
+      "prueba tuberculinica"
+    ],
+    [
+      "tpt",
+      "quimioprofilaxis",
+      "tratamiento preventivo",
+      "infeccion latente"
+    ],
+    [
+      "hrze",
+      "antifimicos",
+      "antituberculosos"
+    ]
   ]
 }

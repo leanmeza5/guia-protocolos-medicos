@@ -6,13 +6,14 @@ Web de consulta rápida sobre las guías de práctica clínica del Ministerio de
 
 ## Qué incluye
 
-- **12 fichas rápidas**: HTA, diabetes tipo 2, EPOC estable, infecciones respiratorias bajas (NAC, EPOC reagudizada, bronquitis), coqueluche, Chagas, control prenatal (VIH, sífilis, hepatitis B, Chagas), hidatidosis, intoxicación por monóxido de carbono, ACV isquémico, hantavirus y hemorragia posparto.
+- **13 fichas rápidas**: HTA, diabetes tipo 2, EPOC estable, infecciones respiratorias bajas (NAC, EPOC reagudizada, bronquitis), coqueluche, Chagas, control prenatal (VIH, sífilis, hepatitis B, Chagas), hidatidosis, intoxicación por monóxido de carbono, ACV isquémico, hantavirus, hemorragia posparto y tuberculosis (Pautas técnicas 2026: diagnóstico, hepatotoxicidad, contactos y TPT).
 - **Algoritmos** en diagrama y en modo paso a paso, con la página de origen en cada punto.
 - **Escalas**: CURB-65, Findrisc, AUDIT-C, Cincinnati.
-- **Calculadoras por peso**: benznidazol, nifurtimox, macrólidos y TMP-SMZ para coqueluche, albendazol, insulina NPH inicial, penicilina en el RN, rt-PA.
+- **Calculadoras por peso**: benznidazol, nifurtimox, macrólidos y TMP-SMZ para coqueluche, albendazol, insulina NPH inicial, penicilina en el RN, rt-PA, antituberculosos por kilo y comprimidos de dosis fijas combinadas (adultos y dispersables pediátricos).
 - **Contexto fueguino**: alerta según la temporada, datos provinciales de las guías y teléfonos de referencia, todos con su fuente.
-- **Búsqueda** sin tildes ni mayúsculas, con siglas y palabras cotidianas (HTA, NAC, ACV, “presión alta”, “tos convulsa”).
+- **Búsqueda** sin tildes ni mayúsculas, con siglas y palabras cotidianas (HTA, NAC, ACV, TBC, PPD, “presión alta”, “tos convulsa”).
 - **Uso sin conexión**: lo que se consulta una vez queda disponible sin señal; se puede instalar en el celular como app.
+- **Diseño**: tipografía del sistema, grises neutros y un solo color de acento; el color se reserva para el área clínica y la gravedad. Panel lateral y barra inferior en el celular, modo claro y oscuro.
 - Otras 3 guías (asma, tabaco, riesgo de suicidio) indexadas para la búsqueda y con sus páginas, todavía sin ficha.
 
 ## Cómo funciona

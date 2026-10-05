@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Protocolos Clínicos</title>
   <meta name="description" content="Algoritmos, dosis y protocolos de las guías clínicas oficiales del Ministerio de Salud de la Nación, para los equipos de salud de Tierra del Fuego.">
-  <meta name="theme-color" content="#0d3f57">
+  <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Protocolos">
@@ -15,7 +16,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/static/icono-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css">
   <script>
     try {
@@ -31,7 +32,7 @@
   <aside class="sidebar" id="sidebar" aria-label="Menú principal">
     <div class="sidebar-cab">
       <a class="brand" href="#/" aria-label="Inicio">
-        <img class="brand-mark" src="/static/icono-192.png" alt="" width="38" height="38">
+        <img class="brand-mark" src="/static/icono-192.png" alt="" width="30" height="30">
         <span class="brand-text">
           <strong>Protocolos</strong>
           <small>Tierra del Fuego</small>
@@ -50,7 +51,7 @@
         <span class="nav-ico"><svg class="ico"><use href="#i-download"/></svg></span><span class="nav-txt">Instalar la app</span>
       </button>
       <button class="nav-item" type="button" id="btn-tema" aria-label="Cambiar tema claro/oscuro">
-        <span class="nav-ico"><svg class="ico ico-sun"><use href="#i-sun"/></svg><svg class="ico ico-moon"><use href="#i-moon"/></svg></span><span class="nav-txt">Modo claro / oscuro</span>
+        <span class="nav-ico"><svg class="ico ico-sun"><use href="#i-sun"/></svg><svg class="ico ico-moon"><use href="#i-moon"/></svg></span><span class="nav-txt">Apariencia</span>
       </button>
     </div>
   </aside>
@@ -100,8 +101,8 @@
     <div class="modal-fondo" data-cerrar-modal></div>
     <div class="modal-panel">
       <img src="/static/icono-192.png" alt="" width="64" height="64" class="modal-icono">
-      <h2 id="modal-instalar-titulo">Tené los protocolos a un toque</h2>
-      <p>Instalá esta web como app: queda un ícono en la pantalla de inicio, se abre a pantalla completa y funciona sin señal con lo que ya consultaste.</p>
+      <h2 id="modal-instalar-titulo">Protocolos, a un toque</h2>
+      <p>Agregala a la pantalla de inicio. Se abre a pantalla completa y funciona sin señal con lo que ya consultaste.</p>
       <ol class="pasos-instalar" id="pasos-instalar"></ol>
       <button class="btn btn-primary btn-grande" type="button" data-cerrar-modal>Entendido</button>
     </div>

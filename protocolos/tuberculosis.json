@@ -1,0 +1,314 @@
+{
+  "archivo": "pautas_tecnicas_de_tuberculosis_en_la_argentina_2026.pdf",
+  "titulo_corto": "Tuberculosis",
+  "subtitulo": "Pautas técnicas de tuberculosis en la Argentina · 5.ª edición",
+  "especialidad": "Neumonología · Infectología · Atención primaria",
+  "categorias": ["infecciones"],
+  "anio": 2026,
+  "poblacion": "Adultos, niños y adolescentes, embarazo y puerperio; contactos de casos de TB",
+  "resumen": "Diagnóstico con baciloscopia, cultivo y pruebas moleculares rápidas; esquema estándar 2HRZE/4HR diario; dosis por peso para adultos y niños; manejo de la hepatotoxicidad; estudio de contactos y tratamiento preventivo (TPT).",
+  "claves": [
+    {"texto": "Sospechar TB ante tos de más de 2 semanas, fiebre o febrícula vespertina, sudoración nocturna o pérdida de peso.", "pagina": 35},
+    {"texto": "Pedir dos muestras de esputo por caso sospechoso; si ambas son negativas y persiste la sospecha, una tercera.", "pagina": 43},
+    {"texto": "Radiografía de tórax a toda persona con sospecha, pero su ausencia no debe demorar el tratamiento si la bacteriología es positiva.", "pagina": 36},
+    {"texto": "TB sensible: 2HRZE/4HR diario, 6 meses (60 + 120 tomas), con dosis fijas combinadas según peso. Ya no se recomiendan esquemas intermitentes.", "pagina": 61},
+    {"texto": "Controles: clínico mensual; baciloscopia al 2.º, 4.º y 6.º mes; Rx al inicio, 2.º y 6.º mes.", "pagina": 64},
+    {"texto": "Contactos menores de 5 años: TPT siempre, sin importar la PPD, una vez descartada la TB activa. Preferir 3HR.", "pagina": 204},
+    {"texto": "La rifampicina reduce la eficacia de los anticonceptivos hormonales orales: indicar método no hormonal o combinado.", "pagina": 64},
+    {"texto": "Notificar todo caso en el SNVS 2.0.", "pagina": 30}
+  ],
+  "algoritmos": [
+    {
+      "id": "diagnostico",
+      "titulo": "Persona con sospecha de tuberculosis",
+      "descripcion": "Algoritmos 1 y 2 de la guía: baciloscopia o prueba molecular rápida (PDRm) según el grupo.",
+      "pagina": 40,
+      "inicio": "d0",
+      "nodos": [
+        {"id": "d0", "tipo": "inicio", "texto": "Persona con sospecha de TB", "detalle": ["Tos > 2 semanas, hemoptisis, disnea.", "Fiebre o febrícula vespertina, sudoración nocturna, pérdida de peso, astenia.", "Dos muestras de esputo y Rx de tórax."], "pagina": 35, "siguiente": "d1"},
+        {"id": "d1", "tipo": "decision", "texto": "¿Pertenece a un grupo priorizado?", "detalle": ["Niños y adolescentes; VIH u otro inmunocompromiso, diabetes, embarazo.", "Consumo problemático de sustancias; situación de calle.", "Tratamiento previo de TB (recaída, fracaso, pérdida de seguimiento).", "Contacto con TB-RR/MDR; cárceles, instituciones de salud, comunidades cerradas.", "Procedencia de áreas con TB resistente (Perú, Ecuador, África, Europa del Este).", "Sospecha de TB extrapulmonar."], "pagina": 41, "opciones": [{"etiqueta": "Sí", "ir": "d2"}, {"etiqueta": "No", "ir": "d3"}]},
+        {"id": "d2", "tipo": "accion", "texto": "PDRm + baciloscopia + cultivo", "detalle": ["Xpert MTB/RIF Ultra u otra prueba molecular disponible.", "Si el resultado es «sin resultado», «error» o «inválido», repetir con otra muestra."], "pagina": 40, "siguiente": "d4"},
+        {"id": "d4", "tipo": "decision", "texto": "Resultado de la PDRm", "pagina": 41, "opciones": [{"etiqueta": "MTB detectado, RIF no detectada", "ir": "d5"}, {"etiqueta": "MTB detectado, RIF detectada", "ir": "d6"}, {"etiqueta": "RIF indeterminada", "ir": "d7"}, {"etiqueta": "MTB no detectado", "ir": "d8"}]},
+        {"id": "d5", "tipo": "resultado", "texto": "Tratar con esquema de primera línea (2HRZE/4HR)", "detalle": ["Si hay riesgo alto de resistencia a isoniacida: prueba de sensibilidad fenotípica o Xpert MTB/XDR.", "Isoniacida resistente: 6RZELfx diario, 6 meses."], "pagina": 41},
+        {"id": "d6", "tipo": "alerta", "texto": "Tratar como TB-MDR/RR", "detalle": ["Repetir PDRm si el riesgo de MDR es bajo.", "Xpert MTB/XDR para fluoroquinolonas; cultivo y PS para segunda línea.", "Interconsulta con el Grupo Asesor Técnico en TB."], "pagina": 42},
+        {"id": "d7", "tipo": "accion", "texto": "Considerar primera línea y pedir cultivo con PS", "detalle": ["Sin trazas: tratar con primera línea, considerar repetir PDRm, cultivo y PS.", "Trazas: considerar tratar con primera línea; cultivo y PS."], "pagina": 42},
+        {"id": "d8", "tipo": "accion", "texto": "Reevaluar clínicamente", "detalle": ["Si persiste la sospecha: baciloscopia y cultivo.", "Considerar micobacterias no tuberculosas.", "En niños, considerar repetir la PDRm."], "pagina": 42},
+        {"id": "d3", "tipo": "decision", "texto": "Baciloscopia", "pagina": 40, "opciones": [{"etiqueta": "Positiva", "ir": "d9"}, {"etiqueta": "Negativa", "ir": "d10"}]},
+        {"id": "d9", "tipo": "resultado", "texto": "Tratar con esquema de primera línea", "detalle": ["Cultivo y prueba de sensibilidad según disponibilidad.", "Revisar el tratamiento con el resultado de la PS."], "pagina": 40},
+        {"id": "d10", "tipo": "accion", "texto": "Reevaluar clínicamente", "detalle": ["Si la sospecha persiste: cultivo y PS (y tercera muestra de esputo)."], "pagina": 40}
+      ]
+    },
+    {
+      "id": "hepatotoxicidad",
+      "titulo": "Síntomas digestivos durante el tratamiento",
+      "descripcion": "Figuras 5 y 6: intolerancia o hepatotoxicidad y reintroducción de fármacos.",
+      "pagina": 139,
+      "inicio": "h0",
+      "nodos": [
+        {"id": "h0", "tipo": "inicio", "texto": "Náuseas, vómitos o dolor abdominal", "detalle": ["Suelen aparecer en las primeras semanas.", "La pirazinamida es el fármaco más hepatotóxico."], "pagina": 137, "siguiente": "h1"},
+        {"id": "h1", "tipo": "accion", "texto": "Hepatograma (TGO, TGP, bilirrubina)", "pagina": 139, "siguiente": "h2"},
+        {"id": "h2", "tipo": "decision", "texto": "¿Cómo están las transaminasas?", "pagina": 139, "opciones": [{"etiqueta": "Normales", "ir": "h3"}, {"etiqueta": "≥ 5× LSN, o ≥ 3× con síntomas, o bilirrubina > 2 mg/dl / ictericia", "ir": "h4"}]},
+        {"id": "h3", "tipo": "resultado", "texto": "Intolerancia digestiva: tratamiento sintomático", "detalle": ["Dar la medicación 1 h antes o 2 h después de comer.", "Antieméticos o gastroprotectores si hace falta.", "Si persiste: monodrogas para identificar el fármaco."], "pagina": 137},
+        {"id": "h4", "tipo": "alerta", "texto": "Suspender todos los fármacos hepatotóxicos", "detalle": ["Esquema no hepatotóxico: levofloxacina + etambutol + estreptomicina o amikacina.", "Buscar otras causas: alcohol, hepatitis virales, otros fármacos; ecografía."], "pagina": 138, "siguiente": "h5"},
+        {"id": "h5", "tipo": "accion", "texto": "Al normalizar: reintroducir de a un fármaco", "detalle": ["Patrón colestásico: empezar por isoniacida. Hepatocelular: por rifampicina.", "Esperar 5–7 días y repetir hepatograma antes de sumar el siguiente.", "Si reaparece la alteración, ese fármaco se suspende en forma definitiva.", "Hepatotoxicidad moderada o grave: no reintroducir pirazinamida y extender a 9 meses."], "pagina": 138}
+      ]
+    },
+    {
+      "id": "contactos",
+      "titulo": "Contacto de un caso de TB pulmonar",
+      "descripcion": "Estudio de contactos e indicación de tratamiento preventivo (TPT).",
+      "pagina": 202,
+      "inicio": "c0",
+      "nodos": [
+        {"id": "c0", "tipo": "inicio", "texto": "Contacto cercano de TB pulmonar o laríngea", "detalle": ["Conviviente o contacto estrecho en los 3 meses previos al tratamiento del caso índice.", "Si el caso índice es un niño: buscar el caso fuente adulto."], "pagina": 200, "siguiente": "c1"},
+        {"id": "c1", "tipo": "accion", "texto": "Descartar TB activa", "detalle": ["Evaluación clínica, PPD, Rx de tórax.", "Microbiología si hay síntomas."], "pagina": 201, "siguiente": "c2"},
+        {"id": "c2", "tipo": "decision", "texto": "¿TB activa?", "pagina": 201, "opciones": [{"etiqueta": "Sí", "ir": "c3"}, {"etiqueta": "No", "ir": "c4"}]},
+        {"id": "c3", "tipo": "resultado", "texto": "Tratamiento completo de TB", "pagina": 201},
+        {"id": "c4", "tipo": "decision", "texto": "Edad del contacto", "pagina": 202, "opciones": [{"etiqueta": "Menor de 5 años", "ir": "c5"}, {"etiqueta": "5 a 19 años", "ir": "c6"}, {"etiqueta": "20 años o más", "ir": "c9"}]},
+        {"id": "c5", "tipo": "resultado", "texto": "TPT siempre, sin importar la PPD", "detalle": ["Preferir 3HR.", "Si no tiene BCG: vacunar al terminar el TPT (salvo inmunodeprimidos)."], "pagina": 204},
+        {"id": "c6", "tipo": "decision", "texto": "PPD", "pagina": 202, "opciones": [{"etiqueta": "Positiva", "ir": "c7"}, {"etiqueta": "Negativa", "ir": "c8"}]},
+        {"id": "c7", "tipo": "resultado", "texto": "Iniciar TPT", "detalle": ["3HR, 6H o 4R."], "pagina": 202},
+        {"id": "c8", "tipo": "accion", "texto": "Iniciar isoniacida y reevaluar a los 3 meses", "detalle": ["Rx y PPD a los 3 meses.", "Sin viraje y Rx normal: suspender.", "Con viraje tuberculínico: completar 6 meses."], "pagina": 204},
+        {"id": "c9", "tipo": "accion", "texto": "Evaluar el riesgo individual", "detalle": ["TPT si PPD ≥ 5 mm en VIH, silicosis, corticoides prolongados o biológicos, trasplante, neoplasias, hemodiálisis, gastrectomía.", "Contactos de TB resistente: consultar con expertos."], "pagina": 202}
+      ]
+    }
+  ],
+  "tablas": [
+    {
+      "id": "dfc-adultos",
+      "titulo": "Dosis fijas combinadas en adultos: comprimidos por día",
+      "grupo": "Tratamiento en adultos",
+      "pagina": 61,
+      "columnas": ["Peso (kg)", "HRZE 75/150/400/275 mg", "HR 75/150 mg", "HR 150/300 mg"],
+      "filas": [
+        ["30–34", "2", "2", "1"],
+        ["35–39", "2,5", "3", "1,5"],
+        ["40–54", "3", "3", "1,5"],
+        ["55 o más", "4", "4", "2"]
+      ],
+      "notas": ["Fase inicial: 2 meses de HRZE diario (60 tomas). Continuación: 4 meses de HR diario (120 tomas).", "TB meníngea, miliar, osteoarticular o inmunodepresión grave: continuación de 7–10 meses con HR. Meníngea o pericárdica: prednisona 1 mg/kg al menos 30 días."]
+    },
+    {
+      "id": "farmacos-adultos",
+      "titulo": "Fármacos de primera línea en adultos",
+      "grupo": "Tratamiento en adultos",
+      "pagina": 58,
+      "columnas": ["Fármaco", "Dosis diaria", "Máximo", "Reacciones adversas"],
+      "filas": [
+        ["Isoniacida (H)", "5 mg/kg", "300 mg", "Hepatitis (más en > 35 años), polineuritis, acné, pseudolupus, convulsiones"],
+        ["Rifampicina (R)", "10 mg/kg, en ayunas", "600 mg", "Orina coloreada, colestasis, hepatitis, interacciones; anemia hemolítica y trombocitopenia (graves)"],
+        ["Pirazinamida (Z)", "25 mg/kg", "2.000 mg", "Hepatitis, hiperuricemia, artralgias"],
+        ["Etambutol (E)", "20 mg/kg", "1.600 mg", "Neuritis óptica, alteración de la visión de los colores"]
+      ],
+      "notas": ["Los cuatro pueden usarse en el embarazo.", "Piridoxina (B6) con riesgo de neuropatía: desnutrición, VIH, embarazo, lactancia, diabetes, alcohol, insuficiencia renal. Profiláctica 10–50 mg/día."]
+    },
+    {
+      "id": "controles",
+      "titulo": "Controles durante el tratamiento",
+      "grupo": "Tratamiento en adultos",
+      "pagina": 64,
+      "columnas": ["Control", "Frecuencia"],
+      "filas": [
+        ["Clínico", "Mensual (ajustar dosis al peso)"],
+        ["Bacteriológico", "2.º, 4.º y 6.º mes"],
+        ["Laboratorio", "Mensual o según factores de riesgo"],
+        ["Radiológico", "Inicio, 2.º y 6.º mes"]
+      ],
+      "notas": ["Al inicio: hemograma, eritro o PCR, hepatograma, glucemia, creatinina, ácido úrico, orina; serologías VIH, hepatitis B, Chagas, VDRL y test de embarazo.", "BK positiva al 2.º mes con buena adherencia: pedir PDRm o cultivo y PS."]
+    },
+    {
+      "id": "farmacos-pediatria",
+      "titulo": "Fármacos de primera línea en pediatría",
+      "grupo": "Niños y adolescentes",
+      "pagina": 109,
+      "columnas": ["Fármaco", "Dosis habitual", "Rango", "Máximo"],
+      "filas": [
+        ["Isoniacida (H)", "10 mg/kg/día", "7–15 mg/kg", "300 mg"],
+        ["Rifampicina (R)", "15 mg/kg/día", "10–20 mg/kg", "600 mg"],
+        ["Pirazinamida (Z)", "35 mg/kg/día", "25–40 mg/kg", "2.000 mg"],
+        ["Etambutol (E)", "20 mg/kg/día", "15–25 mg/kg", "1.600 mg"]
+      ],
+      "notas": ["Menores de 2 años: isoniacida 10–15 mg/kg/día.", "Esquema estándar 2HRZE/4HR; TB meníngea y osteoarticular 2HRZE/10HR."]
+    },
+    {
+      "id": "dispersables",
+      "titulo": "Formulaciones pediátricas dispersables: comprimidos por día",
+      "grupo": "Niños y adolescentes",
+      "pagina": 112,
+      "columnas": ["Peso", "Triple RHZ 75/50/150", "Etambutol 100 mg", "Doble RH 75/50"],
+      "filas": [
+        ["4–7 kg", "1", "1", "1"],
+        ["8–11 kg", "2", "2", "2"],
+        ["12–15 kg", "3", "3", "3"],
+        ["16–24 kg", "4", "4", "4"]
+      ],
+      "notas": ["Disolver en unos 15 ml de agua y dar antes de los 10 minutos; enjuagar el recipiente y darlo también."]
+    },
+    {
+      "id": "ppd",
+      "titulo": "Cuándo una PPD es positiva",
+      "grupo": "PPD y tratamiento preventivo",
+      "pagina": 197,
+      "columnas": ["Induración", "En quién"],
+      "filas": [
+        ["≥ 5 mm", "Contacto reciente de TB bacilífera; VIH; niños con desnutrición grave; trasplantados; inmunosupresión (corticoides en dosis inmunosupresora ≥ 1 mes, anti-TNF, metotrexato); Rx con lesiones fibróticas de TB previa no tratada"],
+        ["≥ 10 mm", "Niños o adolescentes expuestos; inmigrantes recientes de países de alta prevalencia; drogas inyectables; residentes y trabajadores de cárceles, hospitales y refugios; laboratorio de micobacterias; diabetes"]
+      ],
+      "notas": ["2 UT de PPD RT23 (0,1 ml) intradérmica, técnica de Mantoux.", "Una PPD negativa no descarta TB: hasta 12 semanas desde la infección, TB grave, VIH, desnutrición."]
+    },
+    {
+      "id": "tpt",
+      "titulo": "Esquemas de tratamiento preventivo (TPT)",
+      "grupo": "PPD y tratamiento preventivo",
+      "pagina": 204,
+      "columnas": ["Esquema", "Duración", "Indicación"],
+      "filas": [
+        ["3HR (isoniacida + rifampicina)", "3 meses", "Todas las edades; opción acortada preferida"],
+        ["6H (isoniacida)", "6–9 meses", "Todas las edades; esquema clásico"],
+        ["4R (rifampicina)", "4 meses", "Intolerancia o resistencia a isoniacida"]
+      ],
+      "notas": ["Dosis: isoniacida 300 mg/día en adultos; 10 mg/kg/día en < 15 años (máx. 300 mg; < 2 años 15 mg/kg). Rifampicina 10 mg/kg/día (máx. 600 mg).", "3HP y 1HP (rifapentina) no están disponibles por el momento en Argentina.", "Contactos de TB-MDR con sensibilidad a quinolonas: 6 meses de levofloxacina."]
+    }
+  ],
+  "listas": [
+    {
+      "id": "internar",
+      "titulo": "Cuándo internar",
+      "estilo": "alerta",
+      "pagina": 67,
+      "items": [
+        "Insuficiencia respiratoria aguda, hemoptisis masiva, neumotórax o derrame que requiera procedimiento.",
+        "TB bilateral cavitada con deterioro grave; miliar, meníngea o diseminada.",
+        "Hepatopatía o nefropatía grave, diabetes descompensada, inmunosupresión severa.",
+        "Reacción adversa grave: arritmias, psicosis, insuficiencia hepática o renal, DRESS, Stevens-Johnson.",
+        "Imposibilidad de tratamiento ambulatorio seguro (situación de calle, hacinamiento, convivencia con menores de 5 años o embarazadas) o barreras geográficas."
+      ]
+    },
+    {
+      "id": "embarazo",
+      "titulo": "Embarazo y lactancia",
+      "estilo": "info",
+      "pagina": 65,
+      "items": [
+        "Iniciar el tratamiento de inmediato, con los mismos esquemas del adulto.",
+        "Agregar piridoxina (B6).",
+        "Contraindicados los aminoglucósidos (estreptomicina, amikacina, kanamicina): ototoxicidad fetal.",
+        "Rx de tórax con protección abdominal en cualquier edad gestacional.",
+        "TB latente (PPD + y Rx normal): isoniacida 6 meses, en cualquier semana de gestación.",
+        "La TB no se transmite por la leche: continuar la lactancia."
+      ]
+    },
+    {
+      "id": "rn",
+      "titulo": "Recién nacido de madre con TB",
+      "estilo": "precaucion",
+      "pagina": 66,
+      "items": [
+        "Signos compatibles (fiebre, dificultad respiratoria, hepatoesplenomegalia, sepsis sin foco): evaluación por neonatología o infectología e internación.",
+        "RN sano con TB activa descartada: TPT, preferentemente 3HR.",
+        "Diferir la BCG hasta terminar el TPT (no aplicar si el RN tiene VIH).",
+        "Piridoxina 1–2 mg/kg/día mientras reciba isoniacida.",
+        "RN expuesto a VIH con nevirapina: no usar rifamicinas; isoniacida 6–9 meses."
+      ]
+    },
+    {
+      "id": "abreviado",
+      "titulo": "Esquema de 4 meses (2HRZE/2HR) en TB no grave pediátrica",
+      "estilo": "exito",
+      "pagina": 114,
+      "items": [
+        "Solo para niños de 12 meses a 15 años con TB no grave y sin comorbilidades.",
+        "No usar en: menores de 12 meses, mayores de 16 años, desnutrición moderada o grave, VIH o inmunocompromiso, tratamiento de TB en los últimos 2 años, sospecha de resistencia, embarazo, consumo problemático.",
+        "Reevaluar a los 4 meses: sin respuesta, mala adherencia o cambios por efectos adversos → completar al menos 6 meses."
+      ]
+    },
+    {
+      "id": "interacciones",
+      "titulo": "Interacciones a tener en cuenta",
+      "estilo": "neutro",
+      "pagina": 63,
+      "items": [
+        "La rifampicina baja el efecto de anticonceptivos orales, cumarínicos, antidiabéticos orales, digitálicos, antiarrítmicos, anticonvulsivantes y antihipertensivos.",
+        "Con inhibidores de proteasa: reemplazar rifampicina por rifabutina.",
+        "La isoniacida potencia fenitoína, diazepam y carbamazepina.",
+        "Dar los antifímicos al menos 1 h antes de los antiácidos; HR en ayunas."
+      ]
+    }
+  ],
+  "calculadoras": [
+    {
+      "id": "dfc",
+      "titulo": "Comprimidos de dosis fijas combinadas (adultos)",
+      "pagina": 61,
+      "descripcion": "Comprimidos por día según el peso. Toma única diaria.",
+      "farmacos": [
+        {
+          "nombre": "HRZE (fase inicial)",
+          "por_peso": true,
+          "grupos": [
+            {"etiqueta": "Menos de 30 kg", "peso": [0, 29.99], "no_recomendado": "La tabla de la guía empieza en 30 kg. Calcular por mg/kg o usar formulaciones pediátricas."},
+            {"etiqueta": "30–34 kg", "peso": [30, 34.99], "fases": [{"etiqueta": "2 meses · 60 tomas", "fija": 2, "tomas": 1, "unidad": "comp."}], "nota": "Cuádruple asociación 75/150/400/275 mg."},
+            {"etiqueta": "35–39 kg", "peso": [35, 39.99], "fases": [{"etiqueta": "2 meses · 60 tomas", "fija": 2.5, "tomas": 1, "unidad": "comp."}], "nota": "Cuádruple asociación 75/150/400/275 mg."},
+            {"etiqueta": "40–54 kg", "peso": [40, 54.99], "fases": [{"etiqueta": "2 meses · 60 tomas", "fija": 3, "tomas": 1, "unidad": "comp."}], "nota": "Cuádruple asociación 75/150/400/275 mg."},
+            {"etiqueta": "55 kg o más", "peso": [55, 400], "fases": [{"etiqueta": "2 meses · 60 tomas", "fija": 4, "tomas": 1, "unidad": "comp."}], "nota": "Cuádruple asociación 75/150/400/275 mg."}
+          ]
+        },
+        {
+          "nombre": "HR 150/300 (continuación)",
+          "por_peso": true,
+          "grupos": [
+            {"etiqueta": "Menos de 30 kg", "peso": [0, 29.99], "no_recomendado": "La tabla de la guía empieza en 30 kg. Calcular por mg/kg o usar formulaciones pediátricas."},
+            {"etiqueta": "30–34 kg", "peso": [30, 34.99], "fases": [{"etiqueta": "4 meses · 120 tomas", "fija": 1, "tomas": 1, "unidad": "comp."}], "nota": "Con HR 75/150: 2 comprimidos."},
+            {"etiqueta": "35–39 kg", "peso": [35, 39.99], "fases": [{"etiqueta": "4 meses · 120 tomas", "fija": 1.5, "tomas": 1, "unidad": "comp."}], "nota": "Con HR 75/150: 3 comprimidos."},
+            {"etiqueta": "40–54 kg", "peso": [40, 54.99], "fases": [{"etiqueta": "4 meses · 120 tomas", "fija": 1.5, "tomas": 1, "unidad": "comp."}], "nota": "Con HR 75/150: 3 comprimidos."},
+            {"etiqueta": "55 kg o más", "peso": [55, 400], "fases": [{"etiqueta": "4 meses · 120 tomas", "fija": 2, "tomas": 1, "unidad": "comp."}], "nota": "Con HR 75/150: 4 comprimidos."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "monodrogas",
+      "titulo": "Antituberculosos por kilo",
+      "pagina": 58,
+      "descripcion": "Primera línea, dosis diaria única. Adultos (Tabla 4) y pediatría (Tabla 17).",
+      "farmacos": [
+        {"nombre": "Isoniacida", "grupos": [
+          {"etiqueta": "Adultos", "fases": [{"etiqueta": "Diaria", "mgkg": [5, 5], "max": 300, "tomas": 1}], "nota": "Agregar piridoxina si hay riesgo de neuropatía."},
+          {"etiqueta": "Pediatría", "fases": [{"etiqueta": "Diaria", "mgkg": [7, 15], "max": 300, "tomas": 1}], "nota": "Habitual 10 mg/kg. Menores de 2 años: 10–15 mg/kg."}
+        ]},
+        {"nombre": "Rifampicina", "grupos": [
+          {"etiqueta": "Adultos", "fases": [{"etiqueta": "Diaria, en ayunas", "mgkg": [10, 10], "max": 600, "tomas": 1}]},
+          {"etiqueta": "Pediatría", "fases": [{"etiqueta": "Diaria, en ayunas", "mgkg": [10, 20], "max": 600, "tomas": 1}], "nota": "Habitual 15 mg/kg. Suspensión 100 mg/5 ml."}
+        ]},
+        {"nombre": "Pirazinamida", "grupos": [
+          {"etiqueta": "Adultos", "fases": [{"etiqueta": "Diaria", "mgkg": [25, 25], "max": 2000, "tomas": 1}]},
+          {"etiqueta": "Pediatría", "fases": [{"etiqueta": "Diaria", "mgkg": [25, 40], "max": 2000, "tomas": 1}], "nota": "Habitual 35 mg/kg."}
+        ]},
+        {"nombre": "Etambutol", "grupos": [
+          {"etiqueta": "Adultos", "fases": [{"etiqueta": "Diaria", "mgkg": [20, 20], "max": 1600, "tomas": 1}]},
+          {"etiqueta": "Pediatría", "fases": [{"etiqueta": "Diaria", "mgkg": [15, 25], "max": 1600, "tomas": 1}], "nota": "Habitual 20 mg/kg. Dispersables de 100 mg."}
+        ]}
+      ]
+    },
+    {
+      "id": "dispersables-peso",
+      "titulo": "Dispersables pediátricos según peso",
+      "pagina": 112,
+      "descripcion": "Comprimidos por día de triple RHZ 75/50/150, doble RH 75/50 o etambutol 100 mg (la misma cantidad para los tres).",
+      "farmacos": [
+        {
+          "nombre": "RHZ, RH o etambutol dispersable",
+          "por_peso": true,
+          "grupos": [
+            {"etiqueta": "Menos de 4 kg", "peso": [0, 3.99], "no_recomendado": "Fuera de la tabla de la guía (4–24 kg). Consultar con especialista."},
+            {"etiqueta": "4–7 kg", "peso": [4, 7.99], "fases": [{"etiqueta": "Diaria", "fija": 1, "tomas": 1, "unidad": "comp."}]},
+            {"etiqueta": "8–11 kg", "peso": [8, 11.99], "fases": [{"etiqueta": "Diaria", "fija": 2, "tomas": 1, "unidad": "comp."}]},
+            {"etiqueta": "12–15 kg", "peso": [12, 15.99], "fases": [{"etiqueta": "Diaria", "fija": 3, "tomas": 1, "unidad": "comp."}]},
+            {"etiqueta": "16–24 kg", "peso": [16, 24.99], "fases": [{"etiqueta": "Diaria", "fija": 4, "tomas": 1, "unidad": "comp."}]},
+            {"etiqueta": "25 kg o más", "peso": [25, 400], "no_recomendado": "Fuera de la tabla de dispersables. Calcular por mg/kg o usar formulaciones de adultos según peso."}
+          ]
+        }
+      ]
+    }
+  ]
+}

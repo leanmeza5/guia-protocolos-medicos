@@ -2,12 +2,23 @@
   "name": "Protocolos Clínicos · Tierra del Fuego",
   "short_name": "Protocolos",
   "description": "Algoritmos, dosis y protocolos de las guías clínicas nacionales para equipos de salud de Tierra del Fuego.",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#f4f6f9",
-  "theme_color": "#0b5c7a",
+  "orientation": "portrait",
+  "background_color": "#f5f2ec",
+  "theme_color": "#0d3f57",
   "lang": "es-AR",
+  "categories": ["medical", "health"],
   "icons": [
-    {"src": "/static/icono.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+    {"src": "/static/icono-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/static/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/static/icono-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Guardia", "short_name": "Guardia", "description": "Algoritmos de guardia y urgencias", "url": "/#/categoria/guardia", "icons": [{"src": "/static/icono-192.png", "sizes": "192x192"}]},
+    {"name": "Calculadoras y escalas", "short_name": "Calcular", "url": "/#/herramientas", "icons": [{"src": "/static/icono-192.png", "sizes": "192x192"}]},
+    {"name": "Buscar en las guías", "short_name": "Buscar", "url": "/#/buscar", "icons": [{"src": "/static/icono-192.png", "sizes": "192x192"}]}
   ]
 }

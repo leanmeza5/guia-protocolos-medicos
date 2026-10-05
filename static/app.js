@@ -18,10 +18,10 @@ const estado = {
 };
 
 const CATEGORIAS = [
-  { id: "guardia", titulo: "Guardia y urgencias", desc: "Algoritmos para decidir rápido", icono: "siren" },
-  { id: "cronicos", titulo: "Consultorio: enfermedades crónicas", desc: "Diagnóstico, metas y tratamiento escalonado", icono: "heart" },
-  { id: "infecciones", titulo: "Infecciones", desc: "Antibióticos, notificación y contactos", icono: "bug" },
-  { id: "embarazo", titulo: "Embarazo y recién nacido", desc: "Control prenatal y emergencia obstétrica", icono: "baby" },
+  { id: "guardia", corto: "Guardia", titulo: "Guardia y urgencias", desc: "Algoritmos para decidir rápido cuando no hay tiempo.", icono: "siren" },
+  { id: "cronicos", corto: "Crónicos", titulo: "Consultorio: enfermedades crónicas", desc: "Diagnóstico, metas y tratamiento escalonado.", icono: "heart" },
+  { id: "infecciones", corto: "Infecciones", titulo: "Infecciones", desc: "Antibióticos, notificación y manejo de contactos.", icono: "bug" },
+  { id: "embarazo", corto: "Embarazo y RN", titulo: "Embarazo y recién nacido", desc: "Control prenatal y emergencia obstétrica.", icono: "baby" },
 ];
 
 // --- Utilidades --------------------------------------------------------------
@@ -81,131 +81,329 @@ function edicion(anio) {
 
 let vistaAnterior = null;
 async function router() {
+  vista.className = "contenedor";
   const partes = location.hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
-  const clave = partes[0] === "guia" ? "guia" + partes[1] : partes[0];
+  const clave = partes[0] === "guia" ? "guia" + partes[1] : partes[0] + (partes[1] || "");
   if (clave !== vistaAnterior) { vistaAnterior = clave; window.scrollTo({ top: 0 }); }
+  cerrarMenu();
   try {
     await cargarInicio();
+    construirMenu();
     if (partes[0] === "buscar" && partes[1]) {
       if (document.activeElement !== inputQ) inputQ.value = partes[1];
       await vistaBusqueda(partes[1], partes[2] ? +partes[2] : null);
+    } else if (partes[0] === "buscar") {
+      vistaBuscarVacia();
     } else if (partes[0] === "guia" && partes[1]) {
       await vistaGuia(+partes[1], partes[2], partes[3]);
+    } else if (partes[0] === "categoria" && partes[1]) {
+      vistaCategoria(partes[1]);
+    } else if (partes[0] === "herramientas") {
+      vistaHerramientas();
+    } else if (partes[0] === "biblioteca") {
+      vistaBiblioteca();
+    } else if (partes[0] === "region") {
+      vistaRegion();
     } else if (partes[0] === "esquemas") {
       vistaEsquemas();
     } else {
       if (document.activeElement !== inputQ) inputQ.value = "";
       vistaInicio();
     }
+    marcarActivo(partes);
   } catch (e) { error(e); }
 }
 
+// --- Menú lateral y barra inferior -------------------------------------------
+
+const catDe = (g) => g?.ficha?.categorias?.find((c) => CATEGORIAS.some((x) => x.id === c)) || "";
+let menuConstruido = false;
+function construirMenu() {
+  if (menuConstruido) return;
+  menuConstruido = true;
+  const { guias, region } = estado.inicio;
+  const conFicha = guias.filter((g) => g.ficha);
+  const item = (href, icono, txt, ruta, n) =>
+    `<a class="nav-item" href="${href}" data-ruta="${ruta}" title="${esc(txt)}"><span class="nav-ico">${ico(icono)}</span><span class="nav-txt">${esc(txt)}</span>${n ? `<span class="n">${n}</span>` : ""}</a>`;
+  $("#sidebar-nav").innerHTML = `
+    <div class="nav-grupo">
+      ${item("#/", "home", "Inicio", "inicio")}
+      ${item("#/buscar", "search", "Buscar", "buscar")}
+      ${item("#/herramientas", "calc", "Calculadoras y escalas", "herramientas")}
+      ${item("#/esquemas", "image", "Algoritmos originales", "esquemas")}
+      ${item("#/biblioteca", "book", "Biblioteca de guías", "biblioteca", guias.length)}
+      ${region ? item("#/region", "pin", region.nombre, "region") : ""}
+    </div>
+    <div class="nav-grupo">
+      <span class="nav-titulo">Protocolos</span>
+      ${CATEGORIAS.map((c) => {
+        const lista = conFicha.filter((g) => g.ficha.categorias.includes(c.id));
+        if (!lista.length) return "";
+        return `
+        <details class="nav-cat cat-${c.id}" data-cat="${c.id}">
+          <summary class="nav-item" title="${esc(c.titulo)}"><span class="nav-ico">${ico(c.icono)}</span><span class="nav-txt">${esc(c.corto)}</span><span class="n">${lista.length}</span>${ico("right", "chev")}</summary>
+          <div class="nav-sub-lista">
+            <a class="nav-sub" href="#/categoria/${c.id}" data-ruta="cat-${c.id}">Ver todo</a>
+            ${lista.map((g) => `<a class="nav-sub" href="#/guia/${g.id}" data-guia-id="${g.id}">${esc(g.ficha.titulo_corto)}</a>`).join("")}
+          </div>
+        </details>`;
+      }).join("")}
+    </div>`;
+  // En el panel contraído, un toque en la categoría lleva a su página.
+  $$(".nav-cat > summary").forEach((s) => s.addEventListener("click", (ev) => {
+    if (document.documentElement.classList.contains("menu-contraido") && innerWidth > 960) {
+      ev.preventDefault();
+      navegar(`#/categoria/${s.parentElement.dataset.cat}`);
+    }
+  }));
+}
+
+function marcarActivo(partes) {
+  const ruta = partes[0] || "inicio";
+  const guiaId = partes[0] === "guia" ? partes[1] : null;
+  const g = guiaId ? metaGuia(+guiaId) : null;
+  const cat = partes[0] === "categoria" ? partes[1] : catDe(g);
+  $$(".sidebar .nav-item[data-ruta]").forEach((a) => a.classList.toggle("activo", a.dataset.ruta === ruta));
+  $$(".sidebar .nav-sub").forEach((a) => a.classList.toggle("activo",
+    (guiaId && a.dataset.guiaId === guiaId) || (partes[0] === "categoria" && a.dataset.ruta === "cat-" + partes[1])));
+  if (cat) { const d = $(`.nav-cat[data-cat="${cat}"]`); if (d) d.open = true; }
+  const tab = ruta === "categoria" && partes[1] === "guardia" ? "guardia" : ruta === "inicio" ? "inicio" : ruta;
+  $$("#tabbar [data-ruta]").forEach((a) => a.classList.toggle("activo", a.dataset.ruta === tab));
+}
+
+function abrirMenu() { document.documentElement.classList.add("menu-abierto"); $("#btn-menu").setAttribute("aria-expanded", "true"); }
+function cerrarMenu() { document.documentElement.classList.remove("menu-abierto"); $("#btn-menu")?.setAttribute("aria-expanded", "false"); }
+
 // --- Inicio ------------------------------------------------------------------
 
+function saludo() {
+  const h = new Date().getHours();
+  if (h < 6) return ["Buenas noches", "moon", "Que sea una guardia tranquila."];
+  if (h < 13) return ["Buen día", "sun", "Arrancamos la consulta."];
+  if (h < 20) return ["Buenas tardes", "sun", "Seguimos con la consulta."];
+  return ["Buenas noches", "moon", "Que sea una guardia tranquila."];
+}
+
+function arteMontes() {
+  // Cordón montañoso con nieve, bosque de lenga y canal: un guiño al paisaje fueguino.
+  let lenga = "M0 150 L0 136";
+  for (let x = 0; x <= 1200; x += 40) lenga += ` Q${x + 20} ${122 + (x % 120 === 0 ? -6 : 4)} ${x + 40} 136`;
+  lenga += " L1200 150 Z";
+  let lenga2 = "M0 150 L0 142";
+  for (let x = 20; x <= 1220; x += 50) lenga2 += ` Q${x + 25} ${132 + (x % 150 === 20 ? -5 : 3)} ${x + 50} 142`;
+  lenga2 += " L1200 150 Z";
+  return `
+    <svg class="hero-arte" viewBox="0 0 1200 150" preserveAspectRatio="none" aria-hidden="true">
+      <path class="m1" d="M0 118 L80 72 L150 96 L240 38 L320 88 L400 62 L470 92 L560 30 L650 86 L740 58 L830 96 L920 44 L1010 90 L1100 64 L1200 92 L1200 150 L0 150 Z"/>
+      <path class="nieve" d="M240 38 L222 52 L235 49 L247 56 L259 50 Z M560 30 L541 45 L556 42 L567 50 L580 44 Z M920 44 L902 57 L916 54 L928 61 L939 56 Z"/>
+      <path class="m2" d="M0 130 L110 98 L190 118 L300 84 L390 114 L500 92 L600 120 L700 94 L820 122 L930 100 L1040 124 L1200 106 L1200 150 L0 150 Z"/>
+      <path class="lenga" d="${lenga}"/>
+      <path class="lenga2" d="${lenga2}"/>
+      <rect class="agua" x="0" y="146" width="1200" height="4"/>
+    </svg>`;
+}
+
+function puedeInstalar() {
+  const instalada = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  return !instalada && (instalacion.evento || esIOS());
+}
+
 function vistaInicio() {
-  const { guias, esquemas, region } = estado.inicio;
+  const { guias, region } = estado.inicio;
   document.title = region ? `Protocolos Clínicos · ${region.nombre}` : "Protocolos Clínicos";
   const conFicha = guias.filter((g) => g.ficha);
   const mes = new Date().getMonth() + 1;
   const temporada = region?.temporadas?.find((t) => t.meses.includes(mes));
   const recientes = leerRecientes().map(metaGuia).filter(Boolean);
-  const sugerencias = ["embarazo", "dosis", "derivar", "HTA", "tos convulsa", "CO"];
-
-  const urgentes = conFicha.filter((g) => g.ficha.categorias.includes("guardia"))
-    .flatMap((g) => g.ficha.algoritmos.map((a) => ({ g, a })));
-  const herramientas = conFicha.flatMap((g) => [
-    ...g.ficha.escalas.map((e) => ({ g, tipo: "escala", titulo: e.titulo, href: `#/guia/${g.id}/calcular/esc-${e.id}` })),
-    ...(g.ficha.n_calculadoras ? [{ g, tipo: "calculadora", titulo: `Dosis por peso · ${g.ficha.titulo_corto}`, href: `#/guia/${g.id}/calcular` }] : []),
-  ]);
-  const algoritmosOriginales = esquemas.filter((e) => e.tipo === "algoritmo");
+  const sugerencias = ["HTA", "dosis", "embarazo", "tos convulsa", "CO", "derivar"];
+  const [hola, icoHola, frase] = saludo();
+  const urgentes = conFicha.filter((g) => g.ficha.categorias.includes("guardia")).flatMap((g) => g.ficha.algoritmos.map((a) => ({ g, a })));
+  const herramientas = listaHerramientas();
 
   vista.innerHTML = `
     <section class="hero">
-      <svg class="hero-montes" viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 160 L0 110 L120 70 L190 98 L300 30 L380 84 L470 52 L560 96 L640 60 L720 92 L820 24 L900 78 L990 50 L1080 88 L1200 58 L1200 160 Z"/>
-      </svg>
+      ${arteMontes()}
       <div class="hero-txt">
-        <span class="eyebrow">${ico("pin")}${esc(region?.region_etiqueta || "Argentina")} · Guías del Ministerio de Salud</span>
+        <span class="saludo">${ico(icoHola)}${hola} · ${esc(frase)}</span>
         <h1>¿Qué estás atendiendo?</h1>
-        <p class="lead">${esc(region?.bajada || "Algoritmos, dosis y protocolos de las guías clínicas oficiales.")} Cada dato enlaza a su página en el documento original.</p>
+        <p class="lead">Protocolos de las guías del Ministerio de Salud, a mano en la guardia y el consultorio de ${esc(region?.nombre || "tu provincia")}. Cada dato te lleva a su página original.</p>
         <form class="search search-hero" id="form-hero" role="search" autocomplete="off">
           ${ico("search")}
           <input id="q-hero" type="search" placeholder="Diagnóstico, fármaco, sigla o síntoma…" aria-label="Buscar en las guías" spellcheck="false">
-          <button class="btn btn-primary" type="submit">Buscar</button>
+          <button class="btn" type="submit">Buscar</button>
         </form>
-        <div class="hero-sugerencias"><span>Por ejemplo:</span>
+        <div class="hero-sugerencias"><span>Probá:</span>
           ${sugerencias.map((s) => `<a class="chip" href="#/buscar/${encodeURIComponent(s)}">${esc(s)}</a>`).join("")}
         </div>
       </div>
     </section>
 
+    ${puedeInstalar() ? `
+    <section class="card instalar-banner">
+      <img src="/static/icono-192.png" alt="" width="48" height="48">
+      <div><strong>Llevala en el celular</strong><small>Instalala como app: abre a pantalla completa y funciona sin señal con lo que ya consultaste.</small></div>
+      <button class="btn btn-sm" type="button" data-instalar>${ico("download")}Instalar</button>
+    </section>` : ""}
+
     ${temporada ? `
     <section class="temporada card" aria-label="Alerta de temporada">
       <div class="temporada-ico">${ico(mes >= 5 && mes <= 9 ? "snow" : "sun")}</div>
-      <div class="temporada-txt">
-        <strong>${esc(temporada.titulo)}</strong>
-        <p>${esc(temporada.texto)}</p>
-      </div>
+      <div class="temporada-txt"><strong>${esc(temporada.titulo)}</strong><p>${esc(temporada.texto)}</p></div>
       <div class="temporada-links">
         ${temporada.enlaces.filter((l) => l.guia_id).map((l) => `<a class="btn btn-sm" href="#/guia/${l.guia_id}/algoritmos/${esc(l.ancla)}">${ico("flow")}${esc(l.texto)}</a>`).join("")}
       </div>
     </section>` : ""}
 
+    <section class="seccion">
+      <div class="seccion-cab"><div><h2>${ico("list")}Elegí por área</h2><p>${conFicha.length} protocolos con algoritmos, dosis y puntos clave.</p></div></div>
+      <div class="grid-cats">
+        ${CATEGORIAS.map((c) => {
+          const n = conFicha.filter((g) => g.ficha.categorias.includes(c.id)).length;
+          return n ? `
+          <a class="cat-tile cat-${c.id}" href="#/categoria/${c.id}">
+            <span class="cat-ico">${ico(c.icono)}</span>
+            <strong>${esc(c.corto)}</strong>
+            <small>${esc(c.desc)}</small>
+            <span class="cat-n">${n}</span>
+          </a>` : "";
+        }).join("")}
+      </div>
+    </section>
+
     ${urgentes.length ? `
     <section class="seccion">
       <div class="seccion-cab"><div><h2>${ico("siren")}Guardia: algoritmos de un toque</h2><p>Recorré la decisión paso a paso, con la página de origen en cada punto.</p></div></div>
-      <div class="grid-urgencias">
-        ${urgentes.map(({ g, a }) => `
-          <a class="card urgencia" href="#/guia/${g.id}/algoritmos/alg-${a.id}">
-            <span class="urgencia-ico">${ico("flow")}</span>
-            <span><strong>${esc(a.titulo)}</strong><small>${esc(g.ficha.titulo_corto)}</small></span>
-            ${ico("right", "flecha")}
-          </a>`).join("")}
-      </div>
+      <div class="grid-urgencias">${urgentes.map(({ g, a }) => tarjetaUrgencia(g, a)).join("")}</div>
     </section>` : ""}
 
     ${recientes.length ? `
     <section class="seccion seccion-chica">
-      <div class="seccion-cab"><div><h2>${ico("clock")}Consultados recientemente</h2></div></div>
+      <div class="seccion-cab"><div><h2>${ico("clock")}Lo último que consultaste</h2></div></div>
       <div class="chips-fila">${recientes.map((g) => `<a class="chip chip-grande" href="#/guia/${g.id}">${esc(nombreGuia(g))}</a>`).join("")}</div>
     </section>` : ""}
 
     ${herramientas.length ? `
     <section class="seccion">
-      <div class="seccion-cab"><div><h2>${ico("calc")}Calculadoras y escalas</h2><p>Dosis por peso, puntajes de gravedad y de riesgo.</p></div></div>
-      <div class="grid-herramientas">
-        ${herramientas.map((h) => `
-          <a class="card herramienta" href="${h.href}">
-            ${badge(h.tipo)}
-            <strong>${esc(h.titulo)}</strong>
-            <small>${esc(h.g.ficha.titulo_corto)}</small>
-          </a>`).join("")}
+      <div class="seccion-cab">
+        <div><h2>${ico("calc")}Calculadoras y escalas</h2><p>Dosis por peso, puntajes de gravedad y de riesgo.</p></div>
+        <a class="btn btn-sm" href="#/herramientas">Ver todas (${herramientas.length})</a>
       </div>
+      <div class="grid-herramientas">${herramientas.slice(0, 6).map(tarjetaHerramienta).join("")}</div>
     </section>` : ""}
-
-    <section class="seccion" id="protocolos">
-      <div class="seccion-cab"><div><h2>${ico("list")}Protocolos rápidos</h2><p>${conFicha.length} fichas con algoritmos, dosis y puntos clave.</p></div></div>
-      <div class="chips-fila filtro-cat" role="tablist">
-        <button class="chip ${!estado.categoria ? "activo" : ""}" type="button" data-cat="">Todos <span class="n">${conFicha.length}</span></button>
-        ${CATEGORIAS.map((c) => {
-          const n = conFicha.filter((g) => g.ficha.categorias.includes(c.id)).length;
-          return n ? `<button class="chip ${estado.categoria === c.id ? "activo" : ""}" type="button" data-cat="${c.id}">${ico(c.icono)}${esc(c.titulo.split(":")[0])} <span class="n">${n}</span></button>` : "";
-        }).join("")}
-      </div>
-      <div class="grid-fichas" id="grid-fichas"></div>
-    </section>
 
     ${region ? `
     <section class="seccion">
-      <div class="seccion-cab"><div><h2>${ico("pin")}Para tener en cuenta en ${esc(region.nombre)}</h2><p>Datos de las guías nacionales sobre la provincia.</p></div></div>
+      <div class="seccion-cab">
+        <div><h2>${ico("pin")}Para tener en cuenta en ${esc(region.nombre)}</h2><p>Lo que dicen las guías nacionales sobre la provincia.</p></div>
+        <a class="btn btn-sm" href="#/region">${ico("phone")}Teléfonos útiles</a>
+      </div>
+      <div class="contexto">${region.contexto.map(tarjetaContexto).join("")}</div>
+    </section>` : ""}`;
+
+  $("#form-hero").addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const q = $("#q-hero").value.trim();
+    if (q) navegar(`#/buscar/${encodeURIComponent(q)}`);
+  });
+}
+
+const tarjetaUrgencia = (g, a) => `
+  <a class="card urgencia" href="#/guia/${g.id}/algoritmos/alg-${a.id}">
+    <span class="urgencia-ico">${ico("flow")}</span>
+    <span><strong>${esc(a.titulo)}</strong><small>${esc(g.ficha.titulo_corto)}</small></span>
+    ${ico("right", "flecha")}
+  </a>`;
+
+function listaHerramientas() {
+  return estado.inicio.guias.filter((g) => g.ficha).flatMap((g) => [
+    ...g.ficha.escalas.map((e) => ({ g, tipo: "escala", titulo: e.titulo, href: `#/guia/${g.id}/calcular/esc-${e.id}` })),
+    ...(g.ficha.n_calculadoras ? [{ g, tipo: "calculadora", titulo: `Dosis por peso · ${g.ficha.titulo_corto}`, href: `#/guia/${g.id}/calcular` }] : []),
+  ]);
+}
+const tarjetaHerramienta = (h) => `
+  <a class="card herramienta" href="${h.href}">${badge(h.tipo)}<strong>${esc(h.titulo)}</strong><small>${esc(h.g.ficha.titulo_corto)}</small></a>`;
+const tarjetaContexto = (x) => `
+  <div class="card contexto-item"><strong>${esc(x.titulo)}</strong><p>${esc(x.texto)} ${pag(x.guia_id, x.pagina)}</p></div>`;
+
+function cabeceraPagina(icono, titulo, sub, cat = "") {
+  return `<header class="pagina-cab ${cat ? "cat-" + cat : ""}"><span class="cat-ico">${ico(icono)}</span><div><h1>${esc(titulo)}</h1>${sub ? `<p>${esc(sub)}</p>` : ""}</div></header>`;
+}
+
+function vistaCategoria(id) {
+  const c = CATEGORIAS.find((x) => x.id === id);
+  if (!c) return vistaInicio();
+  const lista = estado.inicio.guias.filter((g) => g.ficha?.categorias.includes(id));
+  document.title = `${c.corto} · Protocolos Clínicos`;
+  const algos = lista.flatMap((g) => g.ficha.algoritmos.map((a) => ({ g, a })));
+  vista.innerHTML = `
+    ${cabeceraPagina(c.icono, c.titulo, c.desc, id)}
+    <div class="chips-fila" style="margin-top:16px">
+      ${CATEGORIAS.map((x) => `<a class="chip ${x.id === id ? "activo" : ""}" href="#/categoria/${x.id}" data-reemplazar>${ico(x.icono)}${esc(x.corto)}</a>`).join("")}
+    </div>
+    ${id === "guardia" && algos.length ? `
+    <section class="seccion">
+      <div class="seccion-cab"><div><h2>${ico("flow")}Algoritmos</h2></div></div>
+      <div class="grid-urgencias">${algos.map(({ g, a }) => tarjetaUrgencia(g, a)).join("")}</div>
+    </section>` : ""}
+    <section class="seccion">
+      <div class="seccion-cab"><div><h2>${ico("list")}Protocolos</h2><p>${lista.length} fichas</p></div></div>
+      <div class="grid-fichas">${lista.map(tarjetaFicha).join("")}</div>
+    </section>`;
+}
+
+function vistaHerramientas() {
+  document.title = "Calculadoras y escalas · Protocolos Clínicos";
+  const h = listaHerramientas();
+  const escalas = h.filter((x) => x.tipo === "escala"), calcs = h.filter((x) => x.tipo === "calculadora");
+  vista.innerHTML = `
+    ${cabeceraPagina("calc", "Calculadoras y escalas", "Cargá el peso una vez y obtené la dosis de cada fármaco según la guía.")}
+    <section class="seccion"><div class="seccion-cab"><div><h2>${ico("calc")}Dosis por peso</h2></div></div>
+      <div class="grid-herramientas">${calcs.map(tarjetaHerramienta).join("")}</div></section>
+    <section class="seccion"><div class="seccion-cab"><div><h2>${ico("gauge")}Escalas y puntajes</h2></div></div>
+      <div class="grid-herramientas">${escalas.map(tarjetaHerramienta).join("")}</div></section>`;
+}
+
+function vistaBuscarVacia() {
+  document.title = "Buscar · Protocolos Clínicos";
+  const ej = ["HTA", "presión alta embarazo", "dosis amoxicilina", "CURB-65", "tos convulsa", "benznidazol", "CO", "derivar EPOC"];
+  vista.innerHTML = `
+    ${cabeceraPagina("search", "Buscar en las guías", "Funciona sin tildes y entiende siglas: HTA, NAC, ACV, DBT, CO…")}
+    <section class="seccion seccion-chica"><div class="chips-fila">${ej.map((s) => `<a class="chip chip-grande" href="#/buscar/${encodeURIComponent(s)}">${esc(s)}</a>`).join("")}</div></section>`;
+  setTimeout(() => inputQ.focus(), 50);
+}
+
+function vistaBiblioteca() {
+  const { guias } = estado.inicio;
+  document.title = "Biblioteca · Protocolos Clínicos";
+  vista.innerHTML = `
+    ${cabeceraPagina("book", "Biblioteca de guías", `${guias.length} documentos oficiales del Ministerio de Salud, indexados para la búsqueda.`)}
+    <div class="card biblioteca" style="margin-top:22px">
+      ${guias.map((g) => `
+        <div class="fila-guia">
+          <div class="ico-doc">${ico("book")}</div>
+          <div>
+            <h4><a href="#/guia/${g.id}">${esc(g.titulo)}</a></h4>
+            <small>${[g.tema, g.paginas + (g.paginas === 1 ? " página" : " páginas")].filter(Boolean).map(esc).join(" · ")}</small>
+            <div class="fila-badges">${g.ficha ? `<span class="badge badge-algoritmo">${ico("flow")}Ficha rápida</span>${edicion(g.ficha.anio)}` : `<span class="badge">${ico("text")}Solo texto y páginas</span>`}</div>
+          </div>
+          <div class="acciones">
+            <a class="btn btn-sm" href="#/guia/${g.id}">Abrir</a>
+            <a class="btn btn-sm btn-ghost" href="${esc(g.url)}" target="_blank" rel="noopener">${ico("external")}PDF</a>
+          </div>
+        </div>`).join("")}
+    </div>`;
+}
+
+function vistaRegion() {
+  const { region } = estado.inicio;
+  if (!region) return vistaInicio();
+  document.title = `${region.nombre} · Protocolos Clínicos`;
+  vista.innerHTML = `
+    ${cabeceraPagina("pin", region.nombre, region.bajada)}
+    <div class="aviso aviso-info" style="margin-top:18px">${ico("info")}<span>Cada dato sale de una guía nacional; tocá “fuente” para ver la página. ${esc(region.aviso || "")}</span></div>
+    <section class="seccion">
       <div class="region-grid">
-        <div class="contexto">
-          ${region.contexto.map((x) => `
-            <div class="card contexto-item">
-              <strong>${esc(x.titulo)}</strong>
-              <p>${esc(x.texto)} ${pag(x.guia_id, x.pagina)}</p>
-            </div>`).join("")}
-        </div>
+        <div class="contexto">${region.contexto.map(tarjetaContexto).join("")}</div>
         <div class="card contactos">
           <h3>${ico("phone")}Teléfonos y referencias</h3>
           <ul>
@@ -220,55 +418,13 @@ function vistaInicio() {
           </ul>
         </div>
       </div>
-    </section>` : ""}
-
-    ${algoritmosOriginales.length ? `
-    <section class="seccion">
-      <div class="seccion-cab">
-        <div><h2>${ico("image")}Algoritmos originales de las guías</h2><p>Las páginas tal como las publicó el Ministerio.</p></div>
-        <a class="btn btn-sm" href="#/esquemas">Ver todos los esquemas (${esquemas.length})</a>
-      </div>
-      <div class="galeria">${algoritmosOriginales.slice(0, 10).map(miniatura).join("")}</div>
-    </section>` : ""}
-
-    <section class="seccion">
-      <div class="seccion-cab"><div><h2>${ico("book")}Biblioteca</h2><p>${guias.length} documentos oficiales indexados para la búsqueda.</p></div></div>
-      <div class="card biblioteca">
-        ${guias.map((g) => `
-          <div class="fila-guia">
-            <div class="ico-doc">${ico("book")}</div>
-            <div>
-              <h4><a href="#/guia/${g.id}">${esc(g.titulo)}</a></h4>
-              <small>${[g.tema, g.paginas + (g.paginas === 1 ? " página" : " páginas")].filter(Boolean).map(esc).join(" · ")}</small>
-              <div class="fila-badges">${g.ficha ? `<span class="badge badge-algoritmo">${ico("flow")}Ficha rápida</span>${edicion(g.ficha.anio)}` : `<span class="badge">${ico("text")}Solo texto y páginas</span>`}</div>
-            </div>
-            <div class="acciones">
-              <a class="btn btn-sm" href="#/guia/${g.id}">Abrir</a>
-              <a class="btn btn-sm btn-ghost" href="${esc(g.url)}" target="_blank" rel="noopener">${ico("external")}PDF</a>
-            </div>
-          </div>`).join("")}
-      </div>
     </section>`;
-
-  const pintarFichas = () => {
-    const lista = conFicha.filter((g) => !estado.categoria || g.ficha.categorias.includes(estado.categoria));
-    $("#grid-fichas").innerHTML = lista.map(tarjetaFicha).join("");
-    $$(".filtro-cat .chip").forEach((b) => b.classList.toggle("activo", (b.dataset.cat || "") === (estado.categoria || "")));
-  };
-  $$(".filtro-cat .chip").forEach((b) => b.addEventListener("click", () => { estado.categoria = b.dataset.cat || null; pintarFichas(); }));
-  pintarFichas();
-
-  $("#form-hero").addEventListener("submit", (ev) => {
-    ev.preventDefault();
-    const q = $("#q-hero").value.trim();
-    if (q) navegar(`#/buscar/${encodeURIComponent(q)}`);
-  });
 }
 
 function tarjetaFicha(g) {
   const f = g.ficha;
   return `
-    <div class="card ficha-card">
+    <div class="card ficha-card ${catDe(g) ? "cat-" + catDe(g) : ""}">
       <a class="ficha-link" href="#/guia/${g.id}">
         <div class="ficha-top"><span class="eyebrow">${esc(f.especialidad || g.tema || "")}</span>${edicion(f.anio)}</div>
         <div><h3>${esc(f.titulo_corto)}</h3><div class="sub">${esc(f.subtitulo || "")}</div></div>
@@ -412,6 +568,7 @@ async function vistaGuia(id, tab, ancla) {
   if (!tabs.some((t) => t[0] === tab)) tab = tabs[0][0];
   document.title = `${nombreGuia(g)} · Protocolos Clínicos`;
   const vieja = f?.anio && f.anio < ANIO_VIGENCIA;
+  vista.className = "contenedor" + (catDe(g) ? " cat-" + catDe(g) : "");
 
   vista.innerHTML = `
     <nav class="migas" aria-label="Ruta"><a href="#/">Inicio</a>${ico("right")}<span>${esc(f?.titulo_corto || "Guía")}</span></nav>
@@ -983,6 +1140,53 @@ $("#btn-tema").addEventListener("click", () => {
   try { localStorage.setItem("tema", nuevo); } catch (e) {}
   if (location.hash.includes("/algoritmos")) router(); // redibuja el diagrama con los colores nuevos
 });
+
+// Menú lateral
+$("#btn-menu").addEventListener("click", abrirMenu);
+$("#tab-menu").addEventListener("click", () => (document.documentElement.classList.contains("menu-abierto") ? cerrarMenu() : abrirMenu()));
+$$("[data-cerrar-menu]").forEach((b) => b.addEventListener("click", cerrarMenu));
+$("#btn-contraer").addEventListener("click", () => {
+  const c = document.documentElement.classList.toggle("menu-contraido");
+  try { localStorage.setItem("menu-contraido", c ? "1" : "0"); } catch (e) {}
+});
+document.addEventListener("keydown", (ev) => { if (ev.key === "Escape") { cerrarMenu(); $("#modal-instalar").hidden = true; } });
+
+// Instalación como app (Android/Chrome: aviso nativo; iPhone: instrucciones)
+const instalacion = { evento: null };
+const esIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) && !navigator.standalone;
+function mostrarBotonInstalar() {
+  $("#btn-instalar").hidden = !puedeInstalar();
+}
+window.addEventListener("beforeinstallprompt", (ev) => {
+  ev.preventDefault();
+  instalacion.evento = ev;
+  mostrarBotonInstalar();
+  if (!location.hash || location.hash === "#/") vistaInicio();
+});
+window.addEventListener("appinstalled", () => { instalacion.evento = null; mostrarBotonInstalar(); });
+async function instalar() {
+  if (instalacion.evento) {
+    instalacion.evento.prompt();
+    await instalacion.evento.userChoice.catch(() => {});
+    instalacion.evento = null;
+    mostrarBotonInstalar();
+    return;
+  }
+  const ios = esIOS();
+  $("#pasos-instalar").innerHTML = ios
+    ? `<li><span>Abrí esta página en <strong>Safari</strong>.</span></li>
+       <li><span>Tocá <strong>Compartir</strong> ${ico("share")} en la barra de abajo.</span></li>
+       <li><span>Elegí <strong>Agregar a inicio</strong> y confirmá con <strong>Agregar</strong>.</span></li>`
+    : `<li><span>Abrí el menú del navegador ${ico("dots")} (arriba a la derecha).</span></li>
+       <li><span>Elegí <strong>Instalar app</strong> o <strong>Agregar a la pantalla principal</strong>.</span></li>
+       <li><span>Confirmá: el ícono aparece junto a tus otras apps.</span></li>`;
+  $("#modal-instalar").hidden = false;
+}
+document.addEventListener("click", (ev) => {
+  if (ev.target.closest("#btn-instalar, [data-instalar]")) { ev.preventDefault(); cerrarMenu(); instalar(); }
+  if (ev.target.closest("[data-cerrar-modal]")) $("#modal-instalar").hidden = true;
+});
+mostrarBotonInstalar();
 
 // Uso sin conexión: guarda la app y lo que se va consultando.
 const avisoOffline = $("#aviso-offline");

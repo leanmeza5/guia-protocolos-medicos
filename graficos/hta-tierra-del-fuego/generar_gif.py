@@ -470,14 +470,14 @@ def escena_cierre(c, t):
 
 
 ESCENAS = [
-    (escena_intro, 3.6),
+    # (escena_intro, 3.6),  # portada desactivada
     (escena_numero, 4.6),
     (escena_evolucion, 5.6),
     (escena_patagonia, 4.4),
     (escena_iceberg, 4.8),
     (escena_cascada, 4.8),
     (escena_mortalidad, 4.6),
-    (escena_cierre, 5.0),
+    # (escena_cierre, 5.0),  # cierre desactivado
 ]
 FUNDIDO = 0.35  # segundos de fundido de entrada/salida por escena
 
